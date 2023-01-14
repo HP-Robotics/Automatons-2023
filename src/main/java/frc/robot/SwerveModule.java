@@ -44,6 +44,7 @@ public class SwerveModule {
       int turningMotorChannel
      ) {
     m_driveMotor = new TalonFX(driveMotorChannel);
+    m_driveMotor.configFactoryDefault();
     m_driveMotor.setNeutralMode(NeutralMode.Coast);
     m_turningMotor = new TalonFX(turningMotorChannel);
   

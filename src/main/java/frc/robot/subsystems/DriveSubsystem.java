@@ -7,8 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
-import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -40,9 +40,8 @@ public class DriveSubsystem {
   private final DutyCycleEncoder m_frontRighttEncoder = new DutyCycleEncoder(12);
   private final DutyCycleEncoder m_backLeftEncoder = new DutyCycleEncoder(13);
   private final DutyCycleEncoder m_backRightEncoder = new DutyCycleEncoder(14);
-  //Duty Encoders have the wrong values
+  //Duty Encoders may have the wrong values
 
-  private final AHRS m_gyro = new AHRS(Port.kUSB);
   private final PigeonIMU m_pGyro = new PigeonIMU(0);
 
   private final SwerveDriveKinematics m_kinematics =
@@ -50,12 +49,7 @@ public class DriveSubsystem {
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
   public DriveSubsystem() {
-    m_pGyro.enterCalibrationMode(CalibrationMode.Temperature);
-    //m_testEncoder.setDistancePerRotation(0.5);
-    m_frontLeftEncoder.setDistancePerRotation(0.5);
-    m_frontRighttEncoder.setDistancePerRotation(0.5);
-    m_backLeftEncoder.setDistancePerRotation(0.5);
-    m_backRightEncoder.setDistancePerRotation(0.5);
+    m_pGyro.setYaw(0);
   }
   
   /**
@@ -68,17 +62,17 @@ public class DriveSubsystem {
    */
   @SuppressWarnings("ParameterName")
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    var pigeonYaw = new Rotation2d(Math.toRadians(m_pGyro.getYaw()));
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, pigeonYaw)
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
-    System.out.println("Yaw " + m_pGyro.getYaw() + "  Pitch " + m_pGyro.getPitch());
     //System.out.println("X Speed: " + xSpeed + " | Y Speed: " + ySpeed + " | Rotation: " + rot);
     //System.out.println(m_gyro.getYaw());
     //System.out.println("Swerve Stuff" + swerveModuleStates[0].angle + " y " + ySpeed);
