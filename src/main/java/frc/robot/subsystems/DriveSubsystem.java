@@ -42,7 +42,7 @@ public class DriveSubsystem {
   private final DutyCycleEncoder m_backRightEncoder = new DutyCycleEncoder(14);
   //Duty Encoders may have the wrong values
 
-  private final PigeonIMU m_pGyro = new PigeonIMU(0);
+  private final PigeonIMU m_pGyro = new PigeonIMU(57);
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
