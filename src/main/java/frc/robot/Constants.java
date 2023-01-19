@@ -26,7 +26,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class DriverConstants {
+  public static class DriveConstants {
     public static final double kMaxSpeed = 4.0; // 3 meters per second
     public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
 
@@ -44,10 +44,18 @@ public final class Constants {
     public final static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         kFrontLeftLocation, kFrontRightLocation, kBackLeftLocation, kBackRightLocation);
 
+    public static final double drivekP = 0.07;
+    public static final double drivekI = 0.000175;
+    public static final double drivekD = 0.0;
+
+    public static final double encoderTolerance = 0.05;
   }
 
   public static class RobotConstants { // For robot values that remain the same, such as max speed
-    public static final int swerveOffset = 0; // Fill in later
+    public static final double swerveOffsetFL = 0.617738640443466;
+    public static final double swerveOffsetFR = 0.59958238998956;
+    public static final double swerveOffsetBL = 0.890661022266526;
+    public static final double swerveOffsetBR = 0.125644328141108; // Fill in later
   }
 
   public static final class AutoConstants {
