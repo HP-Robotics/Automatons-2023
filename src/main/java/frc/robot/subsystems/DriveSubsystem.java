@@ -15,9 +15,11 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.*;
+import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
 /** Represents a swerve drive style drivetrain. */
@@ -31,10 +33,11 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule m_backRight = new SwerveModule(50, 1); // BIG BONGO 4
 
   /// private final DutyCycleEncoder m_testEncoder = new DutyCycleEncoder(id);
-  private final DutyCycleEncoder m_frontLeftEncoder = new DutyCycleEncoder(11);
-  private final DutyCycleEncoder m_frontRighttEncoder = new DutyCycleEncoder(12);
+  private final DutyCycleEncoder m_frontLeftEncoder = new DutyCycleEncoder(12);
+  private final DutyCycleEncoder m_frontRightEncoder = new DutyCycleEncoder(11);
   private final DutyCycleEncoder m_backLeftEncoder = new DutyCycleEncoder(13);
   private final DutyCycleEncoder m_backRightEncoder = new DutyCycleEncoder(14);
+  // getAbsolutePosition
 
   private final Field2d m_field = new Field2d();
   // Duty Encoders may have the wrong values
@@ -47,7 +50,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_pGyro.setYaw(0);
     var pigeonYaw = new Rotation2d(Math.toRadians(m_pGyro.getYaw()));
     m_odometry = new SwerveDriveOdometry(
-        DriverConstants.kDriveKinematics,
+        DriveConstants.kDriveKinematics,
         pigeonYaw,
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -55,6 +58,10 @@ public class DriveSubsystem extends SubsystemBase {
             m_backLeft.getPosition(),
             m_backRight.getPosition()
         });
+
+    m_frontRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
+    m_backLeft.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
+    m_backRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
   }
 
   @Override
@@ -70,7 +77,14 @@ public class DriveSubsystem extends SubsystemBase {
             m_backRight.getPosition()
         });
     m_field.setRobotPose(getPose());
-    System.out.println(getPose().getX());
+    // System.out.println(getPose().getX());
+    SmartDashboard.putNumber("Front Left Get Absolute Position", m_frontLeftEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Front Left Get ", m_frontLeftEncoder.get());
+    SmartDashboard.putNumber("Front Right", m_frontRightEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Back Left", m_backLeftEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Back Right", m_backRightEncoder.getAbsolutePosition());
+    // System.out.println(m_frontLeftEncoder.get() -
+    // m_frontLeftEncoder.getAbsolutePosition());
   }
 
   /**
@@ -85,7 +99,7 @@ public class DriveSubsystem extends SubsystemBase {
   @SuppressWarnings("ParameterName")
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     var pigeonYaw = new Rotation2d(Math.toRadians(m_pGyro.getYaw()));
-    var swerveModuleStates = DriverConstants.kDriveKinematics.toSwerveModuleStates(
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, pigeonYaw)
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -93,19 +107,32 @@ public class DriveSubsystem extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
-  public void resetEncoders() {
-    m_frontLeft.resetEncoderPosition(RobotConstants.swerveOffset);
-    m_frontRight.resetEncoderPosition(RobotConstants.swerveOffset);
-    m_backLeft.resetEncoderPosition(RobotConstants.swerveOffset);
-    m_backRight.resetEncoderPosition(RobotConstants.swerveOffset);
+  public void resetEncodersBegin() {
+    resetEncoderEnd();
+    m_frontLeft.resetEncoderPosition(RobotConstants.swerveOffsetFL, m_frontLeftEncoder.getAbsolutePosition());
+    m_frontRight.resetEncoderPosition(RobotConstants.swerveOffsetFR, m_frontRightEncoder.getAbsolutePosition());
+    m_backLeft.resetEncoderPosition(RobotConstants.swerveOffsetBL, m_backLeftEncoder.getAbsolutePosition());
+    m_backRight.resetEncoderPosition(RobotConstants.swerveOffsetBR, m_backRightEncoder.getAbsolutePosition());
+  }
 
-    try {
-      Thread.sleep(1);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+  public boolean resetEncoderCheck(double encoderValue) {
+    if (encoderValue < DriveConstants.encoderTolerance || encoderValue > 1 - DriveConstants.encoderTolerance)
+      return true;
+    else
+      return false;
+  }
 
+  public boolean resetEncoderIsFinished() {
+    if (resetEncoderCheck(m_frontLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFL) ||
+        resetEncoderCheck(m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR) ||
+        resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBL) ||
+        resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBR))
+      return true;
+    else
+      return false;
+  }
+
+  public void resetEncoderEnd() {
     m_frontLeft.resetEncoderValue();
     m_frontRight.resetEncoderValue();
     m_backLeft.resetEncoderValue();

@@ -56,9 +56,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                m_joystick.getRawAxis(1) * -1 * DriverConstants.kMaxSpeed,
-                m_joystick.getRawAxis(0) * -1 * DriverConstants.kMaxSpeed,
-                m_joystick.getRawAxis(2) * -1 * DriverConstants.kMaxSpeed,
+                m_joystick.getRawAxis(1) * -1 * DriveConstants.kMaxSpeed,
+                m_joystick.getRawAxis(0) * -1 * DriveConstants.kMaxSpeed,
+                m_joystick.getRawAxis(2) * -1 * DriveConstants.kMaxSpeed,
                 true),
             m_robotDrive));
   }
@@ -69,7 +69,7 @@ public class RobotContainer {
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriverConstants.kDriveKinematics);
+        .setKinematics(DriveConstants.kDriveKinematics);
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
@@ -88,7 +88,7 @@ public class RobotContainer {
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         exampleTrajectory,
         m_robotDrive::getPose, // Functional interface to feed supplier
-        DriverConstants.kDriveKinematics,
+        DriveConstants.kDriveKinematics,
 
         // Position controllers
         new PIDController(AutoConstants.kPXController, 0, 0),

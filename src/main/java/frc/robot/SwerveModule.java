@@ -11,14 +11,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import frc.robot.Constants.DriverConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class SwerveModule {
 
   private static final double kModuleMaxAngularVelocity = DriveSubsystem.kMaxAngularSpeed;
   private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
-  private final TalonFX m_driveMotor;
+  public final TalonFX m_driveMotor;
   private final TalonFX m_turningMotor;
 
   /**
@@ -27,6 +27,8 @@ public class SwerveModule {
    *
    * @param driveMotorChannel   CAN ID for the drive motor.
    * @param turningMotorChannel CAN ID for the turning motor.
+   * 
+   * 
    * 
    */
   public SwerveModule(
@@ -55,26 +57,22 @@ public class SwerveModule {
 
   }
 
-  public double getTurningPosition() {
-    return m_turningMotor.getSensorCollection().getIntegratedSensorAbsolutePosition();
-  }
-
   public double radiansToTicks(double radians) {
     // drive ratio: 6.75:1
     // rotation ratio: 15.429:1
-    return radians * ((DriverConstants.kEncoderResolution * DriverConstants.rotationGearRatio) / (2 * Math.PI));
+    return radians * ((DriveConstants.kEncoderResolution * DriveConstants.rotationGearRatio) / (2 * Math.PI));
   }
 
   public double ticksToRadians(double ticks) {
-    return ticks * ((2 * Math.PI) / (DriverConstants.kEncoderResolution * DriverConstants.rotationGearRatio));
+    return ticks * ((2 * Math.PI) / (DriveConstants.kEncoderResolution * DriveConstants.rotationGearRatio));
   }
 
   public double ticksToMeters(double ticks) {
-    return (ticks / DriverConstants.kEncoderResolution) * (2 * Math.PI * DriverConstants.kWheelRadius);
+    return (ticks / DriveConstants.kEncoderResolution) * (2 * Math.PI * DriveConstants.kWheelRadius);
   }
 
   public double metersToTicks(double meters) {
-    return (meters / (2 * Math.PI * DriverConstants.kWheelRadius)) * DriverConstants.kEncoderResolution;
+    return (meters / (2 * Math.PI * DriveConstants.kWheelRadius)) * DriveConstants.kEncoderResolution;
   }
 
   /**
@@ -97,8 +95,9 @@ public class SwerveModule {
     // metersToTicks(state.speedMetersPerSecond));
     // System.out.println(radiansToTicks(desiredState.angle.getDegrees()));
 
-    m_turningMotor.set(ControlMode.Position, radiansToTicks(state.angle.getRadians()));
-    m_driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / 4);
+    m_turningMotor.set(ControlMode.Position,
+        radiansToTicks(state.angle.getRadians()));
+    // m_driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / 4);
     // System.out.println("Output: " + -radiansToTicks(state.angle.getRadians()) + "
     // | Input: " + desiredState.angle.getDegrees() + " | In-Between: " +
     // state.angle.getDegrees() + " | Current Wheel Position: " +
@@ -110,8 +109,12 @@ public class SwerveModule {
 
   }
 
-  public void resetEncoderPosition(int offset) {
-    m_turningMotor.set(ControlMode.Position, getTurningPosition() - offset);
+  public void resetEncoderPosition(double desired, double current) {
+    m_turningMotor.set(ControlMode.Position, DriveConstants.kEncoderResolution * (desired - current));
+  }
+
+  public double getTurningPosition() {
+    return m_turningMotor.getSensorCollection().getIntegratedSensorAbsolutePosition();
   }
 
   public void resetEncoderValue() {
