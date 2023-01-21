@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.ResetFalconCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -56,11 +58,11 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                m_joystick.getRawAxis(1) * -1 * DriveConstants.kMaxSpeed,
-                m_joystick.getRawAxis(0) * -1 * DriveConstants.kMaxSpeed,
-                m_joystick.getRawAxis(2) * -1 * DriveConstants.kMaxSpeed,
-                true),
-            m_robotDrive));
+               m_joystick.getRawAxis(1) * -1 * DriveConstants.kMaxSpeed,
+               m_joystick.getRawAxis(0) * -1 * DriveConstants.kMaxSpeed,
+               m_joystick.getRawAxis(2) * -1 * DriveConstants.kMaxSpeed,
+               true),
+           m_robotDrive));
   }
 
   public Command getAutonomousCommand() {
@@ -120,6 +122,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // TODO: put stuff in here
+    new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
+
   }
 
   /**

@@ -40,8 +40,9 @@ public class SwerveModule {
     m_turningMotor = new TalonFX(turningMotorChannel);
 
     m_turningMotor.configFactoryDefault();
-    m_turningMotor.config_kP(0, .1);
-    m_turningMotor.config_kD(0, 1);
+    m_turningMotor.config_kP(0, DriveConstants.turningkP);
+    m_turningMotor.config_kI(0, DriveConstants.turningkI);
+    m_turningMotor.config_kD(0, DriveConstants.turningkD);
     m_turningMotor.setInverted(true);
 
     // Set the distance per pulse for the drive encoder. We can simply use the
@@ -95,9 +96,11 @@ public class SwerveModule {
     // metersToTicks(state.speedMetersPerSecond));
     // System.out.println(radiansToTicks(desiredState.angle.getDegrees()));
 
-    m_turningMotor.set(ControlMode.Position,
-        radiansToTicks(state.angle.getRadians()));
-    // m_driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / 4);
+    m_turningMotor.set(ControlMode.Position, //TODO put this back
+        radiansToTicks(state.angle.getRadians())); //TODO put this back
+
+
+    m_driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / 4);//TODO put this back
     // System.out.println("Output: " + -radiansToTicks(state.angle.getRadians()) + "
     // | Input: " + desiredState.angle.getDegrees() + " | In-Between: " +
     // state.angle.getDegrees() + " | Current Wheel Position: " +
@@ -110,14 +113,19 @@ public class SwerveModule {
   }
 
   public void resetEncoderPosition(double desired, double current) {
-    m_turningMotor.set(ControlMode.Position, DriveConstants.kEncoderResolution * (desired - current));
+
+    m_turningMotor.set(ControlMode.Position, m_turningMotor.getSelectedSensorPosition() + DriveConstants.kEncoderResolution *DriveConstants.rotationGearRatio*(desired - current));
+    System.out.println("error: " + (DriveConstants.kEncoderResolution * -(desired - current)));
+    System.out.println("desired pos: " + desired + " | current pos: " + current);
+    System.out.println("Voltage " + m_turningMotor.getMotorOutputVoltage());
   }
 
   public double getTurningPosition() {
     return m_turningMotor.getSensorCollection().getIntegratedSensorAbsolutePosition();
   }
 
-  public void resetEncoderValue() {
+  public void resetTurningMotor() {
+    m_turningMotor.set(ControlMode.PercentOutput, 0);
     m_turningMotor.setSelectedSensorPosition(0);
   }
 

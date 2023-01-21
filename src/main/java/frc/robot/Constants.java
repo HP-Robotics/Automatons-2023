@@ -48,7 +48,11 @@ public final class Constants {
     public static final double drivekI = 0.000175;
     public static final double drivekD = 0.0;
 
-    public static final double encoderTolerance = 0.05;
+    public static final double turningkP = .1;
+    public static final double turningkI = .0002;
+    public static final double turningkD = 1; //TODO: please tune these later
+
+    public static final double encoderTolerance = 0.01;
   }
 
   public static class RobotConstants { // For robot values that remain the same, such as max speed

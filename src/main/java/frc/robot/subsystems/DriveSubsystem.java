@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -34,7 +35,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /// private final DutyCycleEncoder m_testEncoder = new DutyCycleEncoder(id);
   private final DutyCycleEncoder m_frontLeftEncoder = new DutyCycleEncoder(12);
-  private final DutyCycleEncoder m_frontRightEncoder = new DutyCycleEncoder(11);
+  public final DutyCycleEncoder m_frontRightEncoder = new DutyCycleEncoder(11);
   private final DutyCycleEncoder m_backLeftEncoder = new DutyCycleEncoder(13);
   private final DutyCycleEncoder m_backRightEncoder = new DutyCycleEncoder(14);
   // getAbsolutePosition
@@ -108,35 +109,43 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void resetEncodersBegin() {
-    resetEncoderEnd();
     m_frontLeft.resetEncoderPosition(RobotConstants.swerveOffsetFL, m_frontLeftEncoder.getAbsolutePosition());
     m_frontRight.resetEncoderPosition(RobotConstants.swerveOffsetFR, m_frontRightEncoder.getAbsolutePosition());
+    System.out.println("Output " + (RobotConstants.swerveOffsetFR - m_frontRightEncoder.getAbsolutePosition())
+        + "  Current " + m_frontRightEncoder.getAbsolutePosition() + "  Goal " + RobotConstants.swerveOffsetFR);
     m_backLeft.resetEncoderPosition(RobotConstants.swerveOffsetBL, m_backLeftEncoder.getAbsolutePosition());
     m_backRight.resetEncoderPosition(RobotConstants.swerveOffsetBR, m_backRightEncoder.getAbsolutePosition());
   }
 
   public boolean resetEncoderCheck(double encoderValue) {
-    if (encoderValue < DriveConstants.encoderTolerance || encoderValue > 1 - DriveConstants.encoderTolerance)
-      return true;
-    else
-      return false;
+    return (Math.abs(encoderValue) < DriveConstants.encoderTolerance);
   }
 
   public boolean resetEncoderIsFinished() {
-    if (resetEncoderCheck(m_frontLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFL) ||
-        resetEncoderCheck(m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR) ||
-        resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBL) ||
-        resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBR))
+    if (
+      resetEncoderCheck(m_frontLeftEncoder.getAbsolutePosition() -RobotConstants.swerveOffsetFL) &
+      resetEncoderCheck(m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR) &
+      resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() -RobotConstants.swerveOffsetBL)&
+      resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() -RobotConstants.swerveOffsetBR)) {
+      
+      System.out.println("Success " + m_frontRightEncoder.getAbsolutePosition());
       return true;
-    else
+    } else {
+      System.out.println("fail " + m_frontRightEncoder.getAbsolutePosition());
       return false;
+    }
+  }
+
+  public boolean printFalse() {
+    System.out.println(2048 * m_frontRightEncoder.getAbsolutePosition());
+    return false;
   }
 
   public void resetEncoderEnd() {
-    m_frontLeft.resetEncoderValue();
-    m_frontRight.resetEncoderValue();
-    m_backLeft.resetEncoderValue();
-    m_backRight.resetEncoderValue();
+    m_frontLeft.resetTurningMotor();
+    m_frontRight.resetTurningMotor();
+    m_backLeft.resetTurningMotor();
+    m_backRight.resetTurningMotor();
   }
 
   public Pose2d getPose() {

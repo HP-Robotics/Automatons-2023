@@ -12,9 +12,9 @@ public class ResetFalconCommand extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveSubsystem m_subsystem;
 
-  /**
+  /*
    * Creates a new ResetFalconCommand.
-   *
+   ***
    * @param subsystem The subsystem used by this command.
    */
   public ResetFalconCommand(DriveSubsystem subsystem) {
@@ -38,7 +38,7 @@ public class ResetFalconCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.resetEncoderEnd();
+   m_subsystem.resetEncoderEnd();
   }
 
   // Returns true when the command should end.
