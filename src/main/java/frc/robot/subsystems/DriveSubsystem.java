@@ -111,8 +111,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetEncodersBegin() {
     m_frontLeft.resetEncoderPosition(RobotConstants.swerveOffsetFL, m_frontLeftEncoder.getAbsolutePosition());
     m_frontRight.resetEncoderPosition(RobotConstants.swerveOffsetFR, m_frontRightEncoder.getAbsolutePosition());
-    System.out.println("Output " + (RobotConstants.swerveOffsetFR - m_frontRightEncoder.getAbsolutePosition())
-        + "  Current " + m_frontRightEncoder.getAbsolutePosition() + "  Goal " + RobotConstants.swerveOffsetFR);
+    //System.out.println("Output " + (RobotConstants.swerveOffsetFR - m_frontRightEncoder.getAbsolutePosition())
+    //    + "  Current " + m_frontRightEncoder.getAbsolutePosition() + "  Goal " + RobotConstants.swerveOffsetFR);
     m_backLeft.resetEncoderPosition(RobotConstants.swerveOffsetBL, m_backLeftEncoder.getAbsolutePosition());
     m_backRight.resetEncoderPosition(RobotConstants.swerveOffsetBR, m_backRightEncoder.getAbsolutePosition());
   }
@@ -131,14 +131,9 @@ public class DriveSubsystem extends SubsystemBase {
       System.out.println("Success " + m_frontRightEncoder.getAbsolutePosition());
       return true;
     } else {
-      System.out.println("fail " + m_frontRightEncoder.getAbsolutePosition());
+      //System.out.println("fail " + m_frontRightEncoder.getAbsolutePosition());
       return false;
     }
-  }
-
-  public boolean printFalse() {
-    System.out.println(2048 * m_frontRightEncoder.getAbsolutePosition());
-    return false;
   }
 
   public void resetEncoderEnd() {
