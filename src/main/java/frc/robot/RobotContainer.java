@@ -10,6 +10,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.List;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -58,9 +59,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-               m_joystick.getRawAxis(1) * -1 * DriveConstants.kMaxSpeed,
-               m_joystick.getRawAxis(0) * -1 * DriveConstants.kMaxSpeed,
-               m_joystick.getRawAxis(2) * -1 * DriveConstants.kMaxSpeed,
+              MathUtil.applyDeadband(m_joystick.getRawAxis(1),0.1) * -1 * DriveConstants.kMaxSpeed,
+              MathUtil.applyDeadband(m_joystick.getRawAxis(0),0.1) * -1 * DriveConstants.kMaxSpeed,
+              MathUtil.applyDeadband(m_joystick.getRawAxis(2),0.05) * -1 * DriveConstants.kMaxSpeed,
                true),
            m_robotDrive));
   }
