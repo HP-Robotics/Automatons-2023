@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.SwerveModule;
@@ -36,8 +37,9 @@ public class DriveSubsystem {
   private final SwerveModule m_backRight = new SwerveModule(50, 1); //BIG BONGO 4
 
   ///private final DutyCycleEncoder m_testEncoder = new DutyCycleEncoder(id);
-  private final DutyCycleEncoder m_frontLeftEncoder = new DutyCycleEncoder(11);
-  private final DutyCycleEncoder m_frontRighttEncoder = new DutyCycleEncoder(12);
+  //private final DutyCycle m_test = new DutyCycle(12); 
+  private final DutyCycleEncoder m_frontLeftEncoder = new DutyCycleEncoder(12);
+  private final DutyCycleEncoder m_frontRighttEncoder = new DutyCycleEncoder(11);
   private final DutyCycleEncoder m_backLeftEncoder = new DutyCycleEncoder(13);
   private final DutyCycleEncoder m_backRightEncoder = new DutyCycleEncoder(14);
   //Duty Encoders may have the wrong values
@@ -77,7 +79,9 @@ public class DriveSubsystem {
     //System.out.println(m_gyro.getYaw());
     //System.out.println("Swerve Stuff" + swerveModuleStates[0].angle + " y " + ySpeed);
     
-    //SmartDashboard.putNumber("Duty Encoder", m_testEncoder.get());
+    SmartDashboard.putNumber("Duty Encoder-FL", m_frontLeft.getTurningPosition());
+    SmartDashboard.putNumber("Duty Encoder-BL", m_backLeft.getTurningPosition());
+
   }
 }
 
