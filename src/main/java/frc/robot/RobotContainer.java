@@ -5,7 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.BackToNormalCommand;
+import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ResetFalconCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.List;
@@ -39,9 +42,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final ArmSubsystem m_robotArm = new ArmSubsystem();
 
   // The driver's controller
   private final Joystick m_joystick = new Joystick(1);
+  private final Joystick m_opJoystick = new Joystick(0);
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -123,6 +129,11 @@ public class RobotContainer {
   private void configureBindings() {
     // TODO: put stuff in here
     new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
+    new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
+    new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));
+
+
+   
 
   }
 

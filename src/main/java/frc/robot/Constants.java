@@ -61,6 +61,13 @@ public final class Constants {
     public static final double swerveOffsetBL = 0.890661022266526;
     public static final double swerveOffsetBR = 0.125644328141108; // Fill in later
   }
+  
+  public static class ArmConstants { 
+    public static final int shoulderID = 22;
+    public static final double shoulderkP = .1;
+    public static final double shoulderkI = .0001;
+    public static final double shoulderkD = 0;
+  }
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
