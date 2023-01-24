@@ -67,6 +67,7 @@ public final class Constants {
     public static final double shoulderkP = .1;
     public static final double shoulderkI = .0001;
     public static final double shoulderkD = 0;
+    public static final boolean useArm = false;
   }
 
   public static final class AutoConstants {

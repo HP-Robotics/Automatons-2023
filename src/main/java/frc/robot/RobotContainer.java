@@ -42,7 +42,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final ArmSubsystem m_robotArm = new ArmSubsystem();
+  private final ArmSubsystem m_robotArm = ArmConstants.useArm ? new ArmSubsystem() : null;
 
   // The driver's controller
   private final Joystick m_joystick = new Joystick(1);
@@ -64,11 +64,11 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-               m_joystick.getRawAxis(1) * -1 * DriveConstants.kMaxSpeed,
-               m_joystick.getRawAxis(0) * -1 * DriveConstants.kMaxSpeed,
-               m_joystick.getRawAxis(2) * -1 * DriveConstants.kMaxSpeed,
-               true),
-           m_robotDrive));
+                m_joystick.getRawAxis(1) * -1 * DriveConstants.kMaxSpeed,
+                m_joystick.getRawAxis(0) * -1 * DriveConstants.kMaxSpeed,
+                m_joystick.getRawAxis(2) * -1 * DriveConstants.kMaxSpeed,
+                true),
+            m_robotDrive));
   }
 
   public Command getAutonomousCommand() {
@@ -129,12 +129,13 @@ public class RobotContainer {
   private void configureBindings() {
     // TODO: put stuff in here
     new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
-    new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
-    new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));
+    if (ArmConstants.useArm) {
+      new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
+      new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));
+    }
 
 
-   
-
+    
   }
 
   /**
