@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.*;
-import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
 /** Represents a swerve drive style drivetrain. */
@@ -63,6 +62,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
     m_backLeft.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
     m_backRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
+
+    SmartDashboard.putData("Field", m_field);
   }
 
   @Override
@@ -77,7 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_backLeft.getPosition(),
             m_backRight.getPosition()
         });
-    m_field.setRobotPose(getPose());
+    //m_field.setRobotPose(getPose());
     // System.out.println(getPose().getX());
     SmartDashboard.putNumber("Front Left Get Absolute Position", m_frontLeftEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Front Left Get ", m_frontLeftEncoder.get());
@@ -86,6 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Right", m_backRightEncoder.getAbsolutePosition());
     // System.out.println(m_frontLeftEncoder.get() -
     // m_frontLeftEncoder.getAbsolutePosition());
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   /**
