@@ -63,6 +63,14 @@ public final class Constants {
     public static final double swerveOffsetBR = 0.125644328141108; // Fill in later
   }
 
+  public static class ArmConstants {
+    public static final int shoulderID = 22;
+    public static final double shoulderkP = .1;
+    public static final double shoulderkI = .0001;
+    public static final double shoulderkD = 0;
+    public static final boolean useArm = false;
+  }
+
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
@@ -76,5 +84,14 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+
+  public static final class PneumaticsConstants {
+
+    public static final boolean usePneumatics = true;
+    public static final int hubID = 49;
+    public static final int minPressure = 110;
+    public static final int maxPressure = 118;
+
   }
 }
