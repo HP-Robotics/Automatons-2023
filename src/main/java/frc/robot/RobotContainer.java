@@ -26,6 +26,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -43,6 +44,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final VisionSubsystem m_exampleSubsystem = new VisionSubsystem();
+  public final Command getCamera = new RunCommand(() -> m_exampleSubsystem.getCameraAbsolute(), m_exampleSubsystem);
   // The robot's subsystems and commands are defined here...
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
@@ -75,6 +78,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    if (Constants.autonomousMode == "Vision") {
+      return getCamera;
+    }
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
