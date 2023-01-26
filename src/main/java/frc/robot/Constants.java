@@ -30,7 +30,7 @@ public final class Constants {
     public static final double kMaxSpeed = 4.0; // 3 meters per second
     public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
 
-    public static final double kWheelRadius = 0.04445;
+    public static final double kWheelRadius = 0.0508;
     public static final int kEncoderResolution = 2048;
 
     public static final double driveGearRatio = 6.75;
@@ -51,6 +51,7 @@ public final class Constants {
     public static final double turningkP = .1;
     public static final double turningkI = .0002;
     public static final double turningkD = 1; //TODO: please tune these later
+    public static final double turningkAllowableError = 10;
 
     public static final double encoderTolerance = 0.01;
   }

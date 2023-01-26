@@ -78,6 +78,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_backLeft.getPosition(),
             m_backRight.getPosition()
         });
+    //System.out.println("Distance " + (m_frontLeft.getDistance() + m_frontRight.getDistance() + m_backLeft.getDistance()
+    //    + m_backRight.getDistance()) / 4);
     //m_field.setRobotPose(getPose());
     // System.out.println(getPose().getX());
     SmartDashboard.putNumber("Front Left Get Absolute Position", m_frontLeftEncoder.getAbsolutePosition());
@@ -85,6 +87,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Front Right", m_frontRightEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Back Left", m_backLeftEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Back Right", m_backRightEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Ben's Front Left", m_frontLeft.getDistance());
+
     // System.out.println(m_frontLeftEncoder.get() -
     // m_frontLeftEncoder.getAbsolutePosition());
     m_field.setRobotPose(m_odometry.getPoseMeters());
@@ -124,12 +128,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public boolean resetEncoderIsFinished() {
-    if (
-      resetEncoderCheck(m_frontLeftEncoder.getAbsolutePosition() -RobotConstants.swerveOffsetFL) &
-      resetEncoderCheck(m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR) &
-      resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() -RobotConstants.swerveOffsetBL)&
-      resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() -RobotConstants.swerveOffsetBR)) {
-      
+    if (resetEncoderCheck(m_frontLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFL) &
+        resetEncoderCheck(m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR) &
+        resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBL) &
+        resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBR)) {
+
       System.out.println("Success " + m_frontRightEncoder.getAbsolutePosition());
       return true;
     } else {

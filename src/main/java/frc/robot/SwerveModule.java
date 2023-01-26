@@ -36,6 +36,9 @@ public class SwerveModule {
       int turningMotorChannel) {
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_driveMotor.configFactoryDefault();
+    m_driveMotor.config_kP(0, DriveConstants.drivekP);
+    m_driveMotor.config_kI(0, DriveConstants.drivekI);
+    m_driveMotor.config_kD(0, DriveConstants.drivekD);
     m_driveMotor.setNeutralMode(NeutralMode.Coast);
     m_turningMotor = new TalonFX(turningMotorChannel);
 
@@ -43,6 +46,7 @@ public class SwerveModule {
     m_turningMotor.config_kP(0, DriveConstants.turningkP);
     m_turningMotor.config_kI(0, DriveConstants.turningkI);
     m_turningMotor.config_kD(0, DriveConstants.turningkD);
+    m_turningMotor.configAllowableClosedloopError(0, DriveConstants.turningkAllowableError);
     m_turningMotor.setInverted(true);
 
     // Set the distance per pulse for the drive encoder. We can simply use the
@@ -69,11 +73,13 @@ public class SwerveModule {
   }
 
   public double ticksToMeters(double ticks) {
-    return (ticks / DriveConstants.kEncoderResolution) * (2 * Math.PI * DriveConstants.kWheelRadius);
+    return ((ticks / DriveConstants.kEncoderResolution) * (2 * Math.PI * DriveConstants.kWheelRadius))
+        / DriveConstants.driveGearRatio;
   }
 
   public double metersToTicks(double meters) {
-    return (meters / (2 * Math.PI * DriveConstants.kWheelRadius)) * DriveConstants.kEncoderResolution;
+    return (meters / (2 * Math.PI * DriveConstants.kWheelRadius)) * DriveConstants.kEncoderResolution
+        * DriveConstants.driveGearRatio;
   }
 
   /**
@@ -96,16 +102,13 @@ public class SwerveModule {
     // metersToTicks(state.speedMetersPerSecond));
     // System.out.println(radiansToTicks(desiredState.angle.getDegrees()));
 
-    m_turningMotor.set(ControlMode.Position, //TODO put this back
-        radiansToTicks(state.angle.getRadians())); //TODO put this back
+    m_turningMotor.set(ControlMode.Position,
+        radiansToTicks(state.angle.getRadians()));
 
-
-    m_driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / 4);//TODO put this back
-    // System.out.println("Output: " + -radiansToTicks(state.angle.getRadians()) + "
-    // | Input: " + desiredState.angle.getDegrees() + " | In-Between: " +
-    // state.angle.getDegrees() + " | Current Wheel Position: " +
-    // currentState.getDegrees() + "Speed Output: " + state.speedMetersPerSecond/10
-    // + " | Speed In-Between: " + desiredState.speedMetersPerSecond/10);
+    m_driveMotor.set(ControlMode.Velocity, metersToTicks(state.speedMetersPerSecond / 10));
+    //System.out.println("Speed " + metersToTicks(state.speedMetersPerSecond / 10 * DriveConstants.driveGearRatio));
+    // System.out.println("Output: " + -radiansToTicks(state.angle.getRadians()) + " | Input: " + desiredState.angle.getDegrees() + " | In-Between: " +
+    // state.angle.getDegrees() + " | Current Wheel Position: " + currentState.getDegrees() + "Speed Output: " + state.speedMetersPerSecond/10 + " | Speed In-Between: " + desiredState.speedMetersPerSecond/10);
     // System.out.println("Speed Output: " + state.speedMetersPerSecond/10 + " |
     // Speed In-Between: " + desiredState.speedMetersPerSecond/10 + " | Current
     // Wheel Position: " + currentState.getDegrees());
@@ -114,10 +117,11 @@ public class SwerveModule {
 
   public void resetEncoderPosition(double desired, double current) {
 
-    m_turningMotor.set(ControlMode.Position, m_turningMotor.getSelectedSensorPosition() + DriveConstants.kEncoderResolution *DriveConstants.rotationGearRatio*(desired - current));
-    System.out.println("error: " + (DriveConstants.kEncoderResolution * -(desired - current)));
-    System.out.println("desired pos: " + desired + " | current pos: " + current);
-    System.out.println("Voltage " + m_turningMotor.getMotorOutputVoltage());
+    m_turningMotor.set(ControlMode.Position, m_turningMotor.getSelectedSensorPosition()
+        + DriveConstants.kEncoderResolution * DriveConstants.rotationGearRatio * (desired - current));
+    //System.out.println("error: " + (DriveConstants.kEncoderResolution * -(desired - current)));
+    //System.out.println("desired pos: " + desired + " | current pos: " + current);
+    //System.out.println("Voltage " + m_turningMotor.getMotorOutputVoltage());
   }
 
   public double getTurningPosition() {
@@ -133,6 +137,10 @@ public class SwerveModule {
     return new SwerveModulePosition(
         ticksToMeters(m_driveMotor.getSelectedSensorPosition()),
         new Rotation2d(ticksToRadians(m_turningMotor.getSelectedSensorPosition())));
+  }
+
+  public double getDistance() {
+    return m_driveMotor.getSelectedSensorPosition();
   }
 
 }
