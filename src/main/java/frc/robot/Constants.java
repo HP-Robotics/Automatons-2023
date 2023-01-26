@@ -50,7 +50,7 @@ public final class Constants {
 
     public static final double turningkP = .1;
     public static final double turningkI = .0002;
-    public static final double turningkD = 1; //TODO: please tune these later
+    public static final double turningkD = 1; // TODO: please tune these later
 
     public static final double encoderTolerance = 0.01;
   }
@@ -61,8 +61,8 @@ public final class Constants {
     public static final double swerveOffsetBL = 0.890661022266526;
     public static final double swerveOffsetBR = 0.125644328141108; // Fill in later
   }
-  
-  public static class ArmConstants { 
+
+  public static class ArmConstants {
     public static final int shoulderID = 22;
     public static final double shoulderkP = .1;
     public static final double shoulderkI = .0001;
@@ -83,5 +83,14 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+
+  public static final class PneumaticsConstants {
+    
+    public static final boolean usePneumatics = true;
+    public static final int hubID = 49;
+    public static final int minPressure = 110;
+    public static final int maxPressure = 118;
+
   }
 }

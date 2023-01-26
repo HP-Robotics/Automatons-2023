@@ -7,9 +7,12 @@ package frc.robot;
 import frc.robot.Constants.*;
 import frc.robot.commands.BackToNormalCommand;
 import frc.robot.commands.ChickenCommand;
+import frc.robot.commands.ChompForward;
+import frc.robot.commands.ChompReverse;
 import frc.robot.commands.ResetFalconCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
 
 import java.util.List;
 
@@ -43,7 +46,7 @@ public class RobotContainer {
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = ArmConstants.useArm ? new ArmSubsystem() : null;
-
+  private final PneumaticsSubsystem m_pneumatics = PneumaticsConstants.usePneumatics ? new PneumaticsSubsystem() : null;
   // The driver's controller
   private final Joystick m_joystick = new Joystick(1);
   private final Joystick m_opJoystick = new Joystick(0);
@@ -133,9 +136,14 @@ public class RobotContainer {
       new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
       new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));
     }
+    if (PneumaticsConstants.usePneumatics) {
+      new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
+      new JoystickButton(m_opJoystick, 3).onTrue(new ChompReverse(m_pneumatics));
+    }
 
 
-    
+
+
   }
 
   /**
