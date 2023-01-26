@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
@@ -35,17 +36,17 @@ public class VisionSubsystem extends SubsystemBase {
   PhotonCamera camera = new PhotonCamera("Arducam_Global_Shutter");
 
   ShuffleboardTab Tab = Shuffleboard.getTab("Field");
-  //Tab.add("CameraPose", null).withwidget;
- 
+  // Tab.add("CameraPose", null).withwidget;
+
   /** Creates a new ExampleSubsystem. */
   public VisionSubsystem() {
 
-SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putData("Field", m_field);
 
-    //robotPose = Shuffleboard.getTab("Field")
-    //.add("CameraPose", new Pose2d())
-    //.withWidget(BuiltInWidgets.kField)
-    //.getEntry();   
+    // robotPose = Shuffleboard.getTab("Field")
+    // .add("CameraPose", new Pose2d())
+    // .withWidget(BuiltInWidgets.kField)
+    // .getEntry();
 
     // Get the default instance of NetworkTables that was created automatically
     // when your program starts
@@ -105,15 +106,16 @@ SmartDashboard.putData("Field", m_field);
     if (result.hasTargets()) {
       List<PhotonTrackedTarget> targets = result.getTargets();
       for (PhotonTrackedTarget target : targets) {
-       // System.out.println(target.getBestCameraToTarget().getX());
-       // System.out.println(target.getBestCameraToTarget().getY());
-       // System.out.println(target.getBestCameraToTarget().getZ());
-       absolutePose = new Pose2d(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(), new Rotation2d());
-       //robotPose.setValue(absolutePose);
-       m_field.setRobotPose(absolutePose);
-       return absolutePose;
-
+        //System.out.println(target.getBestCameraToTarget().getX());
+        //System.out.println(target.getBestCameraToTarget().getY());
+        //System.out.println(target.getBestCameraToTarget().getZ());
+        absolutePose = new Pose2d(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(),
+            new Rotation2d());
+        // robotPose.setValue(absolutePose);
+        m_field.setRobotPose(absolutePose);
+        return absolutePose;
       }
+    
     }
     return null;
   }
