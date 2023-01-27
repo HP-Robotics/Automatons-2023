@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -33,7 +34,7 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry targetPose;
   Pose2d absolutePose;
   private Field2d m_field = new Field2d();
-  PhotonCamera camera = new PhotonCamera("Arducam_Global_Shutter");
+  PhotonCamera camera = new PhotonCamera(Constants.VisionConstants.kcameraName);
 
   ShuffleboardTab Tab = Shuffleboard.getTab("Field");
   // Tab.add("CameraPose", null).withwidget;
@@ -66,52 +67,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   // double x = 0;
   // double y = 0;
-  
-
-
-
-
-
 
   
-
-  public void GetData() {
-    PhotonPipelineResult result = camera.getLatestResult();
-    if (result.hasTargets()) {
-      
-      List<PhotonTrackedTarget> targets = result.getTargets();
-      for (PhotonTrackedTarget target : targets) {
-        System.out.println();
-        System.out.println("ID: " + target.getFiducialId());
-        // System.out.println("Best Target: "+ target.getBestCameraToTarget());
-        System.out.println(target.getBestCameraToTarget().getX());
-        System.out.println(target.getBestCameraToTarget().getY());
-        System.out.println(target.getBestCameraToTarget().getZ());
-
-        // front/back = X
-        // left/right = Y
-        // up/down = Z
-
-        // System.out.println("Ambiguity: " + target.getPoseAmbiguity());
-      }
-    } else {
-      System.out.println("No target found");
-    }
-    // System.out.println(result.getTimestampSeconds());
-
-    // xEntry.setDouble(x);
-    // yEntry.setDouble(y);
-    // x += 0.05;
-    // y += 1.0;
-    // Using the entry objects, set the value to a double that is constantly
-    // increasing. The keys are actually "/datatable/X" and "/datatable/Y".
-    // If they don't already exist, the key/value pair is added.
-    // This method will be called once per scheduler run
-    // Number[] numArray = {};
-    // numArray = targetPose.getNumberArray(numArray);
-    // System.out.println(Arrays.toString(numArray));
-    // x, y, z?, z-angle?, _, _, _
-  }
 
   public Pose2d getCameraAbsolute() {
     PhotonPipelineResult result = camera.getLatestResult();
