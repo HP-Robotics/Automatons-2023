@@ -144,7 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
         resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBL) &
         resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBR)) {
 
-      System.out.println("Success " + m_frontRightEncoder.getAbsolutePosition());
+      System.out.println("Success " + (m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR));
       return true;
     } else {
       //System.out.println("fail " + m_frontRightEncoder.getAbsolutePosition());
