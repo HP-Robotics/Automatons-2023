@@ -47,9 +47,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final ArmSubsystem m_robotArm = ArmConstants.useArm ? new ArmSubsystem() : null;
-  private final PneumaticsSubsystem m_pneumatics = PneumaticsConstants.usePneumatics ? new PneumaticsSubsystem() : null;
+  private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
+  private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem() : null;
+  private final PneumaticsSubsystem m_pneumatics = SubsystemConstants.usePneumatics ? new PneumaticsSubsystem() : null;
   // The driver's controller
   private final Joystick m_joystick = new Joystick(1);
   private final Joystick m_opJoystick = new Joystick(0);
@@ -64,61 +64,65 @@ public class RobotContainer {
     configureBindings();
 
     // Configure default commands
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
+    if (SubsystemConstants.useDrive) {
+      m_robotDrive.setDefaultCommand(
+          // The left stick controls translation of the robot.
+          // Turning is controlled by the X axis of the right stick.
 
-        new RunCommand(
+          new RunCommand(
 
-            () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1) * -1 * DriveConstants.kMaxSpeed,
-                MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1) * -1 * DriveConstants.kMaxSpeed,
-                MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1 * DriveConstants.kMaxSpeed,
-                //0.2 * DriveConstants.kMaxSpeed, 0, 0,
-                m_robotDrive.m_fieldRelative),
-            m_robotDrive));
-
+              () -> m_robotDrive.drive(
+                  MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1) * -1 * DriveConstants.kMaxSpeed,
+                  MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1) * -1 * DriveConstants.kMaxSpeed,
+                  MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1 * DriveConstants.kMaxSpeed,
+                  //0.2 * DriveConstants.kMaxSpeed, 0, 0,
+                  m_robotDrive.m_fieldRelative),
+              m_robotDrive));
+    }
   }
 
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
+    if (SubsystemConstants.useDrive) {
+      // Create config for trajectory
+      TrajectoryConfig config = new TrajectoryConfig(
+          AutoConstants.kMaxSpeedMetersPerSecond,
+          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(DriveConstants.kDriveKinematics);
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
+      // An example trajectory to follow. All units in meters.
+      Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(3, 0, new Rotation2d(0)),
+          config);
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+      var thetaController = new ProfiledPIDController(
+          AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+      SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+          exampleTrajectory,
+          m_robotDrive::getPose, // Functional interface to feed supplier
+          DriveConstants.kDriveKinematics,
 
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
+          // Position controllers
+          new PIDController(AutoConstants.kPXController, 0, 0),
+          new PIDController(AutoConstants.kPYController, 0, 0),
+          thetaController,
+          m_robotDrive::setModuleStates,
+          m_robotDrive);
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+      // Reset odometry to the starting pose of the trajectory.
+      m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+      // Run path following command, then stop at the end.
+      return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    } else
+      return null;// Not sure if this works, but Autonomous should be disabled if there is no drive subsystem
   }
 
   /**
@@ -136,17 +140,17 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    if (DriveConstants.useDrive) {
+    if (SubsystemConstants.useDrive) {
       new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
     }
 
-    if (ArmConstants.useArm) {
+    if (SubsystemConstants.useArm) {
       new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
       new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));
     }
-    if (PneumaticsConstants.usePneumatics) {
+    if (SubsystemConstants.usePneumatics) {
       new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
       new JoystickButton(m_opJoystick, 3).onTrue(new ChompReverse(m_pneumatics));
     }

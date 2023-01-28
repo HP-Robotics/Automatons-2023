@@ -26,8 +26,14 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class DriveConstants {
+  public static class SubsystemConstants {
     public static final boolean useDrive = true;
+    public static final boolean useArm = false;
+    public static final boolean usePneumatics = false;
+
+  }
+
+  public static class DriveConstants {
     public static final double kMaxSpeed = 4.0; // 3 meters per second
     public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
 
@@ -65,7 +71,6 @@ public final class Constants {
   }
 
   public static class ArmConstants {
-    public static final boolean useArm = false;
     public static final int shoulderID = 22;
     public static final double shoulderkP = .1;
     public static final double shoulderkI = .0001;
@@ -89,7 +94,6 @@ public final class Constants {
   }
 
   public static final class PneumaticsConstants {
-    public static final boolean usePneumatics = false;
     public static final int hubID = 49;
     public static final int minPressure = 110;
     public static final int maxPressure = 118;

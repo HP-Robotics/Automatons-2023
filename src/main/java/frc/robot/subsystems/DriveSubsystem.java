@@ -116,15 +116,13 @@ public class DriveSubsystem extends SubsystemBase {
    */
   @SuppressWarnings("ParameterName")
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    if (DriveConstants.useDrive) {
-      var pigeonYaw = new Rotation2d(Math.toRadians(m_pGyro.getYaw()));
-      var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-          fieldRelative
-              ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, pigeonYaw)
-              : new ChassisSpeeds(xSpeed, ySpeed, rot));
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-      setModuleStates(swerveModuleStates);
-    }
+    var pigeonYaw = new Rotation2d(Math.toRadians(m_pGyro.getYaw()));
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, pigeonYaw)
+            : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+    setModuleStates(swerveModuleStates);
   }
 
   public void resetEncodersBegin() {
