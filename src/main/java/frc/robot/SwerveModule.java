@@ -143,4 +143,12 @@ public class SwerveModule {
     return m_driveMotor.getSelectedSensorPosition();
   }
 
+  public double turnPower() {
+    return m_turningMotor.getMotorOutputPercent();
+  }
+
+  public double drivePower() {
+    return m_driveMotor.getMotorOutputPercent();
+  }
+
 }

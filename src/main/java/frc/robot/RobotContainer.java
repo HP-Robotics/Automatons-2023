@@ -27,11 +27,13 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -65,13 +67,16 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
+
         new RunCommand(
             () -> m_robotDrive.drive(
                 MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1) * -1 * DriveConstants.kMaxSpeed,
                 MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1) * -1 * DriveConstants.kMaxSpeed,
-                MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.05) * -1 * DriveConstants.kMaxSpeed,
-                true),
+                MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1 * DriveConstants.kMaxSpeed,
+                //0.2 * DriveConstants.kMaxSpeed, 0, 0,
+                m_robotDrive.m_fieldRelative),
             m_robotDrive));
+
   }
 
   public Command getAutonomousCommand() {
@@ -130,8 +135,12 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // TODO: put stuff in here
+    // TODO put drive things in thier own if statement too
+
+    new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
+    new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
     new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
+
     if (ArmConstants.useArm) {
       new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
       new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));

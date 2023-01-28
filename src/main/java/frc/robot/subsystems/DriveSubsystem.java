@@ -39,6 +39,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final DutyCycleEncoder m_backRightEncoder = new DutyCycleEncoder(14);
   // getAbsolutePosition
 
+  public boolean m_fieldRelative = true;
+
   private final Field2d m_field = new Field2d();
   // Duty Encoders may have the wrong values
 
@@ -88,6 +90,15 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Left", m_backLeftEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Back Right", m_backRightEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Ben's Front Left", m_frontLeft.getDistance());
+
+    SmartDashboard.putNumber("Front Left Drive Output", m_frontLeft.drivePower());
+    SmartDashboard.putNumber("Front Right Drive Output", m_frontRight.drivePower());
+    SmartDashboard.putNumber("Back Left Drive Output", m_backLeft.drivePower());
+    SmartDashboard.putNumber("Back Right Drive Output", m_backRight.drivePower());
+    SmartDashboard.putNumber("Front Left Turn Output", m_frontLeft.turnPower());
+    SmartDashboard.putNumber("Front Right Turn Output", m_frontRight.turnPower());
+    SmartDashboard.putNumber("Back Left Turn Output", m_backLeft.turnPower());
+    SmartDashboard.putNumber("Back Right Turn Output", m_backRight.turnPower());
 
     // System.out.println(m_frontLeftEncoder.get() -
     // m_frontLeftEncoder.getAbsolutePosition());
@@ -157,6 +168,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  public void forceRobotRelative() {
+    m_fieldRelative = false;
+  }
+
+  public void forceFieldRelative() {
+    m_fieldRelative = true;
   }
 
   public void resetOdometry(Pose2d pose) {
