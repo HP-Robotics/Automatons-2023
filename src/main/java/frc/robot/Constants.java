@@ -23,6 +23,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public final class Constants {
   public static String autonomousMode = "Vision";
+
   public static class OperatorConstants { // For operator button bindings, and other stuff directly related to the
                                           // operator
     public static final int kDriverControllerPort = 0;
@@ -32,6 +33,7 @@ public final class Constants {
     public static final boolean useDrive = false;
     public static final boolean useArm = false;
     public static final boolean usePneumatics = false;
+    public static final boolean useTurnTables = true;
   }
 
   public static class DriveConstants {
@@ -43,8 +45,6 @@ public final class Constants {
 
     public static final double driveGearRatio = 6.75;
     public static final double rotationGearRatio = 15.429;
-
-
 
     public final static Translation2d kFrontLeftLocation = new Translation2d(0.244, 0.244);
     public final static Translation2d kFrontRightLocation = new Translation2d(0.244, -0.244);
@@ -101,5 +101,14 @@ public final class Constants {
     public static final int minPressure = 110;
     public static final int maxPressure = 118;
 
+  }
+
+  public static final class TurntableConstants {
+    public static final int motorID = 31;
+    public static final double motorkP = .1;
+    public static final double motorkI = .0001;
+    public static final double motorkD = 0;
+    public static final double clockwiseSpeed = .15;
+    public static final double counterClockwiseSpeed = -.15;
   }
 }

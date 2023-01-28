@@ -10,9 +10,12 @@ import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.ResetFalconCommand;
+import frc.robot.commands.SpinClockwiseCommand;
+import frc.robot.commands.SpinCounterClockwiseCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
+import frc.robot.subsystems.TurntableSubsystem;
 
 import java.util.List;
 
@@ -53,6 +56,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
   private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem() : null;
   private final PneumaticsSubsystem m_pneumatics = SubsystemConstants.usePneumatics ? new PneumaticsSubsystem() : null;
+  private final TurntableSubsystem m_turntables = SubsystemConstants.useTurnTables ? new TurntableSubsystem() : null;
   // The driver's controller
   private final Joystick m_joystick = new Joystick(1);
   private final Joystick m_opJoystick = new Joystick(0);
@@ -160,6 +164,10 @@ public class RobotContainer {
     if (SubsystemConstants.usePneumatics) {
       new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
       new JoystickButton(m_opJoystick, 3).onTrue(new ChompReverse(m_pneumatics));
+    }
+    if (SubsystemConstants.useTurnTables) {
+      new JoystickButton(m_opJoystick, 9).whileTrue(new SpinClockwiseCommand(m_turntables));
+      new JoystickButton(m_opJoystick, 10).whileTrue(new SpinCounterClockwiseCommand(m_turntables));
     }
 
   }
