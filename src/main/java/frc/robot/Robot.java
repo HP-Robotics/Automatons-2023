@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.ResetFalconCommand;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class Robot extends TimedRobot {
@@ -44,6 +46,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.runResetFalconCommand();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -58,4 +61,14 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
   }
+
+  @Override
+  public void teleopInit() {
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
+    m_robotContainer.runResetFalconCommand();
+  }
+
 }

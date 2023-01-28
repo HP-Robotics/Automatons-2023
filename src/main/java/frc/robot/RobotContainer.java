@@ -132,6 +132,10 @@ public class RobotContainer {
       return new InstantCommand();
   }
 
+  public void runResetFalconCommand() {
+    new ResetFalconCommand(m_robotDrive);
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
