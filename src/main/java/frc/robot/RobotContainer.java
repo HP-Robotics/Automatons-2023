@@ -122,7 +122,7 @@ public class RobotContainer {
       // Run path following command, then stop at the end.
       return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
     } else
-      return null;// Not sure if this works, but Autonomous should be disabled if there is no drive subsystem
+      return new InstantCommand();
   }
 
   /**
