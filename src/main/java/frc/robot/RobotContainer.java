@@ -69,6 +69,7 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
 
         new RunCommand(
+
             () -> m_robotDrive.drive(
                 MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1) * -1 * DriveConstants.kMaxSpeed,
                 MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1) * -1 * DriveConstants.kMaxSpeed,
@@ -135,11 +136,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // TODO put drive things in thier own if statement too
-
-    new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
-    new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
-    new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
+    if (DriveConstants.useDrive) {
+      new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
+      new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
+      new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
+    }
 
     if (ArmConstants.useArm) {
       new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
