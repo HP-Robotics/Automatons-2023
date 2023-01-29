@@ -163,6 +163,10 @@ public class DriveSubsystem extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
+  // public int getPoseX() {
+  //  return m_odometry
+  // }
+
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);

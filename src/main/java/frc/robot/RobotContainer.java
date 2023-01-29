@@ -107,6 +107,16 @@ public class RobotContainer {
           new Pose2d(3, 0, new Rotation2d(0)),
           config);
 
+      // An example trajectory to follow. All units in meters.
+      Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(3, 0, new Rotation2d(0)),
+          config);
+
       var thetaController = new ProfiledPIDController(
           AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -133,7 +143,7 @@ public class RobotContainer {
   }
 
   public void runResetFalconCommand() {
-    new ResetFalconCommand(m_robotDrive);
+    m_robotDrive.run(() -> new ResetFalconCommand(m_robotDrive));
   }
 
   /**
@@ -154,7 +164,41 @@ public class RobotContainer {
     if (SubsystemConstants.useDrive) {
       new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
-      new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 7).onTrue(new ResetFalconCommand(m_robotDrive));
+
+      // Create config for trajectory
+      TrajectoryConfig config = new TrajectoryConfig(
+          AutoConstants.kMaxSpeedMetersPerSecond,
+          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(DriveConstants.kDriveKinematics);
+
+      var thetaController = new ProfiledPIDController(
+          AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+      // An example trajectory to follow. All units in meters.
+      Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(1, 0, new Rotation2d(0)),
+          config);
+
+      /*new JoystickButton(m_joystick, 2).onTrue(new SwerveControllerCommand(
+          forwardTrajectory,
+          m_robotDrive::getPose, // Functional interface to feed supplier
+          DriveConstants.kDriveKinematics,
+      
+          // Position controllers
+          new PIDController(AutoConstants.kPXController, 0, 0),
+          new PIDController(AutoConstants.kPYController, 0, 0),
+          thetaController,
+          m_robotDrive::setModuleStates,
+          m_robotDrive));
+          */
     }
 
     if (SubsystemConstants.useArm) {
