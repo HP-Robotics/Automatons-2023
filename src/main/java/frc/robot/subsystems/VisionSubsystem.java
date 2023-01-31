@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -13,6 +15,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.GenericEntry;
@@ -32,7 +35,11 @@ public class VisionSubsystem extends SubsystemBase {
   GenericEntry robotPose;
   NetworkTableEntry yEntry;
   NetworkTableEntry targetPose;
+  Transform2d apriltagPose;
   Pose2d absolutePose;
+  Map<Integer, Transform2d> apriltags;
+  int apriltageid;
+
   private Field2d m_field = new Field2d();
   PhotonCamera camera = new PhotonCamera(Constants.VisionConstants.kcameraName);
 
@@ -43,6 +50,9 @@ public class VisionSubsystem extends SubsystemBase {
   public VisionSubsystem() {
 
     SmartDashboard.putData("Field", m_field);
+    apriltags = new HashMap<Integer, Transform2d>();
+    apriltags.put(23, new Transform2d(new Translation2d(10, 5), new Rotation2d()));
+    apriltags.put(28, new Transform2d(new Translation2d(5, 5), new Rotation2d()));
 
     // robotPose = Shuffleboard.getTab("Field")
     // .add("CameraPose", new Pose2d())
@@ -68,8 +78,6 @@ public class VisionSubsystem extends SubsystemBase {
   // double x = 0;
   // double y = 0;
 
-  
-
   public Pose2d getCameraAbsolute() {
     PhotonPipelineResult result = camera.getLatestResult();
     if (result.hasTargets()) {
@@ -78,15 +86,24 @@ public class VisionSubsystem extends SubsystemBase {
         //System.out.println(target.getBestCameraToTarget().getX());
         //System.out.println(target.getBestCameraToTarget().getY());
         //System.out.println(target.getBestCameraToTarget().getZ());
+        int apriltagid = target.getFiducialId();
+
+        apriltagPose = apriltags.get(apriltagid);
+        if (apriltagPose == null) {
+          return null;
+        }
+
         absolutePose = new Pose2d(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(),
             new Rotation2d());
         // robotPose.setValue(absolutePose);
-        m_field.setRobotPose(absolutePose);
+        m_field.setRobotPose(absolutePose.plus(apriltagPose));
+
         return absolutePose;
       }
-    
+
     }
     return null;
+
   }
 
   @Override
