@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 
 public final class Constants {
-  public static String autonomousMode = "Vision";
+  public static String autonomousMode = "NotVision";
 
   public static class OperatorConstants { // For operator button bindings, and other stuff directly related to the
                                           // operator
@@ -37,7 +37,7 @@ public final class Constants {
 
   public static class DriveConstants {
     public static final double kMaxSpeed = 4.0; // 3 meters per second
-    public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
+    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
     public static final double kWheelRadius = 0.0508;
     public static final int kEncoderResolution = 2048;
