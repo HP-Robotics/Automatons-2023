@@ -79,7 +79,7 @@ public class RobotContainer {
               () -> m_robotDrive.drive(
                   Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 3) * -1 * DriveConstants.kMaxSpeed,
                   Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 3) * -1 * DriveConstants.kMaxSpeed,
-                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2), 3) * -1
+                  MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
                       * DriveConstants.kMaxAngularSpeed,
                   //0.2 * DriveConstants.kMaxSpeed, 0, 0,
                   m_robotDrive.m_fieldRelative),
@@ -167,12 +167,13 @@ public class RobotContainer {
     if (SubsystemConstants.useDrive) {
       new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
+      new JoystickButton(m_joystick, 16).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive));
       new JoystickButton(m_joystick, 7).onTrue(new ResetFalconCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
 
       // Create config for trajectory
 
-      new JoystickButton(m_joystick, 2).onTrue(new MoveSetDistanceCommand(m_robotDrive, 1));
+      new JoystickButton(m_joystick, 12).onTrue(new MoveSetDistanceCommand(m_robotDrive, 1));
 
     }
 

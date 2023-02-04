@@ -214,4 +214,8 @@ public class DriveSubsystem extends SubsystemBase {
     double cos = Math.cos(Math.toRadians(yaw));
     return (sin * -1 * pitch) + (roll * cos);
   } // TODO: need to know whether we're on blue or red team, to mulitply by -1 or not.
+
+  public void resetYaw() {
+    m_pGyro.setYaw(0);
+  }
 }
