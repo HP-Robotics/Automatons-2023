@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -39,6 +40,10 @@ public class SwerveModule {
     m_driveMotor.config_kP(0, DriveConstants.drivekP);
     m_driveMotor.config_kI(0, DriveConstants.drivekI);
     m_driveMotor.config_kD(0, DriveConstants.drivekD);
+    m_driveMotor.config_kF(0, DriveConstants.drivekF);
+    m_driveMotor.configAllowableClosedloopError(0, DriveConstants.drivekAllowableError);
+    //m_driveMotor.configMaxIntegralAccumulator(0, DriveConstants.drivekMaxIntegralAccumulation);
+    //m_driveMotor.config_IntegralZone(0, DriveConstants.drivekIntegralZone);
     m_driveMotor.setNeutralMode(NeutralMode.Coast);
     m_turningMotor = new TalonFX(turningMotorChannel);
 
@@ -69,6 +74,7 @@ public class SwerveModule {
   public double metersToTicks(double meters) {
     return (meters / (2 * Math.PI * DriveConstants.kWheelRadius)) * DriveConstants.kEncoderResolution
         * DriveConstants.driveGearRatio;
+
   }
 
   /**
@@ -83,8 +89,11 @@ public class SwerveModule {
 
     m_turningMotor.set(ControlMode.Position,
         radiansToTicks(state.angle.getRadians()));
+    /*System.out.println(
+      "Degrees: " + state.angle.getDegrees() + "Ticks: " + radiansToTicks(state.angle.getRadians())
+    );*/
 
-    m_driveMotor.set(ControlMode.Velocity, metersToTicks(state.speedMetersPerSecond));
+    m_driveMotor.set(ControlMode.Velocity, metersToTicks(state.speedMetersPerSecond) / 10); // the 10 is real, it turns ticks per second into ticks per 100ms
 
   }
 

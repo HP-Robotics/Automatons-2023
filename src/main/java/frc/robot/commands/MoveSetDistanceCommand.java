@@ -63,7 +63,7 @@ public class MoveSetDistanceCommand extends CommandBase {
         // End 3 meters straight ahead of where we started, facing forward
         new Pose2d(m_subsystem.getPoseX() + m_X, m_subsystem.getPoseY() + 0, m_subsystem.getPoseRot()),
         config); //Added robot poseX and y to this command
-    SwerveControllerCommand m_swerveControllerCommand = new SwerveControllerCommand(
+    m_swerveControllerCommand = new SwerveControllerCommand(
         forwardTrajectory,
         m_subsystem::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
@@ -88,6 +88,7 @@ public class MoveSetDistanceCommand extends CommandBase {
   public void execute() {
     if (m_swerveControllerCommand != null) {
       m_swerveControllerCommand.execute();
+
     }
   }
 

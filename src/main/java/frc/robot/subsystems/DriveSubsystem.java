@@ -61,10 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
             m_backRight.getPosition()
         });
 
-    m_frontRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
-    m_backLeft.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
-    m_backRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
-
     SmartDashboard.putData("Field", m_field);
   }
 
@@ -84,6 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
     //    + m_backRight.getDistance()) / 4);
     //m_field.setRobotPose(getPose());
     // System.out.println(getPose().getX());
+    SmartDashboard.putNumber("Robot x", m_odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Front Left Get Absolute Position", m_frontLeftEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Front Left Get ", m_frontLeftEncoder.get());
     SmartDashboard.putNumber("Front Right", m_frontRightEncoder.getAbsolutePosition());
@@ -180,6 +177,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
+    SmartDashboard.putNumber("Speed (0)", swerveModuleStates[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("Ticks (0)", m_frontLeft.metersToTicks(swerveModuleStates[0].speedMetersPerSecond));
   }
 
   public void forceRobotRelative() {
