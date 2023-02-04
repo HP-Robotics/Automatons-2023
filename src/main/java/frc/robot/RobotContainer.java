@@ -165,8 +165,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     if (SubsystemConstants.useDrive) {
-      new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
-      new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
+      new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
+      new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       new JoystickButton(m_joystick, 16).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive));
       new JoystickButton(m_joystick, 7).onTrue(new ResetFalconCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
