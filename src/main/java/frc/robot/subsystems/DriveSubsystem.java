@@ -57,8 +57,8 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
+            m_backRight.getPosition(),
+            m_backLeft.getPosition()
         });
 
     SmartDashboard.putData("Field", m_field);
@@ -73,8 +73,8 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
+            m_backRight.getPosition(),
+            m_backLeft.getPosition()
         });
     //System.out.println("Distance " + (m_frontLeft.getDistance() + m_frontRight.getDistance() + m_backLeft.getDistance()
     //    + m_backRight.getDistance()) / 4);
@@ -96,6 +96,10 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Front Right Turn Output", m_frontRight.turnPower());
     SmartDashboard.putNumber("Back Left Turn Output", m_backLeft.turnPower());
     SmartDashboard.putNumber("Back Right Turn Output", m_backRight.turnPower());
+
+    SmartDashboard.putNumber("Pigeon Pitch", m_pGyro.getPitch());
+    SmartDashboard.putNumber("Pigeon Yaw", m_pGyro.getYaw());
+    SmartDashboard.putNumber("Pigeon Roll", m_pGyro.getRoll());
 
     // System.out.println(m_frontLeftEncoder.get() -
     // m_frontLeftEncoder.getAbsolutePosition());
@@ -196,9 +200,18 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
+            m_backRight.getPosition(),
+            m_backLeft.getPosition()
         },
         pose);
   }
+
+  public double getCombinedRoll() {
+    double yaw = m_pGyro.getYaw();
+    double pitch = m_pGyro.getPitch();
+    double roll = m_pGyro.getRoll();
+    double sin = Math.sin(Math.toRadians(yaw));
+    double cos = Math.cos(Math.toRadians(yaw));
+    return (sin * -1 * pitch) + (roll * cos);
+  } // TODO: need to know whether we're on blue or red team, to mulitply by -1 or not.
 }

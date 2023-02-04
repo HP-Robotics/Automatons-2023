@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.BackToNormalCommand;
+import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
@@ -167,6 +168,7 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       new JoystickButton(m_joystick, 7).onTrue(new ResetFalconCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
 
       // Create config for trajectory
 

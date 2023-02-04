@@ -51,7 +51,7 @@ public final class Constants {
     public final static Translation2d kBackRightLocation = new Translation2d(-0.244, -0.244);
 
     public final static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        kFrontLeftLocation, kFrontRightLocation, kBackLeftLocation, kBackRightLocation);
+        kFrontLeftLocation, kFrontRightLocation, kBackRightLocation, kBackLeftLocation);
 
     public static final double drivekP = 0.0005; //old value: 0.0005 OR 0.07
     public static final double drivekI = 0.00; //old value: 0.000175
@@ -65,6 +65,11 @@ public final class Constants {
     public static final double turningkI = .0002;
     public static final double turningkD = 1; //TODO: please tune these later
     public static final double turningkAllowableError = 10;
+
+    public static final double balancekP = 0.16;
+    public static final double balancekI = 0.0;
+    public static final double balancekD = 0.0;
+    public static final int balanceThreshold = 1;
 
     public static final double encoderTolerance = 0.01;
   }
