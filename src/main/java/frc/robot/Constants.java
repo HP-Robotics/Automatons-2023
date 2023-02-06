@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.I2C;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -110,5 +111,6 @@ public final class Constants {
     public static final double motorkD = 0;
     public static final double clockwiseSpeed = .15;
     public static final double counterClockwiseSpeed = -.15;
+    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
   }
 }
