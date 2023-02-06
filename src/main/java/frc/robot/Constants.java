@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -22,6 +23,12 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 
 public final class Constants {
+
+  public static class VisionConstants {
+    public static String kcameraName = "Arducam_Global_Shutter";
+    public static boolean kHasVision = true;
+  }
+
   public static String autonomousMode = "NotVision";
 
   public static class OperatorConstants { // For operator button bindings, and other stuff directly related to the
