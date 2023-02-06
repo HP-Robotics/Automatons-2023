@@ -39,8 +39,9 @@ public final class Constants {
   public static class SubsystemConstants {
     public static final boolean useDrive = true;
     public static final boolean useArm = false;
-    public static final boolean usePneumatics = false;
-    public static final boolean useTurnTables = true;
+    public static final boolean usePneumatics = true;
+    public static final boolean useTurnTables = false;
+    public static final boolean useIntake = false;
   }
 
   public static class DriveConstants {
@@ -126,5 +127,16 @@ public final class Constants {
     public static final double motorkD = 0;
     public static final double clockwiseSpeed = .15;
     public static final double counterClockwiseSpeed = -.15;
+    //TODO: Add a current limit
+  }
+
+  public static final class IntakeConstants {
+    public static final int motorID = 40;
+    //TODO: Find motor ID for intake
+    public static final double motorkP = .1;
+    public static final double motorkI = .0001;
+    public static final double motorkD = 0;
+    public static final double intakeSpeed = .15;
+    public static final double outakeSpeed = -.15;
   }
 }
