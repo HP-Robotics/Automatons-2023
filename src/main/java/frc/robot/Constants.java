@@ -142,5 +142,6 @@ public final class Constants {
     public static final double intakeSpeed = .15;
     public static final double outakeSpeed = -.15;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
+    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
   }
 }
