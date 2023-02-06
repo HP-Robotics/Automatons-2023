@@ -8,17 +8,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.subsystems.VisionSubsystem;
 
 public class Robot extends TimedRobot {
-  // private final XboxController m_controller = new XboxController(0);
-
-  // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(1);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(1);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(1);
-
   private RobotContainer m_robotContainer;
   private Command m_autonomousCommand;
 
@@ -44,6 +35,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.runResetFalconCommand();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -58,4 +50,14 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
   }
+
+  @Override
+  public void teleopInit() {
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
+    m_robotContainer.runResetFalconCommand(); // TODO: theres a bug here, this doesnt work.
+  }
+
 }

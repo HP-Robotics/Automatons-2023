@@ -6,9 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.BackToNormalCommand;
+import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
+import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.ResetFalconCommand;
 import frc.robot.commands.SpinClockwiseCommand;
 import frc.robot.commands.SpinCounterClockwiseCommand;
@@ -79,9 +81,10 @@ public class RobotContainer {
           new RunCommand(
 
               () -> m_robotDrive.drive(
-                  MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1) * -1 * DriveConstants.kMaxSpeed,
-                  MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1) * -1 * DriveConstants.kMaxSpeed,
-                  MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1 * DriveConstants.kMaxSpeed,
+                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
+                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
+                  MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
+                      * DriveConstants.kMaxAngularSpeed,
                   //0.2 * DriveConstants.kMaxSpeed, 0, 0,
                   m_robotDrive.m_fieldRelative),
               m_robotDrive));
@@ -106,7 +109,17 @@ public class RobotContainer {
           // Start at the origin facing the +X direction
           new Pose2d(0, 0, new Rotation2d(0)),
           // Pass through these two interior waypoints, making an 's' curve path
-          List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+          List.of(new Translation2d(1, .1), new Translation2d(2, -.1)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(3, 0, new Rotation2d(0)),
+          config);
+
+      // An example trajectory to follow. All units in meters.
+      Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(),
           // End 3 meters straight ahead of where we started, facing forward
           new Pose2d(3, 0, new Rotation2d(0)),
           config);
@@ -136,6 +149,10 @@ public class RobotContainer {
       return new InstantCommand();
   }
 
+  public void runResetFalconCommand() {
+    m_robotDrive.run(() -> new ResetFalconCommand(m_robotDrive));
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -152,9 +169,16 @@ public class RobotContainer {
    */
   private void configureBindings() {
     if (SubsystemConstants.useDrive) {
-      new JoystickButton(m_joystick, 1).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
-      new JoystickButton(m_joystick, 1).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
-      new JoystickButton(m_joystick, 2).onTrue(new ResetFalconCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
+      new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
+      new JoystickButton(m_joystick, 16).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive));
+      new JoystickButton(m_joystick, 7).onTrue(new ResetFalconCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
+
+      // Create config for trajectory
+
+      new JoystickButton(m_joystick, 12).onTrue(new MoveSetDistanceCommand(m_robotDrive, 1));
+
     }
 
     if (SubsystemConstants.useArm) {

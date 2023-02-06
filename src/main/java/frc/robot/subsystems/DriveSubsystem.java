@@ -57,13 +57,9 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
+            m_backRight.getPosition(),
+            m_backLeft.getPosition()
         });
-
-    m_frontRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
-    m_backLeft.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
-    m_backRight.m_driveMotor.follow(m_frontLeft.m_driveMotor); // TEMP
 
     SmartDashboard.putData("Field", m_field);
   }
@@ -77,13 +73,14 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
+            m_backRight.getPosition(),
+            m_backLeft.getPosition()
         });
     //System.out.println("Distance " + (m_frontLeft.getDistance() + m_frontRight.getDistance() + m_backLeft.getDistance()
     //    + m_backRight.getDistance()) / 4);
     //m_field.setRobotPose(getPose());
     // System.out.println(getPose().getX());
+    SmartDashboard.putNumber("Robot x", m_odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Front Left Get Absolute Position", m_frontLeftEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Front Left Get ", m_frontLeftEncoder.get());
     SmartDashboard.putNumber("Front Right", m_frontRightEncoder.getAbsolutePosition());
@@ -99,6 +96,10 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Front Right Turn Output", m_frontRight.turnPower());
     SmartDashboard.putNumber("Back Left Turn Output", m_backLeft.turnPower());
     SmartDashboard.putNumber("Back Right Turn Output", m_backRight.turnPower());
+
+    SmartDashboard.putNumber("Pigeon Pitch", m_pGyro.getPitch());
+    SmartDashboard.putNumber("Pigeon Yaw", m_pGyro.getYaw());
+    SmartDashboard.putNumber("Pigeon Roll", m_pGyro.getRoll());
 
     // System.out.println(m_frontLeftEncoder.get() -
     // m_frontLeftEncoder.getAbsolutePosition());
@@ -144,7 +145,7 @@ public class DriveSubsystem extends SubsystemBase {
         resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBL) &
         resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBR)) {
 
-      System.out.println("Success " + m_frontRightEncoder.getAbsolutePosition());
+      System.out.println("Success " + (m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR));
       return true;
     } else {
       //System.out.println("fail " + m_frontRightEncoder.getAbsolutePosition());
@@ -155,19 +156,34 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetEncoderEnd() {
     m_frontLeft.resetTurningMotor();
     m_frontRight.resetTurningMotor();
-    m_backLeft.resetTurningMotor();
     m_backRight.resetTurningMotor();
+    m_backLeft.resetTurningMotor();
   }
 
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
 
+  public double getPoseX() {
+    return m_odometry.getPoseMeters().getX();
+  }
+
+  public double getPoseY() {
+    return getPose().getY();
+  }
+
+  public Rotation2d getPoseRot() {
+    return m_odometry.getPoseMeters().getRotation();
+  }
+
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_backLeft.setDesiredState(swerveModuleStates[2]);
-    m_backRight.setDesiredState(swerveModuleStates[3]);
+    m_backRight.setDesiredState(swerveModuleStates[2]);
+    m_backLeft.setDesiredState(swerveModuleStates[3]);
+    ;
+    SmartDashboard.putNumber("Speed (0)", swerveModuleStates[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("Ticks (0)", m_frontLeft.metersToTicks(swerveModuleStates[0].speedMetersPerSecond));
   }
 
   public void forceRobotRelative() {
@@ -185,9 +201,22 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
+            m_backRight.getPosition(),
+            m_backLeft.getPosition()
         },
         pose);
+  }
+
+  public double getCombinedRoll() {
+    double yaw = m_pGyro.getYaw();
+    double pitch = m_pGyro.getPitch();
+    double roll = m_pGyro.getRoll();
+    double sin = Math.sin(Math.toRadians(yaw));
+    double cos = Math.cos(Math.toRadians(yaw));
+    return (sin * -1 * pitch) + (roll * cos);
+  } // TODO: need to know whether we're on blue or red team, to mulitply by -1 or not.
+
+  public void resetYaw() {
+    m_pGyro.setYaw(0);
   }
 }

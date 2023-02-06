@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 
 public final class Constants {
-  public static String autonomousMode = "Vision";
+  public static String autonomousMode = "NotVision";
 
   public static class OperatorConstants { // For operator button bindings, and other stuff directly related to the
                                           // operator
@@ -30,7 +30,7 @@ public final class Constants {
   }
 
   public static class SubsystemConstants {
-    public static final boolean useDrive = false;
+    public static final boolean useDrive = true;
     public static final boolean useArm = false;
     public static final boolean usePneumatics = false;
     public static final boolean useTurnTables = true;
@@ -38,7 +38,7 @@ public final class Constants {
 
   public static class DriveConstants {
     public static final double kMaxSpeed = 4.0; // 3 meters per second
-    public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
+    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
     public static final double kWheelRadius = 0.0508;
     public static final int kEncoderResolution = 2048;
@@ -52,16 +52,25 @@ public final class Constants {
     public final static Translation2d kBackRightLocation = new Translation2d(-0.244, -0.244);
 
     public final static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        kFrontLeftLocation, kFrontRightLocation, kBackLeftLocation, kBackRightLocation);
+        kFrontLeftLocation, kFrontRightLocation, kBackRightLocation, kBackLeftLocation);
 
-    public static final double drivekP = 0.07;
-    public static final double drivekI = 0.000175;
+    public static final double drivekP = 0.0005; //old value: 0.0005 OR 0.07
+    public static final double drivekI = 0.00; //old value: 0.000175
     public static final double drivekD = 0.0;
+    public static final double drivekF = 0.048;
+    public static final double drivekAllowableError = 50;
+    public static final double drivekMaxIntegralAccumulation = 20000; // TODO: a guess, finetune later
+    public static final double drivekIntegralZone = 10000; //TODO: a guess, finetune later
 
     public static final double turningkP = .1;
     public static final double turningkI = .0002;
     public static final double turningkD = 1; //TODO: please tune these later
     public static final double turningkAllowableError = 10;
+
+    public static final double balancekP = 0.05;
+    public static final double balancekI = 0.0001;
+    public static final double balancekD = 0.0075;
+    public static final int balanceThreshold = 2;
 
     public static final double encoderTolerance = 0.01;
   }
@@ -83,7 +92,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5; //TODO measure this
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
