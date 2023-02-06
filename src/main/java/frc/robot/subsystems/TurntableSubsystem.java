@@ -23,7 +23,7 @@ public class TurntableSubsystem extends SubsystemBase {
     m_turntableMotor.config_kP(0, TurntableConstants.motorkP);
     m_turntableMotor.config_kI(0, TurntableConstants.motorkI);
     m_turntableMotor.config_kD(0, TurntableConstants.motorkD);
-
+    // TODO: Current limit + tuning
   }
 
   @Override
@@ -33,10 +33,12 @@ public class TurntableSubsystem extends SubsystemBase {
   }
 
   public void spinClockwise() {
+    // TODO: Use velocity control
     m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.clockwiseSpeed);
   }
 
   public void spinCounterClockwise() {
+    // TODO: Use velocity control
     m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.counterClockwiseSpeed);
   }
 
