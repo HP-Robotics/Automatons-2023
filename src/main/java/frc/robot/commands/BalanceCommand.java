@@ -69,6 +69,7 @@ public class BalanceCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_PidController.atSetpoint();
+        //return m_PidController.atSetpoint();
+        return false;
     }
 }

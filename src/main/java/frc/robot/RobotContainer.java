@@ -77,8 +77,8 @@ public class RobotContainer {
           new RunCommand(
 
               () -> m_robotDrive.drive(
-                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 3) * -1 * DriveConstants.kMaxSpeed,
-                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 3) * -1 * DriveConstants.kMaxSpeed,
+                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
+                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
                   MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
                       * DriveConstants.kMaxAngularSpeed,
                   //0.2 * DriveConstants.kMaxSpeed, 0, 0,

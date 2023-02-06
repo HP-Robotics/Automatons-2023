@@ -66,10 +66,10 @@ public final class Constants {
     public static final double turningkD = 1; //TODO: please tune these later
     public static final double turningkAllowableError = 10;
 
-    public static final double balancekP = 0.16;
-    public static final double balancekI = 0.0;
-    public static final double balancekD = 0.0;
-    public static final int balanceThreshold = 1;
+    public static final double balancekP = 0.05;
+    public static final double balancekI = 0.0001;
+    public static final double balancekD = 0.0075;
+    public static final int balanceThreshold = 2;
 
     public static final double encoderTolerance = 0.01;
   }

@@ -156,8 +156,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetEncoderEnd() {
     m_frontLeft.resetTurningMotor();
     m_frontRight.resetTurningMotor();
-    m_backLeft.resetTurningMotor();
     m_backRight.resetTurningMotor();
+    m_backLeft.resetTurningMotor();
   }
 
   public Pose2d getPose() {
@@ -179,8 +179,9 @@ public class DriveSubsystem extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_backLeft.setDesiredState(swerveModuleStates[2]);
-    m_backRight.setDesiredState(swerveModuleStates[3]);
+    m_backRight.setDesiredState(swerveModuleStates[2]);
+    m_backLeft.setDesiredState(swerveModuleStates[3]);
+    ;
     SmartDashboard.putNumber("Speed (0)", swerveModuleStates[0].speedMetersPerSecond);
     SmartDashboard.putNumber("Ticks (0)", m_frontLeft.metersToTicks(swerveModuleStates[0].speedMetersPerSecond));
   }
