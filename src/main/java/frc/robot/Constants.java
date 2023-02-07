@@ -41,7 +41,7 @@ public final class Constants {
   public static class SubsystemConstants {
     public static final boolean useDrive = true;
     public static final boolean useArm = false;
-    public static final boolean usePneumatics = true;
+    public static final boolean usePneumatics = false;
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
   }
@@ -72,10 +72,12 @@ public final class Constants {
     public static final double drivekMaxIntegralAccumulation = 20000; // TODO: a guess, finetune later
     public static final double drivekIntegralZone = 10000; //TODO: a guess, finetune later
 
-    public static final double turningkP = .1;
-    public static final double turningkI = .0002;
-    public static final double turningkD = 1; //TODO: please tune these later
-    public static final double turningkAllowableError = 10;
+    public static final double turningkP = .006;
+    public static final double turningkI = .0005;
+    public static final double turningkD = 0.003; //TODO: please tune for final robot eventually
+    public static final double turningkF = 0.006;
+    public static final double turningIntergralZone = 300;
+    public static final double turningkAllowableError = 50;
 
     public static final double balancekP = 0.05;
     public static final double balancekI = 0.0001;
@@ -141,7 +143,6 @@ public final class Constants {
     public static final double motorkD = 0;
     public static final double intakeSpeed = .15;
     public static final double outakeSpeed = -.15;
-    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
   }
 }
