@@ -51,10 +51,8 @@ public class SwerveModule {
     m_turningMotor.config_kP(0, DriveConstants.turningkP);
     m_turningMotor.config_kI(0, DriveConstants.turningkI);
     m_turningMotor.config_kD(0, DriveConstants.turningkD);
-    m_turningMotor.config_kF(0, DriveConstants.turningkF);
     m_turningMotor.configAllowableClosedloopError(0, DriveConstants.turningkAllowableError);
     m_turningMotor.setInverted(true);
-    m_turningMotor.config_IntegralZone(0, DriveConstants.turningIntergralZone);
 
   }
 
@@ -95,7 +93,7 @@ public class SwerveModule {
       "Degrees: " + state.angle.getDegrees() + "Ticks: " + radiansToTicks(state.angle.getRadians())
     );*/
 
-    // m_driveMotor.set(ControlMode.Velocity, metersToTicks(state.speedMetersPerSecond) / 10); // the 10 is real, it turns ticks per second into ticks per 100ms
+    m_driveMotor.set(ControlMode.Velocity, metersToTicks(state.speedMetersPerSecond) / 10); // the 10 is real, it turns ticks per second into ticks per 100ms
 
   }
 
