@@ -44,6 +44,7 @@ public final class Constants {
     public static final boolean usePneumatics = true;
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
+    public static final boolean useLimelight = true;
   }
 
   public static class DriveConstants {
@@ -142,6 +143,9 @@ public final class Constants {
     public static final double intakeSpeed = .15;
     public static final double outakeSpeed = -.15;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
-    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
+  }
+
+  public static final class LimelightConstants {
+    public static final double turnValue = -0.3; //TODO: tune this number
   }
 }

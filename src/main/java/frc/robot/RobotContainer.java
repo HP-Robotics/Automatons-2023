@@ -10,6 +10,7 @@ import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
+import frc.robot.commands.DriveTrackGamePiece;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.ResetFalconCommand;
@@ -41,7 +42,6 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -178,8 +178,6 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 7).onTrue(new ResetFalconCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
 
-      // Create config for trajectory
-
       new JoystickButton(m_joystick, 12).onTrue(new MoveSetDistanceCommand(m_robotDrive, 1));
 
     }
@@ -199,6 +197,11 @@ public class RobotContainer {
     if (SubsystemConstants.useIntake) {
       new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake));
 
+    }
+
+    if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
+      new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, true));
+      new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, false));
     }
 
   }

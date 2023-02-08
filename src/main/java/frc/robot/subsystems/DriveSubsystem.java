@@ -14,6 +14,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,6 +50,13 @@ public class DriveSubsystem extends SubsystemBase {
   private final PigeonIMU m_pGyro = new PigeonIMU(57);
 
   SwerveDriveOdometry m_odometry;
+
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  NetworkTable table = inst.getTable("limelight-chloe");
+  NetworkTable pipeline = inst.getTable("SmartDashboard");
+  NetworkTableEntry gamePieceX = table.getEntry("tx");
+
+  public int m_gamePieceSightCounter = 0;
 
   public DriveSubsystem() {
     m_pGyro.setYaw(0);
@@ -104,6 +114,12 @@ public class DriveSubsystem extends SubsystemBase {
     // System.out.println(m_frontLeftEncoder.get() -
     // m_frontLeftEncoder.getAbsolutePosition());
     m_field.setRobotPose(m_odometry.getPoseMeters());
+
+    if (trackingGamePiece()) {
+      m_gamePieceSightCounter = 0;
+    } else {
+      m_gamePieceSightCounter = m_gamePieceSightCounter - 1;
+    }
   }
 
   /**
@@ -218,5 +234,34 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetYaw() {
     m_pGyro.setYaw(0);
+  }
+
+  public boolean trackingGamePiece() {
+    if (table.getEntry("tv").getNumber(0).intValue() >= 0.5) {
+      return true;
+    }
+    return false;
+  }
+
+  public Boolean gamePieceSeen() {
+    return (m_gamePieceSightCounter > -5);
+  }
+
+  public double getGamePieceX() {
+    return gamePieceX.getDouble(0);
+  }
+
+  public void switchConePipeline() {
+    table.getEntry("pipeline").setValue(2);
+    System.out.println("cone switch");
+  }
+
+  public void switchCubePipeline() {
+    table.getEntry("pipeline").setValue(1);
+    System.out.println("cube switch");
+  }
+
+  public void switchCameraPipeline() { // for driver visibility
+    SmartDashboard.getEntry("limelight-chloe_PipelineName").setValue("Cube");
   }
 }
