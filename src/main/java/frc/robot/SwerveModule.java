@@ -42,8 +42,8 @@ public class SwerveModule {
     m_driveMotor.config_kD(0, DriveConstants.drivekD);
     m_driveMotor.config_kF(0, DriveConstants.drivekF);
     m_driveMotor.configAllowableClosedloopError(0, DriveConstants.drivekAllowableError);
-    //m_driveMotor.configMaxIntegralAccumulator(0, DriveConstants.drivekMaxIntegralAccumulation);
-    //m_driveMotor.config_IntegralZone(0, DriveConstants.drivekIntegralZone);
+    m_driveMotor.configMaxIntegralAccumulator(0, DriveConstants.drivekMaxIntegralAccumulation);
+    m_driveMotor.config_IntegralZone(0, DriveConstants.drivekIntegralZone);
     m_driveMotor.setNeutralMode(NeutralMode.Coast);
     m_turningMotor = new TalonFX(turningMotorChannel);
 

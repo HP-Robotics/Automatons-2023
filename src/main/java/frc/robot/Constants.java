@@ -76,12 +76,12 @@ public final class Constants {
     public static final double drivekF = 0.048;
     public static final double drivekAllowableError = 50;
     public static final double drivekMaxIntegralAccumulation = 20000; // TODO: a guess, finetune later
-    public static final double drivekIntegralZone = 10000; //TODO: a guess, finetune later
+    public static final double drivekIntegralZone = 300; //TODO: a guess, finetune later
 
     public static final double turningkP = .1;
     public static final double turningkI = .0002;
-    public static final double turningkD = 1; //TODO: please tune these later
-    public static final double turningkAllowableError = 10;
+    public static final double turningkD = 2; //TODO: please tune for final robot eventually
+    public static final double turningkAllowableError = 50;
 
     public static final double balancekP = 0.05;
     public static final double balancekI = 0.0001;
