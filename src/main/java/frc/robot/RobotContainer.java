@@ -180,7 +180,9 @@ public class RobotContainer {
 
       // Create config for trajectory
 
-      new JoystickButton(m_joystick, 12).onTrue(new MoveSetDistanceCommand(m_robotDrive, 1));
+      new JoystickButton(m_joystick, 12)
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(Math.PI / 2)));
+      new JoystickButton(m_joystick, 13).onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0)));
 
     }
 
