@@ -200,8 +200,8 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
-      new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, true));
-      new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, false));
+      new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
+      new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
     }
 
   }

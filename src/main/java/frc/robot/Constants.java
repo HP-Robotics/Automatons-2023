@@ -146,6 +146,6 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
-    public static final double turnValue = -0.3; //TODO: tune this number
+    public static final double turnValue = -0.08; //TODO: tune this number
   }
 }
