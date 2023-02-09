@@ -99,6 +99,11 @@ public final class Constants {
     public static final double shoulderkI = .0001;
     public static final double shoulderkD = 0;
 
+    public static final int elbowID = 22;
+    public static final double elbowkP = .1;
+    public static final double elbowkI = .0001;
+    public static final double elbowkD = 0;
+
   }
 
   public static final class AutoConstants {
