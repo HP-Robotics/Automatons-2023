@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.*;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -40,9 +40,10 @@ public class VisionSubsystem extends SubsystemBase {
   Transform2d cameraTrans;
   Map<Integer, Pose2d> apriltags;
   int apriltageid;
+  int loopCount = 0;
 
   private Field2d m_field = new Field2d();
-  PhotonCamera camera = new PhotonCamera(Constants.VisionConstants.kcameraName);
+  PhotonCamera camera = new PhotonCamera(VisionConstants.kcameraName);
 
   ShuffleboardTab Tab = Shuffleboard.getTab("Field");
   // Tab.add("CameraPose", null).withwidget;
@@ -104,7 +105,7 @@ public class VisionSubsystem extends SubsystemBase {
             (target.getBestCameraToTarget().getRotation().toRotation2d()));
         // robotPose.setValue(absolutePose);
         absolutePose = apriltagPose.plus(cameraTrans);
-        m_field.setRobotPose(absolutePose);
+
         return absolutePose;
       }
 
@@ -115,22 +116,22 @@ public class VisionSubsystem extends SubsystemBase {
 
   public Pose2d getDestination(Pose2d ourPos, Pose2d target, String direction) {
     ///////////////////////////////////////////////////////////////////
-    System.out.println("hello");
-    System.out.println(direction);
+    //System.out.println(direction);
     Pose2d destination;
     if (direction == "left") {
-      destination = target.transformBy(new Transform2d(new Translation2d(0, 5), new Rotation2d(0)));
+      destination = target.transformBy(VisionConstants.leftTrans);
       m_field.setRobotPose(destination);
       return destination;
 
     } else if (direction == "right") {
-      destination = target.transformBy(new Transform2d(new Translation2d(0, -5), new Rotation2d(0)));
+      destination = target.transformBy(VisionConstants.rightTrans);
       m_field.setRobotPose(destination);
       return destination;
 
     } else {
-      m_field.setRobotPose(target);
-      return target;
+      destination = target.transformBy(VisionConstants.centerTrans);
+      m_field.setRobotPose(destination);
+      return destination;
 
     }
 
@@ -138,7 +139,18 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    loopCount += 1;
+    if (loopCount % 5 == 1) {
+      Pose2d position = getCameraAbsolute();
+      if (position != null) {
+        m_field.setRobotPose(position);
+      }
 
+      // if (m_updateDrive && position != null) {
+      //updateRobotPos()
+      //}
+
+    }
   }
 
   @Override

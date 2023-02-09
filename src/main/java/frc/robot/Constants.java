@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.I2C;
@@ -29,6 +31,9 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
+    public static Transform2d leftTrans = new Transform2d(new Translation2d(0, 1), new Rotation2d(0));
+    public static Transform2d rightTrans = new Transform2d(new Translation2d(0, -1), new Rotation2d(0));
+    public static Transform2d centerTrans = new Transform2d(new Translation2d(0, 0), new Rotation2d(0));
   }
 
   public static String autonomousMode = "NotVision";
@@ -39,11 +44,12 @@ public final class Constants {
   }
 
   public static class SubsystemConstants {
-    public static final boolean useDrive = true;
+    public static final boolean useDrive = false;
     public static final boolean useArm = false;
-    public static final boolean usePneumatics = true;
+    public static final boolean usePneumatics = false;
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
+    public static final boolean useVision = true;
   }
 
   public static class DriveConstants {
@@ -142,6 +148,6 @@ public final class Constants {
     public static final double intakeSpeed = .15;
     public static final double outakeSpeed = -.15;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
-    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
   }
+
 }
