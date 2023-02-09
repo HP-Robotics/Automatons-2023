@@ -55,6 +55,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotContainer {
   private final VisionSubsystem m_exampleSubsystem = new VisionSubsystem();
   public final Command getCamera = new RunCommand(() -> m_exampleSubsystem.getCameraAbsolute(), m_exampleSubsystem);
+  public final Command leftAutoButton = new RunCommand(
+      () -> m_exampleSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "left"), m_exampleSubsystem);
+  public final Command rightAutoButton = new RunCommand(
+      () -> m_exampleSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "right"), m_exampleSubsystem);
+  public final Command middleAutoButton = new RunCommand(
+      () -> m_exampleSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "middle"),
+      m_exampleSubsystem);
+
   // The robot's subsystems and commands are defined here...
 
   private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
@@ -76,13 +84,13 @@ public class RobotContainer {
     configureBindings();
 
     // Configure default commands
-    if (SubsystemConstants.useDrive) {
+    /*   if (SubsystemConstants.useDrive) {
       m_robotDrive.setDefaultCommand(
           // The left stick controls translation of the robot.
           // Turning is controlled by the X axis of the right stick.
-
+    
           new RunCommand(
-
+    
               () -> m_robotDrive.drive(
                   Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
                   Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
@@ -91,7 +99,7 @@ public class RobotContainer {
                   //0.2 * DriveConstants.kMaxSpeed, 0, 0,
                   m_robotDrive.m_fieldRelative),
               m_robotDrive));
-    }
+    } */
   }
 
   public Command getAutonomousCommand() {
@@ -201,6 +209,9 @@ public class RobotContainer {
 
     }
 
+    new JoystickButton(m_joystick, 3).whileTrue(leftAutoButton);
+    new JoystickButton(m_joystick, 4).whileTrue(middleAutoButton);
+    new JoystickButton(m_joystick, 2).whileTrue(rightAutoButton);
   }
 
   /**
