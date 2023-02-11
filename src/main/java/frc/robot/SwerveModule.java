@@ -86,7 +86,6 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState state = SwerveModuleState.optimize(desiredState,
         new Rotation2d(ticksToRadians(m_turningMotor.getSelectedSensorPosition())));
-
     m_turningMotor.set(ControlMode.Position,
         radiansToTicks(state.angle.getRadians()));
     /*System.out.println(

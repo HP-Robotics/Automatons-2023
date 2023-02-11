@@ -72,9 +72,9 @@ public final class Constants {
     public static final double drivekMaxIntegralAccumulation = 20000; // TODO: a guess, finetune later
     public static final double drivekIntegralZone = 300; //TODO: a guess, finetune later
 
-    public static final double turningkP = .1;
-    public static final double turningkI = .0002;
-    public static final double turningkD = 2; //TODO: please tune for final robot eventually
+    public static final double turningkP = .5;
+    public static final double turningkI = .000;
+    public static final double turningkD = 4; //TODO: please tune for final robot eventually
     public static final double turningkAllowableError = 50;
 
     public static final double balancekP = 0.05;
@@ -108,7 +108,7 @@ public final class Constants {
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPThetaController = 5;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
