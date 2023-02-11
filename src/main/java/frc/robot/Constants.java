@@ -44,7 +44,7 @@ public final class Constants {
   }
 
   public static class SubsystemConstants {
-    public static final boolean useDrive = false;
+    public static final boolean useDrive = true;
     public static final boolean useArm = false;
     public static final boolean usePneumatics = false;
     public static final boolean useTurnTables = false;
@@ -107,8 +107,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5; //TODO measure this
+    public static final double kMaxSpeedMetersPerSecond = 1;//3
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.1;//0.5 //TODO measure this
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 

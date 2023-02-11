@@ -7,6 +7,7 @@ package frc.robot.commands;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 public class MoveSetDistanceCommand extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveSubsystem m_subsystem;
+  private final VisionSubsystem m_vision;
   private Command m_swerveControllerCommand;
   private final double m_X;
   private final double m_Y;
@@ -44,6 +46,18 @@ public class MoveSetDistanceCommand extends CommandBase {
     m_X = X;
     m_Y = Y;
     m_Rot = Rot;
+    m_vision = null;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(subsystem);
+  }
+
+  public MoveSetDistanceCommand(DriveSubsystem subsystem, double X, double Y, Rotation2d Rot,
+      VisionSubsystem vision) {
+    m_subsystem = subsystem;
+    m_X = X;
+    m_Y = Y;
+    m_Rot = Rot;
+    m_vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -110,6 +124,9 @@ public class MoveSetDistanceCommand extends CommandBase {
       SmartDashboard.putNumber("thetaPosition",
           m_thetaController.getSetpoint().position - m_thetaController.getPositionError());
 
+    }
+    if (m_vision != null) {
+      m_subsystem.resetOdometry(m_vision.getCameraAbsolute());
     }
   }
 

@@ -12,6 +12,7 @@ import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveSetDistanceCommand;
+import frc.robot.commands.PositionUpdateCommand;
 import frc.robot.commands.ResetFalconCommand;
 import frc.robot.commands.SpinClockwiseCommand;
 import frc.robot.commands.SpinCounterClockwiseCommand;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -87,13 +89,13 @@ public class RobotContainer {
           m_visionSubsystem);
     }
     // Configure default commands
-    /*   if (SubsystemConstants.useDrive) {
+    if (SubsystemConstants.useDrive) {
       m_robotDrive.setDefaultCommand(
           // The left stick controls translation of the robot.
           // Turning is controlled by the X axis of the right stick.
-    
+
           new RunCommand(
-    
+
               () -> m_robotDrive.drive(
                   Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
                   Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
@@ -102,7 +104,7 @@ public class RobotContainer {
                   //0.2 * DriveConstants.kMaxSpeed, 0, 0,
                   m_robotDrive.m_fieldRelative),
               m_robotDrive));
-    } */
+    }
 
     // Configure the trigger bindings
     configureBindings();
@@ -192,7 +194,7 @@ public class RobotContainer {
       // Create config for trajectory
 
       new JoystickButton(m_joystick, 12)
-          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(Math.PI / 2)));
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(0)));
       new JoystickButton(m_joystick, 13).onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0)));
 
     }

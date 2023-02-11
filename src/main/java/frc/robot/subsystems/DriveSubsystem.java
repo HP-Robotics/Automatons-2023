@@ -195,8 +195,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
+    if (pose == null) {
+      return;
+    }
     var pigeonYaw = new Rotation2d(Math.toRadians(m_pGyro.getYaw()));
     m_odometry.resetPosition(
+
         pigeonYaw,
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
