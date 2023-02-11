@@ -39,12 +39,12 @@ public final class Constants {
   }
 
   public static class SubsystemConstants {
-    public static final boolean useDrive = true;
-    public static final boolean useArm = false;
-    public static final boolean usePneumatics = true;
+    public static final boolean useDrive = false; // drive disabled, reenable later
+    public static final boolean useArm = true;
+    public static final boolean usePneumatics = false;
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
-    public static final boolean useLimelight = true;
+    public static final boolean useLimelight = false;
   }
 
   public static class DriveConstants {
@@ -95,15 +95,30 @@ public final class Constants {
 
   public static class ArmConstants {
     public static final int shoulderID = 22;
-    public static final double shoulderkP = .1;
-    public static final double shoulderkI = .0001;
+    public static final double shoulderkP = .075; //.05
+    public static final double shoulderkI = .0000;
     public static final double shoulderkD = 0;
+    public static final int shoulderAcceleration = 10000;
+    public static final int shoulderMaxVelocity = 10000;
+    public static final int shoulderSCurve = 0;
 
-    public static final int elbowID = 22;
-    public static final double elbowkP = .1;
-    public static final double elbowkI = .0001;
+    public static final int elbowID = 23;
+    public static final double elbowkP = .075; //.05
+    public static final double elbowkI = .0000;
     public static final double elbowkD = 0;
+    public static final int elbowAcceleration = 10000;
+    public static final int elbowMaxVelocity = 10000;
+    public static final int elbowSCurve = 0;
 
+    public static final double[] shoulderPositions = { 0.0, 5308.0, -1199.0, 34674.0 };
+    public static final double[] elbowPositions = { 0.0, -69726.0, -115990.0, -171442.0 };
+
+    public static final int intakeState = 0;
+    public static final int lowState = 1;
+    public static final int midState = 2;
+    public static final int highState = 3;
+
+    public static final double errorThreshold = 1000.0;
   }
 
   public static final class AutoConstants {

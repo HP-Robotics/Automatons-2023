@@ -5,6 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.ArmChangeStateCommand;
+import frc.robot.commands.ArmMoveElbowCommand;
+import frc.robot.commands.ArmMoveShoudlerCommand;
 import frc.robot.commands.BackToNormalCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ChickenCommand;
@@ -56,15 +59,15 @@ public class RobotContainer {
   private final VisionSubsystem m_exampleSubsystem = new VisionSubsystem();
   public final Command getCamera = new RunCommand(() -> m_exampleSubsystem.getCameraAbsolute(), m_exampleSubsystem);
   // The robot's subsystems and commands are defined here...
+  private final Joystick m_joystick = new Joystick(1);
+  private final Joystick m_opJoystick = new Joystick(0);
 
   private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
-  private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem() : null;
+  private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem(m_opJoystick) : null;
   private final PneumaticsSubsystem m_pneumatics = SubsystemConstants.usePneumatics ? new PneumaticsSubsystem() : null;
   private final TurntableSubsystem m_turntables = SubsystemConstants.useTurnTables ? new TurntableSubsystem() : null;
   private final IntakeSubsystem m_intake = SubsystemConstants.useIntake ? new IntakeSubsystem() : null;
   // The driver's controller
-  private final Joystick m_joystick = new Joystick(1);
-  private final Joystick m_opJoystick = new Joystick(0);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -183,8 +186,15 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useArm) {
-      new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
-      new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));
+      //new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
+      //new JoystickButton(m_opJoystick, 7).onTrue(new BackToNormalCommand(m_robotArm));
+
+      System.out.println("Im alive!");
+
+      //new RunCommand(() -> m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2), m_robotArm);
+      //new RunCommand(() -> m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2), m_robotArm);
+      new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
+      new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
     }
     if (SubsystemConstants.usePneumatics) {
       new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
