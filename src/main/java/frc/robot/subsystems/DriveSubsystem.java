@@ -27,17 +27,10 @@ public class DriveSubsystem extends SubsystemBase {
   public static final double kMaxSpeed = 4.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
 
-  private final SwerveModule m_frontLeft = new SwerveModule(13, 12); // BIG BONGO 2
-  private final SwerveModule m_frontRight = new SwerveModule(2, 3); // BIG BONGO 1
-  private final SwerveModule m_backLeft = new SwerveModule(14, 15); // BIG BONGO 3
-  private final SwerveModule m_backRight = new SwerveModule(50, 1); // BIG BONGO 4
-
-  /// private final DutyCycleEncoder m_testEncoder = new DutyCycleEncoder(id);
-  private final DutyCycleEncoder m_frontLeftEncoder = new DutyCycleEncoder(12);
-  public final DutyCycleEncoder m_frontRightEncoder = new DutyCycleEncoder(11);
-  private final DutyCycleEncoder m_backLeftEncoder = new DutyCycleEncoder(13);
-  private final DutyCycleEncoder m_backRightEncoder = new DutyCycleEncoder(14);
-  // getAbsolutePosition
+  private final SwerveModule m_frontLeft = new SwerveModule(13, 12, 12, RobotConstants.swerveOffsetFL, "FL"); // BIG BONGO 2
+  private final SwerveModule m_frontRight = new SwerveModule(2, 3, 11, RobotConstants.swerveOffsetFR, "FR"); // BIG BONGO 1
+  private final SwerveModule m_backLeft = new SwerveModule(14, 15, 13, RobotConstants.swerveOffsetBL, "BL"); // BIG BONGO 3
+  private final SwerveModule m_backRight = new SwerveModule(50, 1, 14, RobotConstants.swerveOffsetBR, "BR"); // BIG BONGO 4
 
   public boolean m_fieldRelative = true;
 
@@ -81,12 +74,6 @@ public class DriveSubsystem extends SubsystemBase {
     //m_field.setRobotPose(getPose());
     // System.out.println(getPose().getX());
     SmartDashboard.putNumber("Robot x", m_odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Front Left Get Absolute Position", m_frontLeftEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("Front Left Get ", m_frontLeftEncoder.get());
-    SmartDashboard.putNumber("Front Right", m_frontRightEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("Back Left", m_backLeftEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("Back Right", m_backRightEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("Ben's Front Left", m_frontLeft.getDistance());
 
     SmartDashboard.putNumber("Front Left Drive Output", m_frontLeft.drivePower());
     SmartDashboard.putNumber("Front Right Drive Output", m_frontRight.drivePower());
@@ -126,40 +113,6 @@ public class DriveSubsystem extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
-  public void resetEncodersBegin() {
-    m_frontLeft.resetEncoderPosition(RobotConstants.swerveOffsetFL, m_frontLeftEncoder.getAbsolutePosition());
-    m_frontRight.resetEncoderPosition(RobotConstants.swerveOffsetFR, m_frontRightEncoder.getAbsolutePosition());
-    //System.out.println("Output " + (RobotConstants.swerveOffsetFR - m_frontRightEncoder.getAbsolutePosition())
-    //    + "  Current " + m_frontRightEncoder.getAbsolutePosition() + "  Goal " + RobotConstants.swerveOffsetFR);
-    m_backLeft.resetEncoderPosition(RobotConstants.swerveOffsetBL, m_backLeftEncoder.getAbsolutePosition());
-    m_backRight.resetEncoderPosition(RobotConstants.swerveOffsetBR, m_backRightEncoder.getAbsolutePosition());
-  }
-
-  public boolean resetEncoderCheck(double encoderValue) {
-    return (Math.abs(encoderValue) < DriveConstants.encoderTolerance);
-  }
-
-  public boolean resetEncoderIsFinished() {
-    if (resetEncoderCheck(m_frontLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFL) &
-        resetEncoderCheck(m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR) &
-        resetEncoderCheck(m_backLeftEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBL) &
-        resetEncoderCheck(m_backRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetBR)) {
-
-      System.out.println("Success " + (m_frontRightEncoder.getAbsolutePosition() - RobotConstants.swerveOffsetFR));
-      return true;
-    } else {
-      //System.out.println("fail " + m_frontRightEncoder.getAbsolutePosition());
-      return false;
-    }
-  }
-
-  public void resetEncoderEnd() {
-    m_frontLeft.resetTurningMotor();
-    m_frontRight.resetTurningMotor();
-    m_backRight.resetTurningMotor();
-    m_backLeft.resetTurningMotor();
-  }
-
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
@@ -192,6 +145,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void forceFieldRelative() {
     m_fieldRelative = true;
+  }
+
+  public void resetOffsets() {
+    m_frontLeft.resetOffset();
+    m_frontRight.resetOffset();
+    m_backRight.resetOffset();
+    m_backLeft.resetOffset();
   }
 
   public void resetOdometry(Pose2d pose) {

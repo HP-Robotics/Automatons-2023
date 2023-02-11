@@ -12,7 +12,6 @@ import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveSetDistanceCommand;
-import frc.robot.commands.ResetFalconCommand;
 import frc.robot.commands.SpinClockwiseCommand;
 import frc.robot.commands.SpinCounterClockwiseCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -152,10 +151,6 @@ public class RobotContainer {
       return new InstantCommand();
   }
 
-  public void runResetFalconCommand() {
-    m_robotDrive.run(() -> new ResetFalconCommand(m_robotDrive));
-  }
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -175,7 +170,6 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       new JoystickButton(m_joystick, 16).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive));
-      new JoystickButton(m_joystick, 7).onTrue(new ResetFalconCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
 
       // Create config for trajectory
@@ -203,6 +197,10 @@ public class RobotContainer {
 
     }
 
+  }
+
+  public void resetDriveOffsets() {
+    m_robotDrive.resetOffsets();
   }
 
   /**
