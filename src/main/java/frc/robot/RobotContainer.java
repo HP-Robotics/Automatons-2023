@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -52,11 +53,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final VisionSubsystem m_exampleSubsystem = new VisionSubsystem();
-  public final Command getCamera = new RunCommand(() -> m_exampleSubsystem.getCameraAbsolute(), m_exampleSubsystem);
-  // The robot's subsystems and commands are defined here...
+  public final Command leftAutoButton;
+  public final Command rightAutoButton;
+  public final Command middleAutoButton;
 
+  // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
+  private final VisionSubsystem m_visionSubsystem = SubsystemConstants.useVision ? new VisionSubsystem() : null;
   private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem() : null;
   private final PneumaticsSubsystem m_pneumatics = SubsystemConstants.usePneumatics ? new PneumaticsSubsystem() : null;
   private final TurntableSubsystem m_turntables = SubsystemConstants.useTurnTables ? new TurntableSubsystem() : null;
@@ -71,9 +74,18 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
 
+    if (SubsystemConstants.useVision) {
+      leftAutoButton = new RunCommand(
+          () -> m_visionSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "left"),
+          m_visionSubsystem);
+      rightAutoButton = new RunCommand(
+          () -> m_visionSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "right"),
+          m_visionSubsystem);
+      middleAutoButton = new RunCommand(
+          () -> m_visionSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "middle"),
+          m_visionSubsystem);
+    }
     // Configure default commands
     if (SubsystemConstants.useDrive) {
       m_robotDrive.setDefaultCommand(
@@ -91,12 +103,12 @@ public class RobotContainer {
                   m_robotDrive.m_fieldRelative),
               m_robotDrive));
     }
+
+    // Configure the trigger bindings
+    configureBindings();
   }
 
   public Command getAutonomousCommand() {
-    if (Constants.autonomousMode == "Vision") {
-      return getCamera;
-    }
     if (SubsystemConstants.useDrive) {
 
       // Create config for trajectory
@@ -175,7 +187,7 @@ public class RobotContainer {
       // Create config for trajectory
 
       new JoystickButton(m_joystick, 12)
-          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(Math.PI / 2)));
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(0)));
       new JoystickButton(m_joystick, 13).onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0)));
 
     }
@@ -197,6 +209,9 @@ public class RobotContainer {
 
     }
 
+    new JoystickButton(m_joystick, 3).whileTrue(leftAutoButton);
+    new JoystickButton(m_joystick, 4).whileTrue(middleAutoButton);
+    new JoystickButton(m_joystick, 2).whileTrue(rightAutoButton);
   }
 
   public void resetDriveOffsets() {
