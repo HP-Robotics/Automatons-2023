@@ -12,6 +12,7 @@ import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveSetDistanceCommand;
+import frc.robot.commands.PositionUpdateCommand;
 import frc.robot.commands.SpinClockwiseCommand;
 import frc.robot.commands.SpinCounterClockwiseCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -77,13 +78,13 @@ public class RobotContainer {
 
     if (SubsystemConstants.useVision) {
       leftAutoButton = new RunCommand(
-          () -> m_visionSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "left"),
+          () -> m_visionSubsystem.getDestination(m_robotDrive.getPose(), "left"),
           m_visionSubsystem);
       rightAutoButton = new RunCommand(
-          () -> m_visionSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "right"),
+          () -> m_visionSubsystem.getDestination(m_robotDrive.getPose(), "right"),
           m_visionSubsystem);
       middleAutoButton = new RunCommand(
-          () -> m_visionSubsystem.getDestination(null, new Pose2d(10, 5, new Rotation2d(0)), "middle"),
+          () -> m_visionSubsystem.getDestination(m_robotDrive.getPose(), "middle"),
           m_visionSubsystem);
     }
     // Configure default commands
@@ -181,8 +182,8 @@ public class RobotContainer {
     if (SubsystemConstants.useDrive) {
       new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
-      new JoystickButton(m_joystick, 16).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive));
-      new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 10).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive));
+      new JoystickButton(m_joystick, 8).whileTrue(new BalanceCommand(m_robotDrive));
 
       // Create config for trajectory
 
@@ -209,9 +210,10 @@ public class RobotContainer {
 
     }
 
-    new JoystickButton(m_joystick, 3).whileTrue(leftAutoButton);
-    new JoystickButton(m_joystick, 4).whileTrue(middleAutoButton);
-    new JoystickButton(m_joystick, 2).whileTrue(rightAutoButton);
+    new JoystickButton(m_joystick, 16).whileTrue(leftAutoButton);
+    new JoystickButton(m_joystick, 15).whileTrue(middleAutoButton);
+    new JoystickButton(m_joystick, 14).whileTrue(rightAutoButton);
+    new JoystickButton(m_joystick, 9).onTrue(new PositionUpdateCommand(m_visionSubsystem, m_robotDrive));
   }
 
   public void resetDriveOffsets() {

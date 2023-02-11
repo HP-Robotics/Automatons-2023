@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
@@ -41,8 +41,10 @@ public class VisionSubsystem extends SubsystemBase {
   Map<Integer, Pose2d> apriltags;
   int apriltageid;
   int loopCount = 0;
+  List<Pose2d> m_blueScoring;
+  List<Pose2d> m_redScoring;
+  public Pose2d m_lastPosition;
 
-  private Field2d m_field = new Field2d();
   PhotonCamera camera = new PhotonCamera(VisionConstants.kcameraName);
 
   ShuffleboardTab Tab = Shuffleboard.getTab("Field");
@@ -51,7 +53,6 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public VisionSubsystem() {
 
-    SmartDashboard.putData("Field", m_field);
     apriltags = new HashMap<Integer, Pose2d>();
     apriltags.put(1, new Pose2d(new Translation2d(15.514, 1.072), new Rotation2d(Math.PI)));
     apriltags.put(2, new Pose2d(new Translation2d(15.514, 2.748), new Rotation2d(Math.PI)));
@@ -61,6 +62,17 @@ public class VisionSubsystem extends SubsystemBase {
     apriltags.put(6, new Pose2d(new Translation2d(1.027, 4.424), new Rotation2d(0)));
     apriltags.put(7, new Pose2d(new Translation2d(1.027, 2.748), new Rotation2d(0)));
     apriltags.put(8, new Pose2d(new Translation2d(1.027, 1.072), new Rotation2d(0)));
+
+    m_blueScoring = new ArrayList<Pose2d>();
+    m_redScoring = new ArrayList<Pose2d>();
+
+    m_blueScoring.add(apriltags.get(6));
+    m_blueScoring.add(apriltags.get(7));
+    m_blueScoring.add(apriltags.get(8));
+
+    m_redScoring.add(apriltags.get(1));
+    m_redScoring.add(apriltags.get(2));
+    m_redScoring.add(apriltags.get(3));
 
     // robotPose = Shuffleboard.getTab("Field")
     // .add("CameraPose", new Pose2d())
@@ -114,27 +126,37 @@ public class VisionSubsystem extends SubsystemBase {
 
   }
 
-  public Pose2d getDestination(Pose2d ourPos, Pose2d target, String direction) {
+  public Pose2d getDestination(Pose2d ourPos, String direction) {
     ///////////////////////////////////////////////////////////////////
     //System.out.println(direction);
+    Pose2d target = bestApriltag(ourPos, true); //TODO
+
     Pose2d destination;
     if (direction == "left") {
       destination = target.transformBy(VisionConstants.leftTrans);
-      m_field.setRobotPose(destination);
+      System.out.println(destination.getX() + "x" + destination.getY());
       return destination;
 
     } else if (direction == "right") {
       destination = target.transformBy(VisionConstants.rightTrans);
-      m_field.setRobotPose(destination);
+      System.out.println(destination.getX() + "x" + destination.getY());
       return destination;
 
     } else {
       destination = target.transformBy(VisionConstants.centerTrans);
-      m_field.setRobotPose(destination);
+      System.out.println(destination.getX() + "x" + destination.getY());
       return destination;
 
     }
 
+  }
+
+  public Pose2d bestApriltag(Pose2d ourPose, boolean useBlue) {
+    if (useBlue) {
+      return ourPose.nearest(m_blueScoring);
+    } else {
+      return ourPose.nearest(m_redScoring);
+    }
   }
 
   @Override
@@ -143,7 +165,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (loopCount % 5 == 1) {
       Pose2d position = getCameraAbsolute();
       if (position != null) {
-        m_field.setRobotPose(position);
+        m_lastPosition = position;
       }
 
       // if (m_updateDrive && position != null) {

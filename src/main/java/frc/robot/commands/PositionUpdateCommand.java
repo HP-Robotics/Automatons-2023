@@ -29,7 +29,8 @@ public class PositionUpdateCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.resetOdometry(m_vision.getCameraAbsolute());
+    if (m_vision.m_lastPosition != null)
+      m_drive.resetOdometry(m_vision.m_lastPosition);
   }
 
   // Called once the command ends or is interrupted.

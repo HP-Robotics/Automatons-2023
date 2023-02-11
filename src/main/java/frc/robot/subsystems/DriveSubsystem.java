@@ -71,7 +71,7 @@ public class DriveSubsystem extends SubsystemBase {
         });
     //System.out.println("Distance " + (m_frontLeft.getDistance() + m_frontRight.getDistance() + m_backLeft.getDistance()
     //    + m_backRight.getDistance()) / 4);
-    //m_field.setRobotPose(getPose());
+    m_field.setRobotPose(getPose());
     // System.out.println(getPose().getX());
     SmartDashboard.putNumber("Robot x", m_odometry.getPoseMeters().getX());
 
@@ -88,8 +88,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pigeon Yaw", m_pGyro.getYaw());
     SmartDashboard.putNumber("Pigeon Roll", m_pGyro.getRoll());
 
-    // System.out.println(m_frontLeftEncoder.get() -
-    // m_frontLeftEncoder.getAbsolutePosition());
     m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
