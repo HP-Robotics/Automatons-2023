@@ -11,6 +11,8 @@ import frc.robot.subsystems.VisionSubsystem;
 
 import java.util.List;
 
+import org.opencv.core.Point;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -32,6 +34,9 @@ public class MoveSetDistanceCommand extends CommandBase {
   private final double m_X;
   private final double m_Y;
   private final Rotation2d m_Rot;
+  private final double m_Velocity;
+  private final double m_Acceleration;
+  private final List m_MidPoints;
   private ProfiledPIDController m_thetaController;
   private PIDController m_XController;
   private PIDController m_YController;
@@ -41,23 +46,16 @@ public class MoveSetDistanceCommand extends CommandBase {
    ***
    * @param subsystem The subsystem used by this command.
    */
-  public MoveSetDistanceCommand(DriveSubsystem subsystem, double X, double Y, Rotation2d Rot) {
+  public MoveSetDistanceCommand(DriveSubsystem subsystem, double X, double Y, Rotation2d Rot, double Velocity,
+      double Acceleration, List<Point> midPoints) {
     m_subsystem = subsystem;
     m_X = X;
     m_Y = Y;
     m_Rot = Rot;
+    m_Velocity = Velocity;
+    m_Acceleration = Acceleration;
+    m_MidPoints = midPoints;
     m_vision = null;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
-  }
-
-  public MoveSetDistanceCommand(DriveSubsystem subsystem, double X, double Y, Rotation2d Rot,
-      VisionSubsystem vision) {
-    m_subsystem = subsystem;
-    m_X = X;
-    m_Y = Y;
-    m_Rot = Rot;
-    m_vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -67,9 +65,7 @@ public class MoveSetDistanceCommand extends CommandBase {
   public void initialize() {
     System.out.println("Success");
 
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+    TrajectoryConfig config = new TrajectoryConfig(m_Velocity, m_Acceleration)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics);
 
@@ -86,7 +82,7 @@ public class MoveSetDistanceCommand extends CommandBase {
         // Start at the origin facing the +X direction
         new Pose2d(m_subsystem.getPoseX(), m_subsystem.getPoseY(), (m_subsystem.getPoseRot())),
         // Pass through these two interior waypoints, making an 's' curve path
-        List.of(),
+        m_MidPoints,
         // End 3 meters straight ahead of where we started, facing forward
         new Pose2d(m_X, m_Y, m_Rot),
         config); //Added robot poseX and y to this command

@@ -32,16 +32,22 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -69,6 +75,14 @@ public class RobotContainer {
   private final Joystick m_joystick = new Joystick(1);
   private final Joystick m_opJoystick = new Joystick(0);
 
+  private final SendableChooser<String> m_startPosition;
+  private final SendableChooser<Boolean> m_grabPiece1;
+  private final SendableChooser<Boolean> m_grabPiece2;
+  private final SendableChooser<Boolean> m_chargeBalance;
+
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  NetworkTableEntry team = inst.getTable("FMSInfo").getEntry("IsRedAlliance");
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /**
@@ -87,6 +101,32 @@ public class RobotContainer {
           () -> m_visionSubsystem.getDestination(m_robotDrive.getPose(), "middle"),
           m_visionSubsystem);
     }
+
+    m_startPosition = new SendableChooser<String>();
+    m_startPosition.addOption("Station Side", "station");
+    m_startPosition.addOption("Middle", "middle");
+    m_startPosition.addOption("Drive Side", "drive");
+    m_startPosition.setDefaultOption("Middle", "middle");
+    SmartDashboard.putData("Starting Position?", m_startPosition);
+
+    m_grabPiece1 = new SendableChooser<Boolean>();
+    m_grabPiece1.addOption("Yes", true);
+    m_grabPiece1.addOption("No", false);
+    m_grabPiece1.setDefaultOption("No", false);
+    SmartDashboard.putData("Grabbing First Piece?", m_grabPiece1);
+
+    m_grabPiece2 = new SendableChooser<Boolean>();
+    m_grabPiece2.addOption("Yes", true);
+    m_grabPiece2.addOption("No", false);
+    m_grabPiece2.setDefaultOption("No", false);
+    SmartDashboard.putData("Grabbing Second Piece?", m_grabPiece2);
+
+    m_chargeBalance = new SendableChooser<Boolean>();
+    m_chargeBalance.addOption("Yes", true);
+    m_chargeBalance.addOption("No", false);
+    m_chargeBalance.setDefaultOption("No", false);
+    SmartDashboard.putData("Balancing on Charge Station?", m_chargeBalance);
+
     // Configure default commands
     if (SubsystemConstants.useDrive) {
       m_robotDrive.setDefaultCommand(
@@ -110,58 +150,76 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    if (SubsystemConstants.useDrive) {
 
-      // Create config for trajectory
-      TrajectoryConfig config = new TrajectoryConfig(
-          AutoConstants.kMaxSpeedMetersPerSecond,
-          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-          // Add kinematics to ensure max speed is actually obeyed
-          .setKinematics(DriveConstants.kDriveKinematics);
+    if (DriverStation.getAlliance() == Alliance.Blue) {
+      System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
+          + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
+      if (m_startPosition.getSelected() == "middle") {
+        m_robotDrive.resetOdometry(new Pose2d(1.36, 2.19, new Rotation2d(0)));
+        if (m_chargeBalance.getSelected()) {
+          return new SequentialCommandGroup(
+              //Place cone
+              new MoveSetDistanceCommand(m_robotDrive, 7.1196, 2.19, new Rotation2d(0),
+                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+              new MoveSetDistanceCommand(m_robotDrive, 3.485, 2.7615, new Rotation2d(0),
+                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+              new BalanceCommand(m_robotDrive));
+        }
+      }
+    } else {
+      if (m_startPosition.getSelected() == "middle") {
+        m_robotDrive.resetOdometry(new Pose2d(16.54 - 1.36, 2.19, new Rotation2d(Math.PI)));
+        if (m_chargeBalance.getSelected()) {
+          return new SequentialCommandGroup(
+              //Place cone
+              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 7.1196, 2.19, new Rotation2d(Math.PI),
+                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 3.485, 2.7615, new Rotation2d(Math.PI),
+                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+              new BalanceCommand(m_robotDrive));
+        }
+      }
+    }
 
-      // An example trajectory to follow. All units in meters.
-      Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(0, 0, new Rotation2d(0)),
-          // Pass through these two interior waypoints, making an 's' curve path
-          List.of(new Translation2d(1, .1), new Translation2d(2, -.1)),
-          // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(3, 0, new Rotation2d(0)),
-          config);
+    if (DriverStation.getAlliance() == Alliance.Blue) {
+      System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
+          + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
+      if (m_startPosition.getSelected() == "station") {
+        m_robotDrive.resetOdometry(new Pose2d(1.36, 5.20, new Rotation2d(0)));
+        if (m_chargeBalance.getSelected()) {
+          return new SequentialCommandGroup(
+              //Place cone
+              new MoveSetDistanceCommand(m_robotDrive, 7.1196, 4.58, new Rotation2d(0),
+                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
+              new MoveSetDistanceCommand(m_robotDrive, 7.1196, 2.7615, new Rotation2d(0),
+                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
+              new MoveSetDistanceCommand(m_robotDrive, 3.485, 2.7615, new Rotation2d(0),
+                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
+              new BalanceCommand(m_robotDrive));
+        }
+      }
+    } else {
+      if (m_startPosition.getSelected() == "station") {
+        m_robotDrive.resetOdometry(new Pose2d(16.54 - 1.36, 2.19, new Rotation2d(Math.PI)));
+        if (m_chargeBalance.getSelected()) {
+          return new SequentialCommandGroup(
+              //Place cone
+              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 7.1196, 2.19, new Rotation2d(Math.PI),
+                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 3.485, 2.7615, new Rotation2d(Math.PI),
+                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+              new BalanceCommand(m_robotDrive));
+        }
+      }
+    }
 
-      // An example trajectory to follow. All units in meters.
-      Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(0, 0, new Rotation2d(0)),
-          // Pass through these two interior waypoints, making an 's' curve path
-          List.of(),
-          // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(3, 0, new Rotation2d(0)),
-          config);
+    // Reset odometry to the starting pose of the trajectory.
+    //m_robotDrive.resetOdometry();
 
-      var thetaController = new ProfiledPIDController(
-          AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-      thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    // Run path following command, then stop at the end.
 
-      SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-          exampleTrajectory,
-          m_robotDrive::getPose, // Functional interface to feed supplier
-          DriveConstants.kDriveKinematics,
+    return new InstantCommand();
 
-          // Position controllers
-          new PIDController(AutoConstants.kPXController, 0, 0),
-          new PIDController(AutoConstants.kPYController, 0, 0),
-          thetaController,
-          m_robotDrive::setModuleStates,
-          m_robotDrive);
-
-      // Reset odometry to the starting pose of the trajectory.
-      m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-      // Run path following command, then stop at the end.
-      return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-    } else
-      return new InstantCommand();
   }
 
   /**
@@ -188,8 +246,10 @@ public class RobotContainer {
       // Create config for trajectory
 
       new JoystickButton(m_joystick, 12)
-          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(0)));
-      new JoystickButton(m_joystick, 13).onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0)));
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(0),
+              AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, List.of()));
+      new JoystickButton(m_joystick, 13).onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
+          AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, List.of()));
 
     }
 
