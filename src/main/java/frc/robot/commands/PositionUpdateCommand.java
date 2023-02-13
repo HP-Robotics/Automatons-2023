@@ -4,46 +4,43 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
-/** An example command that uses an example subsystem. */
-public class ResetFalconCommand extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final DriveSubsystem m_subsystem;
+public class PositionUpdateCommand extends CommandBase {
+  private final VisionSubsystem m_vision;
+  private final DriveSubsystem m_drive;
 
-  /*
-   * Creates a new ResetFalconCommand.
-   ***
-   * @param subsystem The subsystem used by this command.
-   */
-  public ResetFalconCommand(DriveSubsystem subsystem) {
-    m_subsystem = subsystem;
+  /** Creates a new PositionUpdateCommand. */
+  public PositionUpdateCommand(VisionSubsystem vision, DriveSubsystem drive) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    m_vision = vision;
+    m_drive = drive;
+    addRequirements(vision, drive);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.resetEncodersBegin();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    if (m_vision.m_lastPosition != null)
+      m_drive.resetOdometry(m_vision.m_lastPosition);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.resetEncoderEnd();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.resetEncoderIsFinished();
+    return false;
   }
 }

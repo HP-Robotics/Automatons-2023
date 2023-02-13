@@ -36,9 +36,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    if (SubsystemConstants.useDrive) {
-      m_robotContainer.runResetFalconCommand();
-    }
+    m_robotContainer.resetDriveOffsets();
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -57,12 +56,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 
+    m_robotContainer.resetDriveOffsets();
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    if (SubsystemConstants.useDrive) {
-      m_robotContainer.runResetFalconCommand();
-    } // TODO: theres a bug here, this doesnt work.
   }
 
 }

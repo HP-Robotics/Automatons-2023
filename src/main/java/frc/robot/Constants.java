@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.I2C;
@@ -29,6 +31,9 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
+    public static Transform2d leftTrans = new Transform2d(new Translation2d(0, 1), new Rotation2d(0));
+    public static Transform2d rightTrans = new Transform2d(new Translation2d(0, -1), new Rotation2d(0));
+    public static Transform2d centerTrans = new Transform2d(new Translation2d(0, 0), new Rotation2d(0));
   }
 
   public static String autonomousMode = "NotVision";
@@ -45,6 +50,7 @@ public final class Constants {
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
     public static final boolean useLimelight = false;
+    public static final boolean useVision = true;
   }
 
   public static class DriveConstants {
@@ -71,12 +77,12 @@ public final class Constants {
     public static final double drivekF = 0.048;
     public static final double drivekAllowableError = 50;
     public static final double drivekMaxIntegralAccumulation = 20000; // TODO: a guess, finetune later
-    public static final double drivekIntegralZone = 10000; //TODO: a guess, finetune later
+    public static final double drivekIntegralZone = 300; //TODO: a guess, finetune later
 
-    public static final double turningkP = .1;
-    public static final double turningkI = .0002;
-    public static final double turningkD = 1; //TODO: please tune these later
-    public static final double turningkAllowableError = 10;
+    public static final double turningkP = .5;
+    public static final double turningkI = .000;
+    public static final double turningkD = 4; //TODO: please tune for final robot eventually
+    public static final double turningkAllowableError = 50;
 
     public static final double balancekP = 0.05;
     public static final double balancekI = 0.0001;
@@ -122,14 +128,19 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5; //TODO measure this
+    public static final double kMaxSpeedMetersPerSecond = 3;//3
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;//0.5 //TODO measure this
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+    public static final double kMaxChargeStationVelocity = 2;
+    public static final double kMaxChargeStationAcceleration = 0.5;
+    public static final double kMaxAutoVelocity = 3;
+    public static final double kMaxAutoAcceleration = 3;
+
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPThetaController = 5;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -168,4 +179,5 @@ public final class Constants {
   public static final class LimelightConstants {
     public static final double turnValue = -0.08; //TODO: tune this number
   }
+
 }

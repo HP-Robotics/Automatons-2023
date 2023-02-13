@@ -7,11 +7,14 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.AbsoluteEncoder;
+
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -21,6 +24,10 @@ public class SwerveModule {
   private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
   public final TalonFX m_driveMotor;
   private final TalonFX m_turningMotor;
+  private final double m_desired;
+  private Double m_turningOffset;
+  private final DutyCycleEncoder m_absEncoder;
+  String m_name;
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -32,9 +39,10 @@ public class SwerveModule {
    * 
    * 
    */
+
   public SwerveModule(
       int driveMotorChannel,
-      int turningMotorChannel) {
+      int turningMotorChannel, int absEncoder, double desired, String name) {
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_driveMotor.configFactoryDefault();
     m_driveMotor.config_kP(0, DriveConstants.drivekP);
@@ -42,8 +50,8 @@ public class SwerveModule {
     m_driveMotor.config_kD(0, DriveConstants.drivekD);
     m_driveMotor.config_kF(0, DriveConstants.drivekF);
     m_driveMotor.configAllowableClosedloopError(0, DriveConstants.drivekAllowableError);
-    //m_driveMotor.configMaxIntegralAccumulator(0, DriveConstants.drivekMaxIntegralAccumulation);
-    //m_driveMotor.config_IntegralZone(0, DriveConstants.drivekIntegralZone);
+    m_driveMotor.configMaxIntegralAccumulator(0, DriveConstants.drivekMaxIntegralAccumulation);
+    m_driveMotor.config_IntegralZone(0, DriveConstants.drivekIntegralZone);
     m_driveMotor.setNeutralMode(NeutralMode.Coast);
     m_turningMotor = new TalonFX(turningMotorChannel);
 
@@ -54,6 +62,17 @@ public class SwerveModule {
     m_turningMotor.configAllowableClosedloopError(0, DriveConstants.turningkAllowableError);
     m_turningMotor.setInverted(true);
 
+    m_absEncoder = new DutyCycleEncoder(absEncoder);
+    m_turningOffset = 0.0;
+    m_desired = desired;
+    m_name = name;
+
+  }
+
+  public void resetOffset() {
+    m_turningMotor.setSelectedSensorPosition(0);
+    double offset = m_desired - m_absEncoder.getAbsolutePosition();
+    m_turningOffset = offset * (DriveConstants.kEncoderResolution * DriveConstants.rotationGearRatio);
   }
 
   public double radiansToTicks(double radians) {
@@ -85,13 +104,11 @@ public class SwerveModule {
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-        new Rotation2d(ticksToRadians(m_turningMotor.getSelectedSensorPosition())));
-
+        new Rotation2d(ticksToRadians(applyOffset(m_turningMotor.getSelectedSensorPosition()))));
+    SmartDashboard.putNumber(m_name + "turningAngle", state.angle.getDegrees());
+    SmartDashboard.putNumber(m_name + "turningOffset", m_turningOffset);
     m_turningMotor.set(ControlMode.Position,
-        radiansToTicks(state.angle.getRadians()));
-    /*System.out.println(
-      "Degrees: " + state.angle.getDegrees() + "Ticks: " + radiansToTicks(state.angle.getRadians())
-    );*/
+        radiansToTicks(state.angle.getRadians()) + m_turningOffset);
 
     m_driveMotor.set(ControlMode.Velocity, metersToTicks(state.speedMetersPerSecond) / 10); // the 10 is real, it turns ticks per second into ticks per 100ms
 
@@ -99,13 +116,17 @@ public class SwerveModule {
 
   public void resetEncoderPosition(double desired, double current) {
 
-    m_turningMotor.set(ControlMode.Position, m_turningMotor.getSelectedSensorPosition()
+    m_turningMotor.set(ControlMode.Position, applyOffset(m_turningMotor.getSelectedSensorPosition())
         + DriveConstants.kEncoderResolution * DriveConstants.rotationGearRatio * (desired - current));
 
   }
 
   public double getTurningPosition() {
     return m_turningMotor.getSensorCollection().getIntegratedSensorAbsolutePosition();
+  }
+
+  public double applyOffset(double position) {
+    return position - m_turningOffset;
   }
 
   public void resetTurningMotor() {
@@ -116,7 +137,7 @@ public class SwerveModule {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         ticksToMeters(m_driveMotor.getSelectedSensorPosition()),
-        new Rotation2d(ticksToRadians(m_turningMotor.getSelectedSensorPosition())));
+        new Rotation2d(ticksToRadians(applyOffset(m_turningMotor.getSelectedSensorPosition()))));
   }
 
   public double getDistance() {
