@@ -212,16 +212,16 @@ public class RobotContainer {
     if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
       new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
       new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
+
     }
 
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+
   }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-
 }
 // private void driveWithJoystick(boolean fieldRelative) {
 // // Get the x speed. We are inverting this because Xbox controllers return
