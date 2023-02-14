@@ -31,9 +31,10 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
-    public static Transform2d leftTrans = new Transform2d(new Translation2d(0, 1), new Rotation2d(0));
-    public static Transform2d rightTrans = new Transform2d(new Translation2d(0, -1), new Rotation2d(0));
-    public static Transform2d centerTrans = new Transform2d(new Translation2d(0, 0), new Rotation2d(0));
+    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.5, 0.6096), new Rotation2d(0));
+    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.5, -0.6096), new Rotation2d(0));
+    public static Transform2d centerTrans = new Transform2d(new Translation2d(0.5, 0), new Rotation2d(0));
+    public static Transform2d cameraToRobot = new Transform2d(new Translation2d(0, 0), new Rotation2d(Math.PI));
   }
 
   public static String autonomousMode = "NotVision";

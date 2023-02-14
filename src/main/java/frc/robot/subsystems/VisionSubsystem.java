@@ -118,12 +118,20 @@ public class VisionSubsystem extends SubsystemBase {
         // robotPose.setValue(absolutePose);
         absolutePose = apriltagPose.plus(cameraTrans);
 
-        return absolutePose;
+        return new Pose2d(absolutePose.getTranslation(), apriltagPose.getRotation().minus(cameraTrans.getRotation()));
       }
 
     }
     return null;
 
+  }
+
+  public Pose2d getRobotAbsolute() {
+    Pose2d camPose = getCameraAbsolute();
+    if (camPose != null) {
+      return camPose.transformBy(VisionConstants.cameraToRobot);
+    }
+    return null;
   }
 
   public Pose2d getDestination(Pose2d ourPos, String direction) {
@@ -163,7 +171,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     loopCount += 1;
     if (loopCount % 5 == 1) {
-      Pose2d position = getCameraAbsolute();
+      Pose2d position = getRobotAbsolute();
       if (position != null) {
         m_lastPosition = position;
       }
