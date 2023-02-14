@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.DriveConstants;
 
 public class ArmSubsystem extends SubsystemBase {
   private final TalonFX m_shoulderMotor;
@@ -170,5 +171,12 @@ public class ArmSubsystem extends SubsystemBase {
       state = ArmConstants.highState;
     }
     m_targetState = state;
+  }
+
+  public void setFalconEncoders() {
+    double delta = ArmConstants.elbowStarting - m_elbowEncoder.getAbsolutePosition();
+    double ticks = delta * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
+    m_elbowMotor.setSelectedSensorPosition(ticks);
+
   }
 }

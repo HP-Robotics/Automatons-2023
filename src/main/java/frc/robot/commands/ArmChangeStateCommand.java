@@ -31,6 +31,7 @@ public class ArmChangeStateCommand extends CommandBase {
     if (m_subsystem.getIsChanging()) {
       return;
     }
+    m_subsystem.setFalconEncoders();
     int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();
     if (direction > 0) {
       m_subsystem.moveUpState();

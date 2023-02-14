@@ -50,7 +50,7 @@ public final class Constants {
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
     public static final boolean useLimelight = false;
-    public static final boolean useVision = true;
+    public static final boolean useVision = false;
   }
 
   public static class DriveConstants {
@@ -97,6 +97,7 @@ public final class Constants {
     public static final double swerveOffsetFR = 0.59958238998956;
     public static final double swerveOffsetBL = 0.890661022266526;
     public static final double swerveOffsetBR = 0.125644328141108; // Fill in later
+
   }
 
   public static class ArmConstants {
@@ -107,15 +108,17 @@ public final class Constants {
     public static final int shoulderAcceleration = 10000;
     public static final int shoulderMaxVelocity = 10000;
     public static final int shoulderSCurve = 0;
+    public static final double shoulderStarting = 0.8;
 
     public static final int elbowID = 23;
     public static final double elbowkP = .075; //.05
     public static final double elbowkI = .0000;
     public static final double elbowkD = 0;
+    public static final double elbowGearRatio = 225;
     public static final int elbowAcceleration = 10000;
     public static final int elbowMaxVelocity = 10000;
     public static final int elbowSCurve = 0;
-
+    public static final double elbowStarting = 0.29;
     public static final double[] shoulderPositions = { 0.0, 5308.0, -1199.0, 34674.0 };
     public static final double[] elbowPositions = { 0.0, -69726.0, -115990.0, -171442.0 };
 

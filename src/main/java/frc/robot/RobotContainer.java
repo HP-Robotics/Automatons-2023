@@ -64,9 +64,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public final Command leftAutoButton;
-  public final Command rightAutoButton;
-  public final Command middleAutoButton;
+  public Command leftAutoButton = null;
+  public Command rightAutoButton = null;
+  public Command middleAutoButton = null;
 
   // The robot's subsystems and commands are defined here...
   private final Joystick m_joystick = new Joystick(1);
@@ -278,21 +278,26 @@ public class RobotContainer {
       new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake));
 
     }
+    if (SubsystemConstants.useVision) {
+      new JoystickButton(m_joystick, 16).whileTrue(leftAutoButton);
+      new JoystickButton(m_joystick, 15).whileTrue(middleAutoButton);
+      new JoystickButton(m_joystick, 14).whileTrue(rightAutoButton);
+      new JoystickButton(m_joystick, 9).onTrue(new PositionUpdateCommand(m_visionSubsystem, m_robotDrive));
+    }
 
-    new JoystickButton(m_joystick, 16).whileTrue(leftAutoButton);
-    new JoystickButton(m_joystick, 15).whileTrue(middleAutoButton);
-    new JoystickButton(m_joystick, 14).whileTrue(rightAutoButton);
-    new JoystickButton(m_joystick, 9).onTrue(new PositionUpdateCommand(m_visionSubsystem, m_robotDrive));
   }
 
   public void resetDriveOffsets() {
-    m_robotDrive.resetOffsets();
+
     if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
       new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
       new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
 
     }
+    if (SubsystemConstants.useDrive) {
+      m_robotDrive.resetOffsets();
 
+    }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
