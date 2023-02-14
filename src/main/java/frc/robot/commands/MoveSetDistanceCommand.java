@@ -60,47 +60,57 @@ public class MoveSetDistanceCommand extends CommandBase {
     addRequirements(subsystem);
   }
 
+  public MoveSetDistanceCommand(DriveSubsystem subsystem, Pose2d Destination) {
+    this(subsystem, Destination.getX(), Destination.getY(), Destination.getRotation(), AutoConstants.kMaxAutoVelocity,
+        AutoConstants.kMaxAutoAcceleration, List.of());
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Success");
+    try {
+      System.out.println("Success");
 
-    TrajectoryConfig config = new TrajectoryConfig(m_Velocity, m_Acceleration)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
+      TrajectoryConfig config = new TrajectoryConfig(m_Velocity, m_Acceleration)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(DriveConstants.kDriveKinematics);
 
-    m_thetaController = new ProfiledPIDController(
-        //var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    m_XController = new PIDController(AutoConstants.kPXController, 0, 0);
-    m_YController = new PIDController(AutoConstants.kPYController, 0, 0);
+      m_thetaController = new ProfiledPIDController(
+          //var thetaController = new ProfiledPIDController(
+          AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+      m_XController = new PIDController(AutoConstants.kPXController, 0, 0);
+      m_YController = new PIDController(AutoConstants.kPYController, 0, 0);
 
-    m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
+      m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(m_subsystem.getPoseX(), m_subsystem.getPoseY(), (m_subsystem.getPoseRot())),
-        // Pass through these two interior waypoints, making an 's' curve path
-        m_MidPoints,
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(m_X, m_Y, m_Rot),
-        config); //Added robot poseX and y to this command
-    m_swerveControllerCommand = new SwerveControllerCommand(
-        forwardTrajectory,
-        m_subsystem::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+      // An example trajectory to follow. All units in meters.
+      Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(m_subsystem.getPoseX(), m_subsystem.getPoseY(), (m_subsystem.getPoseRot())),
+          // Pass through these two interior waypoints, making an 's' curve path
+          m_MidPoints,
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(m_X, m_Y, m_Rot),
+          config); //Added robot poseX and y to this command
+      m_swerveControllerCommand = new SwerveControllerCommand(
+          forwardTrajectory,
+          m_subsystem::getPose, // Functional interface to feed supplier
+          DriveConstants.kDriveKinematics,
 
-        // Position controllers
-        m_XController, m_YController, m_thetaController,
-        m_subsystem::setModuleStates,
-        m_subsystem);
+          // Position controllers
+          m_XController, m_YController, m_thetaController,
+          m_subsystem::setModuleStates,
+          m_subsystem);
 
-    m_swerveControllerCommand.initialize();
-    if (m_swerveControllerCommand == null) {
-      System.out.println("ItsVoid!");
-    } else {
-      System.out.println("It's working");
+      m_swerveControllerCommand.initialize();
+      if (m_swerveControllerCommand == null) {
+        System.out.println("ItsVoid!");
+      } else {
+        System.out.println("It's working");
+      }
+    } catch (Exception e) {//this didn't work
+      m_swerveControllerCommand = null;
+
     }
   }
 
@@ -121,9 +131,9 @@ public class MoveSetDistanceCommand extends CommandBase {
           m_thetaController.getSetpoint().position - m_thetaController.getPositionError());
 
     }
-    if (m_vision != null) {
-      m_subsystem.resetOdometry(m_vision.getCameraAbsolute());
-    }
+    // if (m_vision != null) {
+    //   m_subsystem.resetOdometry(m_vision.getRobotAbsolute());
+    // }
   }
 
   // Called once the command ends or is interrupted.
