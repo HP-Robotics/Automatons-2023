@@ -174,9 +174,12 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setFalconEncoders() {
-    double delta = ArmConstants.elbowStarting - m_elbowEncoder.getAbsolutePosition();
-    double ticks = delta * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
-    m_elbowMotor.setSelectedSensorPosition(ticks);
+    double deltaE = ArmConstants.elbowStarting - m_elbowEncoder.getAbsolutePosition();
+    double ticksE = deltaE * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
+    double deltaS = (ArmConstants.shoulderStarting - m_shoulderEncoder.getAbsolutePosition()) * -1;
+    double ticksS = deltaS * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
+    m_elbowMotor.setSelectedSensorPosition(ticksE);
+    m_shoulderMotor.setSelectedSensorPosition(ticksS);
 
   }
 }

@@ -105,10 +105,11 @@ public final class Constants {
     public static final double shoulderkP = .075; //.05
     public static final double shoulderkI = .0000;
     public static final double shoulderkD = 0;
+    public static final double shoulderGearRatio = 384; // just a guess
     public static final int shoulderAcceleration = 10000;
     public static final int shoulderMaxVelocity = 10000;
     public static final int shoulderSCurve = 0;
-    public static final double shoulderStarting = 0.8;
+    public static final double shoulderStarting = 0.82;
 
     public static final int elbowID = 23;
     public static final double elbowkP = .075; //.05
@@ -118,8 +119,8 @@ public final class Constants {
     public static final int elbowAcceleration = 10000;
     public static final int elbowMaxVelocity = 10000;
     public static final int elbowSCurve = 0;
-    public static final double elbowStarting = 0.29;
-    public static final double[] shoulderPositions = { 0.0, 5308.0, -1199.0, 34674.0 };
+    public static final double elbowStarting = 0.28;
+    public static final double[] shoulderPositions = { 0.0, 5308.0, -1199.0, 54674.0 };
     public static final double[] elbowPositions = { 0.0, -69726.0, -115990.0, -171442.0 };
 
     public static final int intakeState = 0;
