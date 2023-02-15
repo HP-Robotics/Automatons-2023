@@ -108,7 +108,7 @@ public class MoveSetDistanceCommand extends CommandBase {
       } else {
         System.out.println("It's working");
       }
-    } catch (Exception e) {//this didn't work
+    } catch (Exception e) {
       m_swerveControllerCommand = null;
 
     }
@@ -139,7 +139,9 @@ public class MoveSetDistanceCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_swerveControllerCommand.end(interrupted);
+    if (m_swerveControllerCommand != null) {
+      m_swerveControllerCommand.end(interrupted);
+    }
     m_subsystem.drive(0, 0, 0, false);
   }
 
