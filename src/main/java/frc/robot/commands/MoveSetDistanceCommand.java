@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -47,7 +48,7 @@ public class MoveSetDistanceCommand extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public MoveSetDistanceCommand(DriveSubsystem subsystem, double X, double Y, Rotation2d Rot, double Velocity,
-      double Acceleration, List<Point> midPoints) {
+      double Acceleration, List<Translation2d> midPoints) {
     m_subsystem = subsystem;
     m_X = X;
     m_Y = Y;
