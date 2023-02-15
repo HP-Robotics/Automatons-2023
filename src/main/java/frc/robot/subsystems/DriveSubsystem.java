@@ -198,6 +198,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_pGyro.setYaw(0);
   }
 
+<<<<<<< HEAD
   public boolean trackingGamePiece() {
     if (table.getEntry("tv").getNumber(0).intValue() >= 0.5) {
       return true;
@@ -226,4 +227,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void switchCameraPipeline() { // for driver visibility
     SmartDashboard.getEntry("limelight-chloe_PipelineName").setValue("Cube");
   }
+=======
+>>>>>>> c41b175 (autonomous reformat)
 }

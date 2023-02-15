@@ -156,75 +156,38 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
 
-    if (DriverStation.getAlliance() == Alliance.Blue) {
-      System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-          + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
-      if (m_startPosition.getSelected() == "middle") {
-        m_robotDrive.resetOdometry(new Pose2d(1.36, 2.19, new Rotation2d(0)));
-        if (m_chargeBalance.getSelected()) {
-          return new SequentialCommandGroup(
-              //Place cone
-              new MoveSetDistanceCommand(m_robotDrive, 7.1196, 2.19, new Rotation2d(0),
-                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-              new MoveSetDistanceCommand(m_robotDrive, 3.485, 2.7615, new Rotation2d(0),
-                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-              new BalanceCommand(m_robotDrive));
-        }
-      }
-    } else {
-      if (m_startPosition.getSelected() == "middle") {
-        m_robotDrive.resetOdometry(new Pose2d(16.54 - 1.36, 2.19, new Rotation2d(Math.PI)));
-        if (m_chargeBalance.getSelected()) {
-          return new SequentialCommandGroup(
-              //Place cone
-              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 7.1196, 2.19, new Rotation2d(Math.PI),
-                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 3.485, 2.7615, new Rotation2d(Math.PI),
-                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-              new BalanceCommand(m_robotDrive));
-        }
+    System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
+        + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
+    if (m_startPosition.getSelected() == "middle") {
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
+      if (m_chargeBalance.getSelected()) {
+        return new SequentialCommandGroup(
+            //Place cone
+            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 2.19, new Rotation2d(getAllianceTheta()),
+                AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
+                AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+            new BalanceCommand(m_robotDrive));
       }
     }
 
-    if (DriverStation.getAlliance() == Alliance.Blue) {
-      System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-          + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
-      if (m_startPosition.getSelected() == "station") {
-        m_robotDrive.resetOdometry(new Pose2d(1.36, 5.20, new Rotation2d(0)));
-        if (m_chargeBalance.getSelected()) {
-          return new SequentialCommandGroup(
-              //Place cone
-              new MoveSetDistanceCommand(m_robotDrive, 7.1196, 4.58, new Rotation2d(0),
-                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
-              new MoveSetDistanceCommand(m_robotDrive, 7.1196, 2.7615, new Rotation2d(0),
-                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
-              new MoveSetDistanceCommand(m_robotDrive, 3.485, 2.7615, new Rotation2d(0),
-                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
-              new BalanceCommand(m_robotDrive));
-        }
-      }
-    } else {
-      if (m_startPosition.getSelected() == "station") {
-        m_robotDrive.resetOdometry(new Pose2d(16.54 - 1.36, 2.19, new Rotation2d(Math.PI)));
-        if (m_chargeBalance.getSelected()) {
-          return new SequentialCommandGroup(
-              //Place cone
-              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 7.1196, 2.19, new Rotation2d(Math.PI),
-                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-              new MoveSetDistanceCommand(m_robotDrive, 16.54 - 3.485, 2.7615, new Rotation2d(Math.PI),
-                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-              new BalanceCommand(m_robotDrive));
-        }
+    System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
+        + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
+    if (m_startPosition.getSelected() == "station") {
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.20, new Rotation2d(getAllianceTheta())));
+      if (m_chargeBalance.getSelected()) {
+        return new SequentialCommandGroup(
+            //Place cone
+            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58, new Rotation2d(getAllianceTheta()),
+                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
+            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
+                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
+                List.of(new Translation2d(getAllianceX(7.1196), 2.7615))),
+            new BalanceCommand(m_robotDrive));
       }
     }
-
-    // Reset odometry to the starting pose of the trajectory.
-    //m_robotDrive.resetOdometry();
-
-    // Run path following command, then stop at the end.
 
     return new InstantCommand();
-
   }
 
   /**
@@ -315,30 +278,23 @@ public class RobotContainer {
      */
 
   }
+<<<<<<< HEAD
+=======
+
+  public double getAllianceX(double X) {
+    if (DriverStation.getAlliance() == Alliance.Blue) {
+      return X;
+    } else {
+      return AutoConstants.fieldLength - X;
+    }
+  }
+
+  public double getAllianceTheta() {
+    if (DriverStation.getAlliance() == Alliance.Blue) {
+      return 0;
+    } else {
+      return Math.PI;
+    }
+  }
+>>>>>>> c41b175 (autonomous reformat)
 }
-// private void driveWithJoystick(boolean fieldRelative) {
-// // Get the x speed. We are inverting this because Xbox controllers return
-// // negative values when we push forward.
-// final var xSpeed =
-// -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getRawAxis(1),
-// 0.02))
-// * DriveSubsystem.kMaxSpeed;
-
-// // Get the y speed or sideways/strafe speed. We are inverting this because
-// // we want a positive value when we pull to the left. Xbox controllers
-// // return positive values when you pull to the right by default.
-// final var ySpeed =
-// -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getRawAxis(0),
-// 0.02))
-// * DriveSubsystem.kMaxSpeed;
-// // Get the rate of angular rotation. We are inverting this because we want a
-// // positive value when we pull to the left (remember, CCW is positive in
-// // mathematics). Xbox controllers return positive values when you pull to
-// // the right by default.
-// final var rot =
-// -m_rotLimiter.calculate(MathUtil.applyDeadband(m_joystick.getRawAxis(2),
-// 0.02))
-// * DriveSubsystem.kMaxAngularSpeed;
-
-// m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
-// }
