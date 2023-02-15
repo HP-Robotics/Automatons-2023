@@ -12,6 +12,7 @@ import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveSetDistanceCommand;
+import frc.robot.commands.MoveWithVisionCommand;
 import frc.robot.commands.PositionUpdateCommand;
 import frc.robot.commands.SpinClockwiseCommand;
 import frc.robot.commands.SpinCounterClockwiseCommand;
@@ -270,15 +271,15 @@ public class RobotContainer {
 
     }
     new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
-        new MoveSetDistanceCommand(m_robotDrive, m_visionSubsystem.getDestination(m_robotDrive.getPose(), "left")),
+        new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
         new RunCommand(
             () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
     new JoystickButton(m_joystick, 15).whileTrue(new SequentialCommandGroup(
-        new MoveSetDistanceCommand(m_robotDrive, m_visionSubsystem.getDestination(m_robotDrive.getPose(), "middle")),
+        new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
         new RunCommand(
             () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
     new JoystickButton(m_joystick, 14).whileTrue(new SequentialCommandGroup(
-        new MoveSetDistanceCommand(m_robotDrive, m_visionSubsystem.getDestination(m_robotDrive.getPose(), "right")),
+        new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
         new RunCommand(
             () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
     new JoystickButton(m_joystick, 9).whileTrue(new PositionUpdateCommand(m_visionSubsystem, m_robotDrive));
