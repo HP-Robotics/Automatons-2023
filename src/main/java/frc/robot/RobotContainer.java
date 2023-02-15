@@ -187,6 +187,22 @@ public class RobotContainer {
       }
     }
 
+    System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
+        + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
+    if (m_startPosition.getSelected() == "drive") {
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.65, new Rotation2d(getAllianceTheta())));
+      if (m_chargeBalance.getSelected()) {
+        return new SequentialCommandGroup(
+            //Place cone
+            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92, new Rotation2d(getAllianceTheta()),
+                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
+            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
+                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
+                List.of(new Translation2d(getAllianceX(7.1196), 2.7615))),
+            new BalanceCommand(m_robotDrive));
+      }
+    }
+
     return new InstantCommand();
   }
 
