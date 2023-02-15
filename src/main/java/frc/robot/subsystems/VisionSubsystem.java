@@ -23,6 +23,8 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -137,7 +139,8 @@ public class VisionSubsystem extends SubsystemBase {
   public Pose2d getDestination(Pose2d ourPos, String direction) {
     ///////////////////////////////////////////////////////////////////
     //System.out.println(direction);
-    Pose2d target = bestApriltag(ourPos, true); //TODO
+
+    Pose2d target = bestApriltag(ourPos);
 
     Pose2d destination;
     if (direction == "left") {
@@ -159,8 +162,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   }
 
-  public Pose2d bestApriltag(Pose2d ourPose, boolean useBlue) {
-    if (useBlue) {
+  public Pose2d bestApriltag(Pose2d ourPose) {
+    if (DriverStation.getAlliance() == Alliance.Blue) {
       return ourPose.nearest(m_blueScoring);
     } else {
       return ourPose.nearest(m_redScoring);
