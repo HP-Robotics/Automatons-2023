@@ -49,6 +49,7 @@ public class MoveWithVisionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_subsystem.m_allowVisionUpdates = false;
     m_moveCommand = new MoveSetDistanceCommand(m_subsystem,
         m_vision.getDestination(m_subsystem.getPose(), m_targetLocation));
     m_moveCommand.initialize();
@@ -67,6 +68,7 @@ public class MoveWithVisionCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_moveCommand.end(interrupted);
+    m_subsystem.m_allowVisionUpdates = true;
   }
 
   // Returns true when the command should end.

@@ -13,7 +13,6 @@ import frc.robot.commands.ChompReverse;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.MoveWithVisionCommand;
-import frc.robot.commands.PositionUpdateCommand;
 import frc.robot.commands.SpinClockwiseCommand;
 import frc.robot.commands.SpinCounterClockwiseCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -46,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -138,13 +138,16 @@ public class RobotContainer {
 
           new RunCommand(
 
-              () -> m_robotDrive.drive(
-                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
-                  Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
-                  MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
-                      * DriveConstants.kMaxAngularSpeed,
-                  //0.2 * DriveConstants.kMaxSpeed, 0, 0,
-                  m_robotDrive.m_fieldRelative),
+              () -> {
+                m_robotDrive.m_allowVisionUpdates = true;
+                m_robotDrive.drive(
+                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
+                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
+                    MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
+                        * DriveConstants.kMaxAngularSpeed,
+                    //0.2 * DriveConstants.kMaxSpeed, 0, 0,
+                    m_robotDrive.m_fieldRelative);
+              },
               m_robotDrive));
     }
 
@@ -153,7 +156,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-
+    m_robotDrive.m_allowVisionUpdates = false;
     System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
         + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "middle") {
@@ -264,7 +267,6 @@ public class RobotContainer {
         new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
         new RunCommand(
             () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-    new JoystickButton(m_joystick, 9).whileTrue(new PositionUpdateCommand(m_visionSubsystem, m_robotDrive));
   }
 
   public void resetDriveOffsets() {
@@ -284,6 +286,13 @@ public class RobotContainer {
       return 0;
     } else {
       return Math.PI;
+    }
+  }
+
+  public void updateDriveFromVision() {
+    if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
+      if (m_visionSubsystem.m_lastPosition != null && m_robotDrive.m_allowVisionUpdates)
+        m_robotDrive.resetOdometry(m_visionSubsystem.m_lastPosition);
     }
   }
 }
