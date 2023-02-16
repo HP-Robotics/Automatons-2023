@@ -24,6 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.config_kI(0, IntakeConstants.motorkI);
     m_intakeMotor.config_kD(0, IntakeConstants.motorkD);
     // TODO: Current limit + tuning
+
   }
 
   @Override
@@ -45,4 +46,5 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stopSpinning() {
     m_intakeMotor.set(ControlMode.PercentOutput, 0);
   }
+
 }

@@ -5,11 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.ArmChangeStateCommand;
+import frc.robot.commands.ArmMoveElbowCommand;
+import frc.robot.commands.ArmMoveShoudlerCommand;
 import frc.robot.commands.BackToNormalCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
+import frc.robot.commands.DriveTrackGamePiece;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.MoveWithVisionCommand;
@@ -63,28 +67,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public final Command leftAutoButton;
-  public final Command rightAutoButton;
-  public final Command middleAutoButton;
+  public Command leftAutoButton = null;
+  public Command rightAutoButton = null;
+  public Command middleAutoButton = null;
 
   // The robot's subsystems and commands are defined here...
+  private final Joystick m_joystick = new Joystick(1);
+  private final Joystick m_opJoystick = new Joystick(0);
+
   private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
   private final VisionSubsystem m_visionSubsystem = SubsystemConstants.useVision ? new VisionSubsystem() : null;
-  private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem() : null;
+  private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem(m_opJoystick) : null;
   private final PneumaticsSubsystem m_pneumatics = SubsystemConstants.usePneumatics ? new PneumaticsSubsystem() : null;
   private final TurntableSubsystem m_turntables = SubsystemConstants.useTurnTables ? new TurntableSubsystem() : null;
   private final IntakeSubsystem m_intake = SubsystemConstants.useIntake ? new IntakeSubsystem() : null;
-  // The driver's controller
-  private final Joystick m_joystick = new Joystick(1);
-  private final Joystick m_opJoystick = new Joystick(0);
 
   private final SendableChooser<String> m_startPosition;
   private final SendableChooser<Boolean> m_grabPiece1;
   private final SendableChooser<Boolean> m_grabPiece2;
   private final SendableChooser<Boolean> m_chargeBalance;
-
-  NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTableEntry team = inst.getTable("FMSInfo").getEntry("IsRedAlliance");
+  // The driver's controller
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -240,8 +242,15 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useArm) {
-      new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
-      new JoystickButton(m_opJoystick, 6).onTrue(new BackToNormalCommand(m_robotArm));
+      //new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
+      //new JoystickButton(m_opJoystick, 7).onTrue(new BackToNormalCommand(m_robotArm));
+
+      System.out.println("Im alive!");
+
+      //new RunCommand(() -> m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2), m_robotArm);
+      //new RunCommand(() -> m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2), m_robotArm);
+      new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
+      new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
     }
     if (SubsystemConstants.usePneumatics) {
       new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
@@ -270,7 +279,22 @@ public class RobotContainer {
   }
 
   public void resetDriveOffsets() {
-    m_robotDrive.resetOffsets();
+
+    if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
+      new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
+      new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
+
+    }
+    if (SubsystemConstants.useDrive) {
+      m_robotDrive.resetOffsets();
+
+    }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+
   }
 
   public double getAllianceX(double X) {
