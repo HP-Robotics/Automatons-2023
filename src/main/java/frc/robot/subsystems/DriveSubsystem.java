@@ -36,6 +36,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule m_backRight = new SwerveModule(50, 1, 14, RobotConstants.swerveOffsetBR, "BR"); // BIG BONGO 4
 
   public boolean m_fieldRelative = true;
+  public boolean m_allowVisionUpdates = true;
 
   private final Field2d m_field = new Field2d();
   // Duty Encoders may have the wrong values
@@ -198,7 +199,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_pGyro.setYaw(0);
   }
 
-<<<<<<< HEAD
   public boolean trackingGamePiece() {
     if (table.getEntry("tv").getNumber(0).intValue() >= 0.5) {
       return true;
@@ -227,6 +227,4 @@ public class DriveSubsystem extends SubsystemBase {
   public void switchCameraPipeline() { // for driver visibility
     SmartDashboard.getEntry("limelight-chloe_PipelineName").setValue("Cube");
   }
-=======
->>>>>>> c41b175 (autonomous reformat)
 }
