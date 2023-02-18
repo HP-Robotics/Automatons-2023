@@ -44,9 +44,9 @@ public final class Constants {
 
   public static class SubsystemConstants {
     public static final boolean useDrive = false; // drive disabled, reenable later
-    public static final boolean useArm = true;
+    public static final boolean useArm = false;
     public static final boolean usePneumatics = false;
-    public static final boolean useTurnTables = false;
+    public static final boolean useTurnTables = true;
     public static final boolean useIntake = false;
     public static final boolean useLimelight = false;
     public static final boolean useVision = false;
@@ -167,6 +167,10 @@ public final class Constants {
     public static final double clockwiseSpeed = .15;
     public static final double counterClockwiseSpeed = -.15;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
+
+    public static final double kConeGThreshold = 3.0;
+    public static final double kCubeBThreshold = 2.7;
+    public static final double kDistanceThreshold = 130;
     //TODO: Add a current limit
   }
 

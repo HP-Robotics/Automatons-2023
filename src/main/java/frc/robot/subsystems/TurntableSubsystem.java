@@ -9,12 +9,14 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurntableConstants;
 
 public class TurntableSubsystem extends SubsystemBase {
   public final TalonFX m_turntableMotor;
   private ColorSensorV3 m_colorSensor;
+  private NetworkTableEntry n_entry;
 
   /** Creates a new TurntablesSubsystem. */
   public TurntableSubsystem() {
@@ -35,6 +37,8 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Blue", m_colorSensor.getBlue());
     SmartDashboard.putNumber("Green", m_colorSensor.getGreen());
     SmartDashboard.putBoolean("FindCube", isCube());
+    SmartDashboard.putBoolean("FindCone", isCone());
+    SmartDashboard.putBoolean("Something?", isSomething());
     SmartDashboard.putNumber("RedNormal", (double) m_colorSensor.getRed() / m_colorSensor.getProximity());
     SmartDashboard.putNumber("BlueNormal", (double) m_colorSensor.getBlue() / m_colorSensor.getProximity());
     SmartDashboard.putNumber("GreenNormal", (double) m_colorSensor.getGreen() / m_colorSensor.getProximity());
@@ -57,11 +61,18 @@ public class TurntableSubsystem extends SubsystemBase {
 
   public boolean isCube() {
     double blueNormal = (double) m_colorSensor.getBlue() / m_colorSensor.getProximity();
-    return blueNormal > 2.7 && m_colorSensor.getProximity() > 150;
+    return blueNormal > TurntableConstants.kCubeBThreshold && isSomething();
   }
 
   public boolean isCone() {
-    double blueNormal = (double) m_colorSensor.getBlue() / m_colorSensor.getProximity();
-    return blueNormal > 2.7 && m_colorSensor.getProximity() > 150;
+    if (!isCube()) {
+      double greenNormal = (double) m_colorSensor.getGreen() / m_colorSensor.getProximity();
+      return greenNormal > TurntableConstants.kConeGThreshold && isSomething();
+    }
+    return false;
+  } //TODO: tune colors, these are for sure not right
+
+  public boolean isSomething() {
+    return m_colorSensor.getProximity() > TurntableConstants.kDistanceThreshold;
   }
 }

@@ -22,6 +22,7 @@ import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.TurntableSubsystem;
 
 import java.util.List;
+import java.util.concurrent.SubmissionPublisher;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -248,18 +249,20 @@ public class RobotContainer {
       new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake));
 
     }
-    new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
-        new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
-        new RunCommand(
-            () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-    new JoystickButton(m_joystick, 15).whileTrue(new SequentialCommandGroup(
-        new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
-        new RunCommand(
-            () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-    new JoystickButton(m_joystick, 14).whileTrue(new SequentialCommandGroup(
-        new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
-        new RunCommand(
-            () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+    if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
+      new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
+          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
+          new RunCommand(
+              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+      new JoystickButton(m_joystick, 15).whileTrue(new SequentialCommandGroup(
+          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
+          new RunCommand(
+              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+      new JoystickButton(m_joystick, 14).whileTrue(new SequentialCommandGroup(
+          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
+          new RunCommand(
+              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+    }
   }
 
   public void resetDriveOffsets() {
