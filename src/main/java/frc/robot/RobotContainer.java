@@ -6,11 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.ArmChangeStateCommand;
-import frc.robot.commands.ArmMoveElbowCommand;
-import frc.robot.commands.ArmMoveShoudlerCommand;
-import frc.robot.commands.BackToNormalCommand;
 import frc.robot.commands.BalanceCommand;
-import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.DriveTrackGamePiece;
@@ -27,30 +23,18 @@ import frc.robot.subsystems.TurntableSubsystem;
 
 import java.util.List;
 
-import org.opencv.core.Point;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -77,7 +61,7 @@ public class RobotContainer {
 
   private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
   private final VisionSubsystem m_visionSubsystem = SubsystemConstants.useVision ? new VisionSubsystem() : null;
-  private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem(m_opJoystick) : null;
+  private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem() : null;
   private final PneumaticsSubsystem m_pneumatics = SubsystemConstants.usePneumatics ? new PneumaticsSubsystem() : null;
   private final TurntableSubsystem m_turntables = SubsystemConstants.useTurnTables ? new TurntableSubsystem() : null;
   private final IntakeSubsystem m_intake = SubsystemConstants.useIntake ? new IntakeSubsystem() : null;

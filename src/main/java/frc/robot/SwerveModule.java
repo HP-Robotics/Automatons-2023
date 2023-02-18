@@ -13,15 +13,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.AbsoluteEncoder;
 
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.DriveSubsystem;
 
 public class SwerveModule {
 
-  private static final double kModuleMaxAngularVelocity = DriveSubsystem.kMaxAngularSpeed;
-  private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
   public final TalonFX m_driveMotor;
   private final TalonFX m_turningMotor;
   private final double m_desired;

@@ -4,13 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C;
 
 /**

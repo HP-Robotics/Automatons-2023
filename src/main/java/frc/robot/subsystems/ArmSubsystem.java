@@ -9,9 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriveConstants;
@@ -19,7 +17,6 @@ import frc.robot.Constants.DriveConstants;
 public class ArmSubsystem extends SubsystemBase {
   private final TalonFX m_shoulderMotor;
   private final TalonFX m_elbowMotor;
-  private final Joystick m_joystick;
   private final DutyCycleEncoder m_shoulderEncoder;
   private final DutyCycleEncoder m_elbowEncoder;
   private int m_targetState;
@@ -27,7 +24,7 @@ public class ArmSubsystem extends SubsystemBase {
   private boolean m_isChanging;
 
   /** Creates a new ArmSubsystem. */
-  public ArmSubsystem(Joystick joystick) {
+  public ArmSubsystem() {
     m_shoulderMotor = new TalonFX(ArmConstants.shoulderID);
     m_shoulderMotor.configFactoryDefault();
     m_shoulderMotor.setNeutralMode(NeutralMode.Coast); //TODO: reset to brake mode, testing
@@ -56,8 +53,6 @@ public class ArmSubsystem extends SubsystemBase {
     m_elbowMotor.configMotionSCurveStrength(ArmConstants.elbowSCurve);
 
     m_elbowEncoder = new DutyCycleEncoder(0);
-
-    m_joystick = joystick;
 
     m_targetState = 0;
     m_currentState = 0;
