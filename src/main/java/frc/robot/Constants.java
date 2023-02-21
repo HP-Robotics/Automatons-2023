@@ -70,9 +70,9 @@ public final class Constants {
     public final static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         kFrontLeftLocation, kFrontRightLocation, kBackRightLocation, kBackLeftLocation);
 
-    public static final double drivekP = 0.0005; //old value: 0.0005 OR 0.07
-    public static final double drivekI = 0.00; //old value: 0.000175
-    public static final double drivekD = 0.0;
+    public static final double drivekP = 0.0015; //old value: 0.0005 OR 0.07
+    public static final double drivekI = 0.0001; //old value: 0.000175 new old values: 0.0
+    public static final double drivekD = 0.5; //old value: 0.0
     public static final double drivekF = 0.048;
     public static final double drivekAllowableError = 50;
     public static final double drivekMaxIntegralAccumulation = 20000; // TODO: a guess, finetune later
@@ -141,7 +141,8 @@ public final class Constants {
 
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    public static final double kPXController = 1;
+    public static final double kPXController = 5;
+    public static final double kDXController = 0.0;
     public static final double kPYController = 1;
     public static final double kPThetaController = 5;
 

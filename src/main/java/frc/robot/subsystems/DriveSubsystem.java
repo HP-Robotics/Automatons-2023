@@ -104,6 +104,10 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pigeon Roll", m_pGyro.getRoll());
 
     SmartDashboard.putData("Gyro", m_pGyro);
+    m_frontLeft.getDrivePower("Front Left");
+    m_frontRight.getDrivePower("Front Right");
+    m_backLeft.getDrivePower("Back Left");
+    m_backRight.getDrivePower("Back Right");
 
     m_field.setRobotPose(m_odometry.getPoseMeters());
 

@@ -152,4 +152,10 @@ public class SwerveModule {
     return m_driveMotor.getMotorOutputPercent();
   }
 
+  public void getDrivePower(String key) {
+    SmartDashboard.putNumber(key + " Setpoint",
+        m_driveMotor.getSelectedSensorVelocity() - m_driveMotor.getClosedLoopError());
+    SmartDashboard.putNumber(key + " Velocity", m_driveMotor.getSelectedSensorVelocity());
+  }
+
 }
