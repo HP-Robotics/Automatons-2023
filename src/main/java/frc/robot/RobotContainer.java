@@ -249,8 +249,12 @@ public class RobotContainer {
 
       //new RunCommand(() -> m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2), m_robotArm);
       //new RunCommand(() -> m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2), m_robotArm);
-      new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
+      //new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
       new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
+      new JoystickButton(m_opJoystick, 2).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.midState));
+      new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState));
+      new JoystickButton(m_opJoystick, 3).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
+
     }
     if (SubsystemConstants.usePneumatics) {
       new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
