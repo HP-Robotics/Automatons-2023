@@ -43,9 +43,7 @@ public class BalanceCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putNumber("Starting Position", startPos);
-        SmartDashboard.putNumber("Current Position", m_subsystem.getPoseX());
-        SmartDashboard.putNumber("Current Position Y", m_subsystem.getPoseY());
+
         double power = m_PidController.calculate(m_subsystem.getCombinedRoll());
         if (power > DriveConstants.balanceThreshold) {
             power = DriveConstants.balanceThreshold;
@@ -55,8 +53,10 @@ public class BalanceCommand extends CommandBase {
         }
         if (m_subsystem.getPoseX() > startPos + 2 || m_subsystem.getPoseX() < startPos - 2) {
             m_subsystem.drive(0, 0, 0, true);
+            SmartDashboard.putNumber("Balance Power", 0);
         } else {
             m_subsystem.drive(power * -1, 0, 0, true);
+            SmartDashboard.putNumber("Balance Power", power * -1);
         }
     }
 

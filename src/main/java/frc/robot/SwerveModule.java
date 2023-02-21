@@ -22,7 +22,7 @@ public class SwerveModule {
   private final TalonFX m_turningMotor;
   private final double m_desired;
   private Double m_turningOffset;
-  private final DutyCycleEncoder m_absEncoder;
+  public final DutyCycleEncoder m_absEncoder;
   String m_name;
 
   /**
@@ -66,9 +66,13 @@ public class SwerveModule {
   }
 
   public void resetOffset() {
-    m_turningMotor.setSelectedSensorPosition(0);
-    double offset = m_desired - m_absEncoder.getAbsolutePosition();
-    m_turningOffset = offset * (DriveConstants.kEncoderResolution * DriveConstants.rotationGearRatio);
+
+    if (m_absEncoder.getAbsolutePosition() != 0) {
+      m_turningMotor.setSelectedSensorPosition(0);
+      double offset = m_desired - m_absEncoder.getAbsolutePosition();
+      m_turningOffset = offset * (DriveConstants.kEncoderResolution * DriveConstants.rotationGearRatio);
+    }
+
   }
 
   public double radiansToTicks(double radians) {
