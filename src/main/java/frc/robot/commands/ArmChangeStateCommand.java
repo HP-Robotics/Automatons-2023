@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmChangeStateCommand extends CommandBase {
@@ -31,7 +32,10 @@ public class ArmChangeStateCommand extends CommandBase {
     if (m_subsystem.getIsChanging()) {
       return;
     }
-    m_subsystem.setFalconEncoders();
+    if (ArmConstants.useAbsoluteEncoders) {
+      m_subsystem.setFalconEncoders();
+    }
+
     int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();
     if (direction > 0) {
       m_subsystem.moveUpState();
