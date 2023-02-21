@@ -6,11 +6,10 @@ package frc.robot;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.ArmChangeStateCommand;
+import frc.robot.commands.ArmCycleStateCommand;
 import frc.robot.commands.ArmMoveElbowCommand;
 import frc.robot.commands.ArmMoveShoudlerCommand;
-import frc.robot.commands.BackToNormalCommand;
 import frc.robot.commands.BalanceCommand;
-import frc.robot.commands.ChickenCommand;
 import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.DriveTrackGamePiece;
@@ -51,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -255,6 +255,19 @@ public class RobotContainer {
       new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState));
       new JoystickButton(m_opJoystick, 3).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
 
+      new Trigger(() -> {
+        return m_opJoystick.getRawAxis(2) > 0.95;
+      }).onTrue(new ArmCycleStateCommand(m_robotArm, false));
+      new Trigger(() -> {
+        return m_opJoystick.getRawAxis(3) > 0.95;
+      }).onTrue(new ArmCycleStateCommand(m_robotArm, true));
+
+      if (SubsystemConstants.usePneumatics) {
+        new JoystickButton(m_opJoystick, 6).onTrue(
+            new SequentialCommandGroup(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
+                new WaitCommand(0.4), new ChompForward(m_pneumatics)));
+        new JoystickButton(m_opJoystick, 5).onTrue(new ChompReverse(m_pneumatics));
+      }
     }
     if (SubsystemConstants.usePneumatics) {
       new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
