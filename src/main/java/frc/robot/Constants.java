@@ -43,13 +43,14 @@ public final class Constants {
   }
 
   public static class SubsystemConstants {
-    public static final boolean useDrive = true; // drive disabled, reenable later
+    public static final boolean useDrive = false; // drive disabled, reenable later
     public static final boolean useArm = false;
     public static final boolean usePneumatics = false;
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
     public static final boolean useLimelight = false;
     public static final boolean useVision = false;
+    public static final boolean useDataManger = false;
   }
 
   public static class DriveConstants {

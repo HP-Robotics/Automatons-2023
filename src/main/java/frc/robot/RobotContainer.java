@@ -21,8 +21,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.TurntableSubsystem;
 
+import java.lang.Character.Subset;
 import java.util.List;
-import java.util.concurrent.SubmissionPublisher;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -116,6 +117,10 @@ public class RobotContainer {
     m_chargeBalance.addOption("No", false);
     m_chargeBalance.setDefaultOption("No", false);
     SmartDashboard.putData("Balancing on Charge Station?", m_chargeBalance);
+
+    if (SubsystemConstants.useDataManger) {
+      DataLogManager.start();
+    }
 
     // Configure default commands
     if (SubsystemConstants.useDrive) {
