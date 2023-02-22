@@ -86,16 +86,6 @@ public class ArmSubsystem extends SubsystemBase {
             - ArmConstants.elbowPositions[m_currentState]) > ArmConstants.errorThreshold;
   }
 
-  public void chickenMove() {
-    m_shoulderMotor.set(ControlMode.Position, 1000);
-
-  }
-
-  public void backToNormal() {
-    m_shoulderMotor.set(ControlMode.Position, 0);
-
-  }
-
   public void moveShoulder(double speed) {
     m_shoulderMotor.set(ControlMode.PercentOutput, speed);
     System.out.println("shoulder running at " + speed);
@@ -156,7 +146,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_isChanging = true;
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
-
+    //TO DO: Set velocity?
   }
 
   public void setTargetState(int state) {

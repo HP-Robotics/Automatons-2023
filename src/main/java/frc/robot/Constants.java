@@ -120,15 +120,17 @@ public final class Constants {
     public static final int elbowMaxVelocity = 10000;
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.28;
-    public static final double[] shoulderPositions = { 0.0, 5308.0, -1199.0, 54674.0 };
-    public static final double[] elbowPositions = { 0.0, -69726.0, -115990.0, -171442.0 };
+    public static final double[] shoulderPositions = { 0.0, 69, 5308.0, -1199.0, 54674.0 };
+    public static final double[] elbowPositions = { 0.0, -6969, -69726.0, -115990.0, -171442.0 };
 
     public static final int intakeState = 0;
-    public static final int lowState = 1;
-    public static final int midState = 2;
-    public static final int highState = 3;
+    public static final int stowState = 1;
+    public static final int lowState = 2;
+    public static final int midState = 3;
+    public static final int highState = 4;
 
     public static final double errorThreshold = 1000.0;
+    public static final boolean useAbsoluteEncoders = false;
   }
 
   public static final class AutoConstants {

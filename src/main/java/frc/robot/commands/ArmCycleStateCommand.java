@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ArmChangeStateCommand extends CommandBase {
+public class ArmCycleStateCommand extends CommandBase {
   /** Creates a new ArmChangeStateCommand. */
   ArmSubsystem m_subsystem;
-  int m_state;
+  int m_direction;
 
-  public ArmChangeStateCommand(ArmSubsystem subsystem, int state) {
+  public ArmCycleStateCommand(ArmSubsystem subsystem, boolean isForward) {
     m_subsystem = subsystem;
-    m_state = state;
+    m_direction = isForward ? 1 : -1;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_subsystem);
   }
@@ -23,7 +23,13 @@ public class ArmChangeStateCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setTargetState(m_state);
+    int state = m_subsystem.getCurrentState();
+    if (state == 0 || state == 4) {
+      return;
+    } else {
+      m_subsystem.setTargetState(state + m_direction);
+    }
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
