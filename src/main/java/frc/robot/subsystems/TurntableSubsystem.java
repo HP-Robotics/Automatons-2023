@@ -17,6 +17,9 @@ public class TurntableSubsystem extends SubsystemBase {
   public final TalonFX m_turntableMotor;
   private ColorSensorV3 m_colorSensor;
   private NetworkTableEntry n_entry;
+  private int coneCounter = 0;
+  private double pastEncoderValue;
+  private double presentEncoderValue;
 
   /** Creates a new TurntablesSubsystem. */
   public TurntableSubsystem() {
@@ -42,6 +45,11 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RedNormal", (double) m_colorSensor.getRed() / m_colorSensor.getProximity());
     SmartDashboard.putNumber("BlueNormal", (double) m_colorSensor.getBlue() / m_colorSensor.getProximity());
     SmartDashboard.putNumber("GreenNormal", (double) m_colorSensor.getGreen() / m_colorSensor.getProximity());
+
+    SmartDashboard.putNumber("Cone Counter", coneCounter);
+    SmartDashboard.putNumber("Past Encoder Value", pastEncoderValue);
+    SmartDashboard.putNumber("Present Encoder Value", presentEncoderValue);
+    SmartDashboard.putNumber("Real Encoder Value", m_turntableMotor.getSelectedSensorPosition());
 
   }
 
@@ -74,5 +82,32 @@ public class TurntableSubsystem extends SubsystemBase {
 
   public boolean isSomething() {
     return m_colorSensor.getProximity() > TurntableConstants.kDistanceThreshold;
+  }
+
+  public void correctPosition() {
+    if (isCone()) {
+      coneCounter++;
+      if (coneCounter >= 2) {
+        pastEncoderValue = presentEncoderValue;
+      }
+      presentEncoderValue = m_turntableMotor.getSelectedSensorPosition();
+      if (coneCounter >= 2) {
+        if (Math.abs(presentEncoderValue - pastEncoderValue) <= TurntableConstants.ticksThresholdMax
+            && Math.abs(presentEncoderValue - pastEncoderValue) >= TurntableConstants.ticksThresholdMin) {
+          // m_turntableMotor.set(ControlMode.Position,
+          // m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+          SmartDashboard.putNumber("Cone Set Positon",
+              m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+        } else {
+          coneCounter--;
+        }
+      }
+
+    } else if (isCube()) {
+      // m_turntableMotor.set(ControlMode.Position,
+      //   m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
+      SmartDashboard.putNumber("Cube Set Positon",
+          m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
+    }
   }
 }

@@ -175,6 +175,13 @@ public final class Constants {
     public static final double kConeGThreshold = 3.0;
     public static final double kCubeBThreshold = 2.7;
     public static final double kDistanceThreshold = 130;
+
+    public static final double coneCorrectionTicks = 1000;
+    public static final double cubeCorrectionTicks = 250;
+
+    public static final double ticksThresholdMin = 100;
+    public static final double ticksThresholdMax = 4096;
+
     //TODO: Add a current limit
   }
 
