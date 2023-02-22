@@ -46,10 +46,11 @@ public final class Constants {
     public static final boolean useDrive = false; // drive disabled, reenable later
     public static final boolean useArm = false;
     public static final boolean usePneumatics = false;
-    public static final boolean useTurnTables = true;
+    public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
     public static final boolean useLimelight = false;
     public static final boolean useVision = false;
+    public static final boolean useDataManger = false;
   }
 
   public static class DriveConstants {
@@ -70,9 +71,9 @@ public final class Constants {
     public final static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         kFrontLeftLocation, kFrontRightLocation, kBackRightLocation, kBackLeftLocation);
 
-    public static final double drivekP = 0.0005; //old value: 0.0005 OR 0.07
-    public static final double drivekI = 0.00; //old value: 0.000175
-    public static final double drivekD = 0.0;
+    public static final double drivekP = 0.0015; //old value: 0.0005 OR 0.07
+    public static final double drivekI = 0.0001; //old value: 0.000175 new old values: 0.0
+    public static final double drivekD = 0.5; //old value: 0.0
     public static final double drivekF = 0.048;
     public static final double drivekAllowableError = 50;
     public static final double drivekMaxIntegralAccumulation = 20000; // TODO: a guess, finetune later
@@ -141,7 +142,8 @@ public final class Constants {
 
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    public static final double kPXController = 1;
+    public static final double kPXController = 5;
+    public static final double kDXController = 0.0;
     public static final double kPYController = 1;
     public static final double kPThetaController = 5;
 

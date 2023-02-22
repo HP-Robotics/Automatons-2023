@@ -74,7 +74,7 @@ public class MoveSetDistanceCommand extends CommandBase {
       m_thetaController = new ProfiledPIDController(
           //var thetaController = new ProfiledPIDController(
           AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-      m_XController = new PIDController(AutoConstants.kPXController, 0, 0);
+      m_XController = new PIDController(AutoConstants.kPXController, 0, AutoConstants.kDXController);
       m_YController = new PIDController(AutoConstants.kPYController, 0, 0);
 
       m_thetaController.enableContinuousInput(-Math.PI, Math.PI);

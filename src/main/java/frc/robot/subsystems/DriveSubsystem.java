@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,7 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   // Duty Encoders may have the wrong values
 
-  private final PigeonIMU m_pGyro = new PigeonIMU(57);
+  private final WPI_PigeonIMU m_pGyro = new WPI_PigeonIMU(57);
 
   SwerveDriveOdometry m_odometry;
 
@@ -93,9 +94,20 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Left Turn Output", m_backLeft.turnPower());
     SmartDashboard.putNumber("Back Right Turn Output", m_backRight.turnPower());
 
+    SmartDashboard.putNumber("Big Bongo 1 Abs Encoder", m_frontRight.m_absEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Big Bongo 2 Abs Encoder", m_frontLeft.m_absEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Big Bongo 3 Abs Encoder", m_backLeft.m_absEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Big Bongo 4 Abs Encoder", m_backRight.m_absEncoder.getAbsolutePosition());
+
     SmartDashboard.putNumber("Pigeon Pitch", m_pGyro.getPitch());
     SmartDashboard.putNumber("Pigeon Yaw", m_pGyro.getYaw());
     SmartDashboard.putNumber("Pigeon Roll", m_pGyro.getRoll());
+
+    SmartDashboard.putData("Gyro", m_pGyro);
+    m_frontLeft.getDrivePower("Front Left");
+    m_frontRight.getDrivePower("Front Right");
+    m_backLeft.getDrivePower("Back Left");
+    m_backRight.getDrivePower("Back Right");
 
     m_field.setRobotPose(m_odometry.getPoseMeters());
 
@@ -190,7 +202,7 @@ public class DriveSubsystem extends SubsystemBase {
     double roll = m_pGyro.getRoll();
     double sin = Math.sin(Math.toRadians(yaw));
     double cos = Math.cos(Math.toRadians(yaw));
-    return (sin * -1 * pitch) + (roll * cos);
+    return (sin * -1 * roll) + (pitch * -1 * cos);
   } // TODO: need to know whether we're on blue or red team, to mulitply by -1 or not.
 
   public void resetYaw() {
