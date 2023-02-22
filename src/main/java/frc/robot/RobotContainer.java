@@ -15,6 +15,7 @@ import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.MoveWithVisionCommand;
 import frc.robot.commands.SpinClockwiseCommand;
 import frc.robot.commands.SpinCounterClockwiseCommand;
+import frc.robot.commands.TestCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -268,6 +269,8 @@ public class RobotContainer {
           new RunCommand(
               () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
     }
+
+    new JoystickButton(m_opJoystick, 7).whileTrue(new TestCommand(m_turntables));
   }
 
   public void resetDriveOffsets() {

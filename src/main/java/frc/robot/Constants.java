@@ -121,7 +121,7 @@ public final class Constants {
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.28;
     public static final double[] shoulderPositions = { 0.0, 5308.0, -1199.0, 54674.0 };
-    public static final double[] elbowPositions = { 0.0, -69726.0, -115990.0, -171442.0 };
+    public static final double[] elbowPositions = { 0.0, -69726.0, -115990.0, -171442.0 }; //NEED: STOW STATE, INTAKE STATE
 
     public static final int intakeState = 0;
     public static final int lowState = 1;
