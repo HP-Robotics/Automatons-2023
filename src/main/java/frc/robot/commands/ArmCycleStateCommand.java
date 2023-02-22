@@ -23,11 +23,11 @@ public class ArmCycleStateCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    int state = m_subsystem.getCurrentState();
-    if (state == 0 || state == 4) {
+    int newState = m_subsystem.getCurrentState() + m_direction;
+    if (newState <= 0 || newState > 4) {
       return;
     } else {
-      m_subsystem.setTargetState(state + m_direction);
+      m_subsystem.setTargetState(newState);
     }
 
   }
