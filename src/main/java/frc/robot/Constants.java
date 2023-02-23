@@ -29,6 +29,7 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
+    // TODO MENTOR:  the april tag set back is actually 41 cm, not 50, and we need to add in 50% of the size of robot + bumpers
     public static Transform2d leftTrans = new Transform2d(new Translation2d(0.5, 0.6096), new Rotation2d(0));
     public static Transform2d rightTrans = new Transform2d(new Translation2d(0.5, -0.6096), new Rotation2d(0));
     public static Transform2d centerTrans = new Transform2d(new Translation2d(0.5, 0), new Rotation2d(0));
@@ -54,8 +55,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final double kMaxSpeed = 4.0; // 3 meters per second
-    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
+    public static final double kMaxSpeed = 4.0; // 3 meters per second   // TODO MENTOR: comment is funny and wrong, and 5 is better than 4.
+    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second  // TODO MENTOR: is this a good turn speed?
 
     public static final double kWheelRadius = 0.0508;
     public static final int kEncoderResolution = 2048;
@@ -63,7 +64,7 @@ public final class Constants {
     public static final double driveGearRatio = 6.75;
     public static final double rotationGearRatio = 15.429;
 
-    public final static Translation2d kFrontLeftLocation = new Translation2d(0.244, 0.244);
+    public final static Translation2d kFrontLeftLocation = new Translation2d(0.244, 0.244);  // TODO MENTOR: these are wrong. Should get an updated wheel location.
     public final static Translation2d kFrontRightLocation = new Translation2d(0.244, -0.244);
     public final static Translation2d kBackLeftLocation = new Translation2d(-0.244, 0.244);
     public final static Translation2d kBackRightLocation = new Translation2d(-0.244, -0.244);
@@ -134,8 +135,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;//3
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;//0.5 //TODO measure this
+    public static final double kMaxSpeedMetersPerSecond = 3; // TODO MENTOR: are these really the values we want to use?  And note that we don't use them...
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5; // TODO MENTOR: Same issue.  Note that you can generally use an accel that is the same as velocity
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxChargeStationVelocity = 2;
     public static final double kMaxChargeStationAcceleration = 0.5;
@@ -147,7 +148,7 @@ public final class Constants {
     public static final double kPXController = 5;
     public static final double kDXController = 0.0;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 5;
+    public static final double kPThetaController = 5; // TODO MENTOR: tune the theta PID
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(

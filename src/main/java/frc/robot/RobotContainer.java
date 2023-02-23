@@ -138,6 +138,7 @@ public class RobotContainer {
               () -> {
                 m_robotDrive.m_allowVisionUpdates = true;
                 m_robotDrive.drive(
+                    // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount?
                     Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
                     Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
                     MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
@@ -265,15 +266,15 @@ public class RobotContainer {
       }
     }
     if (SubsystemConstants.usePneumatics) {
-      new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
+      new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics)); // TODO MENTOR: This is old code which can be deleted...
       new JoystickButton(m_opJoystick, 3).onTrue(new ChompReverse(m_pneumatics));
     }
     if (SubsystemConstants.useTurnTables) {
-      new JoystickButton(m_opJoystick, 9).whileTrue(new SpinClockwiseCommand(m_turntables));
+      new JoystickButton(m_opJoystick, 9).whileTrue(new SpinClockwiseCommand(m_turntables)); // TODO MENTOR: need to switch to POV
       new JoystickButton(m_opJoystick, 10).whileTrue(new SpinCounterClockwiseCommand(m_turntables));
     }
     if (SubsystemConstants.useIntake) {
-      new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake));
+      new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake));  // TODO MENTOR: this is the wrong button, and we need a lot of new logic
 
     }
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
@@ -296,6 +297,7 @@ public class RobotContainer {
 
   public void resetDriveOffsets() {
 
+    // TODO MENTOR: this should be up in configureBindings() above...
     if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
       new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
       new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));

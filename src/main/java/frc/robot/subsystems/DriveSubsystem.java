@@ -26,9 +26,10 @@ import frc.robot.SwerveModule;
 
 /** Represents a swerve drive style drivetrain. */
 public class DriveSubsystem extends SubsystemBase {
-  public static final double kMaxSpeed = 4.0; // 3 meters per second
-  public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
+  public static final double kMaxSpeed = 4.0; // 3 meters per second    TODO MENTOR: delete this in favor of DriveConstants
+  public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second    TODO MENTOR:  delete this in favor of DriveConstants
 
+  // TODO MENTOR: the PDH has sensible channel numbering, so we could renumber these motors.
   private final SwerveModule m_frontLeft = new SwerveModule(13, 12, 12, RobotConstants.swerveOffsetFL, "FL"); // BIG BONGO 2
   private final SwerveModule m_frontRight = new SwerveModule(2, 3, 11, RobotConstants.swerveOffsetFR, "FR"); // BIG BONGO 1
   private final SwerveModule m_backLeft = new SwerveModule(14, 15, 13, RobotConstants.swerveOffsetBL, "BL"); // BIG BONGO 3
@@ -40,12 +41,12 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   // Duty Encoders may have the wrong values
 
-  private final WPI_PigeonIMU m_pGyro = new WPI_PigeonIMU(57);
+  private final WPI_PigeonIMU m_pGyro = new WPI_PigeonIMU(57);  //TODO MENTOR: undo pigeon
 
   SwerveDriveOdometry m_odometry;
 
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable table = inst.getTable("limelight-chloe");
+  NetworkTable table = inst.getTable("limelight-chloe");  //TODO MENTOR: we want to use the good limelight
   NetworkTable pipeline = inst.getTable("SmartDashboard");
   NetworkTableEntry gamePieceX = table.getEntry("tx");
 
@@ -103,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pigeon Yaw", m_pGyro.getYaw());
     SmartDashboard.putNumber("Pigeon Roll", m_pGyro.getRoll());
 
-    SmartDashboard.putData("Gyro", m_pGyro);
+    SmartDashboard.putData("Gyro", m_pGyro); // TODO MENTOR: this can go when we get rid of WPI_PigeonIMU
     m_frontLeft.getDrivePower("Front Left");
     m_frontRight.getDrivePower("Front Right");
     m_backLeft.getDrivePower("Back Left");
@@ -134,7 +135,7 @@ public class DriveSubsystem extends SubsystemBase {
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, pigeonYaw)
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);  // TODO MENTOR: use DriveConstants.kMaxSpeed
     setModuleStates(swerveModuleStates);
   }
 
@@ -159,7 +160,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backRight.setDesiredState(swerveModuleStates[2]);
     m_backLeft.setDesiredState(swerveModuleStates[3]);
-    ;
+    // TODO MENTOR: these two putnumber lines can be deleted
     SmartDashboard.putNumber("Speed (0)", swerveModuleStates[0].speedMetersPerSecond);
     SmartDashboard.putNumber("Ticks (0)", m_frontLeft.metersToTicks(swerveModuleStates[0].speedMetersPerSecond));
   }

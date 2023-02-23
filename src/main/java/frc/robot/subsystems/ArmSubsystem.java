@@ -27,37 +27,38 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem() {
     m_shoulderMotor = new TalonFX(ArmConstants.shoulderID);
     m_shoulderMotor.configFactoryDefault();
-    m_shoulderMotor.setNeutralMode(NeutralMode.Coast); //TODO: reset to brake mode, testing
+    m_shoulderMotor.setNeutralMode(NeutralMode.Coast); //TODO MENTOR: reset to brake mode, testing
     m_shoulderMotor.config_kP(0, ArmConstants.shoulderkP);
     m_shoulderMotor.config_kI(0, ArmConstants.shoulderkI);
     m_shoulderMotor.config_kD(0, ArmConstants.shoulderkD);
     m_shoulderMotor.configPeakOutputForward(0.3);
-    m_shoulderMotor.configPeakOutputReverse(-0.3); //TODO: remove these eventually, once tuning is finished
+    m_shoulderMotor.configPeakOutputReverse(-0.3); //TODO MENTOR: remove these eventually, once tuning is finished
     m_shoulderMotor.configMotionAcceleration(ArmConstants.shoulderAcceleration);
     m_shoulderMotor.configMotionCruiseVelocity(ArmConstants.shoulderMaxVelocity);
     m_shoulderMotor.configMotionSCurveStrength(ArmConstants.shoulderSCurve);
 
-    m_shoulderMotor.set(ControlMode.MotionMagic, 0);
+    m_shoulderMotor.set(ControlMode.MotionMagic, 0); //TODO MENTOR: We change this below, so we could just delete this
     m_shoulderEncoder = new DutyCycleEncoder(1);
 
     m_elbowMotor = new TalonFX(ArmConstants.elbowID);
     m_elbowMotor.configFactoryDefault();
-    m_elbowMotor.setNeutralMode(NeutralMode.Coast); //TODO: reset to brake mode, testing
+    m_elbowMotor.setNeutralMode(NeutralMode.Coast); //TODO MENTOR: reset to brake mode, testing
     m_elbowMotor.config_kP(0, ArmConstants.shoulderkP);
     m_elbowMotor.config_kI(0, ArmConstants.shoulderkI);
     m_elbowMotor.config_kD(0, ArmConstants.shoulderkD);
     m_elbowMotor.configPeakOutputForward(0.3);
-    m_elbowMotor.configPeakOutputReverse(-0.3); //TODO: remove these eventually, once tuning is finished
+    m_elbowMotor.configPeakOutputReverse(-0.3); //TODO MENTOR: remove these eventually, once tuning is finished
     m_elbowMotor.configMotionAcceleration(ArmConstants.elbowAcceleration);
     m_elbowMotor.configMotionCruiseVelocity(ArmConstants.elbowMaxVelocity);
     m_elbowMotor.configMotionSCurveStrength(ArmConstants.elbowSCurve);
 
     m_elbowEncoder = new DutyCycleEncoder(0);
 
-    m_targetState = 0;
+    m_targetState = 0;  // TODO MENTOR: do we really want to start at 0?
     m_currentState = 0;
     m_isChanging = false;
 
+    // TODO MENTOR:  If the arm is all the way out and we deploy new code, at enable, we would move the arm to starting state.  Is that safe?
     m_shoulderMotor.set(ControlMode.Position, ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.Position, ArmConstants.elbowPositions[m_currentState]);
   }
@@ -146,7 +147,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_isChanging = true;
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
-    //TO DO: Set velocity?
+    //TODO MENTOR: We may need to set relative velocities to get the right movement
   }
 
   public void setTargetState(int state) {
