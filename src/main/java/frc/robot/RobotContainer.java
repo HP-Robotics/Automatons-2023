@@ -266,15 +266,22 @@ public class RobotContainer {
       }
     }
     if (SubsystemConstants.usePneumatics) {
-      new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics)); // TODO MENTOR: This is old code which can be deleted...
-      new JoystickButton(m_opJoystick, 3).onTrue(new ChompReverse(m_pneumatics));
+      new JoystickButton(m_opJoystick, 6).onTrue(new ChompForward(m_pneumatics));
+      new JoystickButton(m_opJoystick, 5).onTrue(new ChompReverse(m_pneumatics));
     }
     if (SubsystemConstants.useTurnTables) {
-      new JoystickButton(m_opJoystick, 9).whileTrue(new SpinClockwiseCommand(m_turntables)); // TODO MENTOR: need to switch to POV
-      new JoystickButton(m_opJoystick, 10).whileTrue(new SpinCounterClockwiseCommand(m_turntables));
+      new Trigger(() -> {
+        return m_opJoystick.getPOV() == 270;
+      }).onTrue(new InstantCommand(m_turntables::spinCounterClockwise));
+      new Trigger(() -> {
+        return m_opJoystick.getPOV() == 90;
+      }).onTrue(new InstantCommand(m_turntables::spinClockwise));
+      new Trigger(() -> {
+        return m_opJoystick.getPOV() == 0;
+      }).onTrue(new InstantCommand(m_turntables::stopSpinning));
     }
     if (SubsystemConstants.useIntake) {
-      new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake));  // TODO MENTOR: this is the wrong button, and we need a lot of new logic
+      new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake)); // TODO MENTOR: this is the wrong button, and we need a lot of new logic
 
     }
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
@@ -293,16 +300,16 @@ public class RobotContainer {
     }
 
     new JoystickButton(m_opJoystick, 7).whileTrue(new TestCommand(m_turntables));
-  }
 
-  public void resetDriveOffsets() {
-
-    // TODO MENTOR: this should be up in configureBindings() above...
     if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
       new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
       new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
 
     }
+  }
+
+  public void resetDriveOffsets() {
+
     if (SubsystemConstants.useDrive) {
       m_robotDrive.resetOffsets();
 

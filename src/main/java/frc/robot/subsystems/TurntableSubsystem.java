@@ -20,6 +20,8 @@ public class TurntableSubsystem extends SubsystemBase {
   private int coneCounter = 0;
   private double pastEncoderValue;
   private double presentEncoderValue;
+  public boolean m_intakeProcessRunning;
+  public boolean m_gamePieceDetected;
 
   /** Creates a new TurntablesSubsystem. */
   public TurntableSubsystem() {
@@ -30,6 +32,8 @@ public class TurntableSubsystem extends SubsystemBase {
     m_turntableMotor.config_kP(0, TurntableConstants.motorkP);
     m_turntableMotor.config_kI(0, TurntableConstants.motorkI);
     m_turntableMotor.config_kD(0, TurntableConstants.motorkD);
+    m_intakeProcessRunning = false;
+    m_gamePieceDetected = false;
     // TODO: Current limit + tuning
   }
 
@@ -51,16 +55,24 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Present Encoder Value", presentEncoderValue);
     SmartDashboard.putNumber("Real Encoder Value", m_turntableMotor.getSelectedSensorPosition());
 
+    if (m_intakeProcessRunning) {
+      if (isSomething()) {
+        m_gamePieceDetected = true;
+      }
+      if (m_gamePieceDetected) {
+        correctPosition();
+      }
+    }
   }
 
   public void spinClockwise() {
     // TODO: Use velocity control
-    m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.clockwiseSpeed);
+    m_turntableMotor.set(ControlMode.Velocity, TurntableConstants.clockwiseSpeed);
   }
 
   public void spinCounterClockwise() {
     // TODO: Use velocity control
-    m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.counterClockwiseSpeed);
+    m_turntableMotor.set(ControlMode.Velocity, TurntableConstants.counterClockwiseSpeed);
   }
 
   public void stopSpinning() {
@@ -109,5 +121,13 @@ public class TurntableSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Cube Set Positon",
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
     }
+  }
+
+  public void intakeOn() {
+    m_intakeProcessRunning = true;
+  }
+
+  public void intakeOff() {
+    m_intakeProcessRunning = false;
   }
 }
