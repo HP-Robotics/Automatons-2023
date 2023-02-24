@@ -77,6 +77,8 @@ public class RobotContainer {
   private final SendableChooser<Boolean> m_grabPiece1;
   private final SendableChooser<Boolean> m_grabPiece2;
   private final SendableChooser<Boolean> m_chargeBalance;
+
+  private Boolean m_manualArm = false;
   // The driver's controller
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -242,9 +244,15 @@ public class RobotContainer {
       //new JoystickButton(m_opJoystick, 7).onTrue(new BackToNormalCommand(m_robotArm));
 
       System.out.println("Im alive!");
+      new Trigger(() -> m_manualArm).whileTrue(
+          new RunCommand(() -> {
+            m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2);
+            m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2);
+          }, m_robotArm));
 
-      //new RunCommand(() -> m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2), m_robotArm);
-      //new RunCommand(() -> m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2), m_robotArm);
+      new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(() -> m_manualArm = true));
+      new JoystickButton(m_opJoystick, 8).onTrue(new InstantCommand(() -> m_manualArm = false));
+
       //new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
       new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
       new JoystickButton(m_opJoystick, 2).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.midState));
@@ -265,10 +273,6 @@ public class RobotContainer {
         new JoystickButton(m_opJoystick, 5).onTrue(new ChompReverse(m_pneumatics));
       }
     }
-    if (SubsystemConstants.usePneumatics) {
-      new JoystickButton(m_opJoystick, 6).onTrue(new ChompForward(m_pneumatics));
-      new JoystickButton(m_opJoystick, 5).onTrue(new ChompReverse(m_pneumatics));
-    }
     if (SubsystemConstants.useTurnTables) {
       new Trigger(() -> {
         return m_opJoystick.getPOV() == 270;
@@ -281,7 +285,7 @@ public class RobotContainer {
       }).onTrue(new InstantCommand(m_turntables::stopSpinning));
     }
     if (SubsystemConstants.useIntake) {
-      new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake)); // TODO MENTOR: this is the wrong button, and we need a lot of new logic
+      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake)); // TODO MENTOR: we need a lot of new logic
 
     }
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
