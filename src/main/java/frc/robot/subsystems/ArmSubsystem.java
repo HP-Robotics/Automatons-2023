@@ -92,7 +92,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveElbow(double speed) {
-    m_elbowMotor.set(ControlMode.PercentOutput, speed);
+    m_elbowMotor.set(ControlMode.PercentOutput, -speed);
     System.out.println("elbow running at " + speed);
   }
 
