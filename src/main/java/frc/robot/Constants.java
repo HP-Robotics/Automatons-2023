@@ -102,7 +102,7 @@ public final class Constants {
   }
 
   public static class ArmConstants {
-    public static final int shoulderID = 19;
+    public static final int shoulderID = 17;
     public static final double shoulderkP = .075; //.05
     public static final double shoulderkI = .0000;
     public static final double shoulderkD = 0;
@@ -112,7 +112,7 @@ public final class Constants {
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.82;
 
-    public static final int elbowID = 17;
+    public static final int elbowID = 19;
     public static final double elbowkP = .075; //.05
     public static final double elbowkI = .0000;
     public static final double elbowkD = 0;
