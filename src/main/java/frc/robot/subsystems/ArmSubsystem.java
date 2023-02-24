@@ -58,8 +58,8 @@ public class ArmSubsystem extends SubsystemBase {
     m_isChanging = false;
 
     // TODO MENTOR:  If the arm is all the way out and we deploy new code, at enable, we would move the arm to starting state.  Is that safe?
-    m_shoulderMotor.set(ControlMode.Position, ArmConstants.shoulderPositions[m_currentState]);
-    m_elbowMotor.set(ControlMode.Position, ArmConstants.elbowPositions[m_currentState]);
+    // m_shoulderMotor.set(ControlMode.Position, ArmConstants.shoulderPositions[m_currentState]);
+    // m_elbowMotor.set(ControlMode.Position, ArmConstants.elbowPositions[m_currentState]);
   }
 
   @Override
