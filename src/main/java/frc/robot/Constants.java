@@ -188,7 +188,6 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int motorID = 18;
-    //TODO: Find motor ID for intake
     public static final double motorkP = .1;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
