@@ -13,10 +13,10 @@ import frc.robot.Constants.PneumaticsConstants;
 public class PneumaticsSubsystem extends SubsystemBase {
 
   // DoubleSolenoid corresponds to a double solenoid.
-  private final DoubleSolenoid m_chomp = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 0,
-      1);
-  private final DoubleSolenoid m_intake = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 2,
+  private final DoubleSolenoid m_chomp = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 2,
       3);
+  private final DoubleSolenoid m_intake = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 0,
+      1);
   Compressor m_compressor;
 
   /** Creates a new PneumaticsSubsystem. */
