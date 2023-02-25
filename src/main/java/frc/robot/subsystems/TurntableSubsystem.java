@@ -22,6 +22,7 @@ public class TurntableSubsystem extends SubsystemBase {
   private double presentEncoderValue;
   public boolean m_intakeProcessRunning;
   public boolean m_gamePieceDetected;
+  public boolean m_magicTurntableOn;
 
   /** Creates a new TurntablesSubsystem. */
   public TurntableSubsystem() {
@@ -34,6 +35,7 @@ public class TurntableSubsystem extends SubsystemBase {
     m_turntableMotor.config_kD(0, TurntableConstants.motorkD);
     m_intakeProcessRunning = false;
     m_gamePieceDetected = false;
+    m_magicTurntableOn = false;
     // TODO: Current limit + tuning
   }
 
@@ -75,6 +77,15 @@ public class TurntableSubsystem extends SubsystemBase {
 
   public void stopSpinning() {
     m_turntableMotor.set(ControlMode.PercentOutput, 0);
+    stopMagicTurntable();
+  }
+
+  public void magicTurntableStart() {
+    m_magicTurntableOn = true;
+  }
+
+  public void stopMagicTurntable() {
+    m_magicTurntableOn = false;
   }
 
   public boolean isCube() {
@@ -104,24 +115,29 @@ public class TurntableSubsystem extends SubsystemBase {
       if (coneCounter >= 2) {
         if (Math.abs(presentEncoderValue - pastEncoderValue) <= TurntableConstants.ticksThresholdMax
             && Math.abs(presentEncoderValue - pastEncoderValue) >= TurntableConstants.ticksThresholdMin) {
-          m_turntableMotor.set(ControlMode.Position,
-              m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
-          SmartDashboard.putNumber("Cone Set Positon",
-              m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
           return true;
         } else {
           coneCounter--;
         }
       }
+    } else if (isCube()) {
+      return true;
+    }
+    return false;
+  }
 
+  public void goToCorrectPosition() {
+    if (coneCounter >= 2) {
+      m_turntableMotor.set(ControlMode.Position,
+          m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+      SmartDashboard.putNumber("Cone Set Positon",
+          m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
     } else if (isCube()) {
       m_turntableMotor.set(ControlMode.Position,
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
       SmartDashboard.putNumber("Cube Set Positon",
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
-      return true;
     }
-    return false;
   }
 
   public void intakeOn() {

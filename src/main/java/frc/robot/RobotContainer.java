@@ -24,6 +24,7 @@ import frc.robot.subsystems.TurntableSubsystem;
 import java.util.List;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -285,9 +286,11 @@ public class RobotContainer {
       }).onTrue(new InstantCommand(m_turntables::stopSpinning));
 
       new JoystickButton(m_joystick, 9).onTrue(new MagicTurntable(m_turntables));
+      new JoystickButton(m_joystick, 9).debounce(TurntableConstants.waitTime, DebounceType.kFalling)
+          .onFalse(new InstantCommand(m_turntables::stopMagicTurntable));
     }
 
-    if (SubsystemConstants.useIntake) {
+    if (SubsystemConstants.useIntake && SubsystemConstants.usePneumatics) {
       new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics)); // TODO MENTOR: we need a lot of new logic
       //TODO List of things for sequentialcommandgroup: 
 

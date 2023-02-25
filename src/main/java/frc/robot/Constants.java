@@ -185,6 +185,8 @@ public final class Constants {
     public static final double ticksThresholdMin = 100;
     public static final double ticksThresholdMax = 4096;
 
+    public static final double waitTime = 2;
+
     //TODO: Add a current limit
   }
 
