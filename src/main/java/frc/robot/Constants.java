@@ -29,9 +29,9 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
-    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.41 + 0.4, 0.6096), new Rotation2d(0));
-    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.41 + 0.4, -0.6096), new Rotation2d(0));
-    public static Transform2d centerTrans = new Transform2d(new Translation2d(0.41 + 0.4, 0), new Rotation2d(0));
+    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.35 + 0.4, 0.6096), new Rotation2d(0));
+    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.35 + 0.4, -0.6096), new Rotation2d(0));
+    public static Transform2d centerTrans = new Transform2d(new Translation2d(0.35 + 0.4, 0), new Rotation2d(0));
     public static Transform2d cameraToRobot = new Transform2d(new Translation2d(-0.3302, 0.0127),
         new Rotation2d(Math.PI));
     //0.0.05 is distance of outside of bumper, 2 inches, -0.3302 camera to robot
