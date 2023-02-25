@@ -66,13 +66,11 @@ public class TurntableSubsystem extends SubsystemBase {
   }
 
   public void spinClockwise() {
-    // TODO: Use velocity control
-    m_turntableMotor.set(ControlMode.Velocity, TurntableConstants.clockwiseSpeed);
+    m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.clockwiseSpeed);
   }
 
   public void spinCounterClockwise() {
-    // TODO: Use velocity control
-    m_turntableMotor.set(ControlMode.Velocity, TurntableConstants.counterClockwiseSpeed);
+    m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.counterClockwiseSpeed);
   }
 
   public void stopSpinning() {
@@ -96,7 +94,7 @@ public class TurntableSubsystem extends SubsystemBase {
     return m_colorSensor.getProximity() > TurntableConstants.kDistanceThreshold;
   }
 
-  public void correctPosition() {
+  public boolean correctPosition() {
     if (isCone()) {
       coneCounter++;
       if (coneCounter >= 2) {
@@ -106,21 +104,24 @@ public class TurntableSubsystem extends SubsystemBase {
       if (coneCounter >= 2) {
         if (Math.abs(presentEncoderValue - pastEncoderValue) <= TurntableConstants.ticksThresholdMax
             && Math.abs(presentEncoderValue - pastEncoderValue) >= TurntableConstants.ticksThresholdMin) {
-          // m_turntableMotor.set(ControlMode.Position,
-          // m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+          m_turntableMotor.set(ControlMode.Position,
+              m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
           SmartDashboard.putNumber("Cone Set Positon",
               m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+          return true;
         } else {
           coneCounter--;
         }
       }
 
     } else if (isCube()) {
-      // m_turntableMotor.set(ControlMode.Position,
-      //   m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
+      m_turntableMotor.set(ControlMode.Position,
+          m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
       SmartDashboard.putNumber("Cube Set Positon",
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
+      return true;
     }
+    return false;
   }
 
   public void intakeOn() {
