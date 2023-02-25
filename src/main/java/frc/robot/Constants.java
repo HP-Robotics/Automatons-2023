@@ -29,11 +29,13 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
-    // TODO MENTOR:  the april tag set back is actually 41 cm, not 50, and we need to add in 50% of the size of robot + bumpers
-    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.5, 0.6096), new Rotation2d(0));
-    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.5, -0.6096), new Rotation2d(0));
-    public static Transform2d centerTrans = new Transform2d(new Translation2d(0.5, 0), new Rotation2d(0));
-    public static Transform2d cameraToRobot = new Transform2d(new Translation2d(0, 0), new Rotation2d(Math.PI));
+    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.41 + 0.4, 0.6096), new Rotation2d(0));
+    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.41 + 0.4, -0.6096), new Rotation2d(0));
+    public static Transform2d centerTrans = new Transform2d(new Translation2d(0.41 + 0.4, 0), new Rotation2d(0));
+    public static Transform2d cameraToRobot = new Transform2d(new Translation2d(-0.3302, 0.0127),
+        new Rotation2d(Math.PI));
+    //0.0.05 is distance of outside of bumper, 2 inches, -0.3302 camera to robot
+    //0.41 is the beilived distance from April Tags to the outside
   }
 
   public static String autonomousMode = "NotVision";
@@ -45,7 +47,7 @@ public final class Constants {
 
   public static class SubsystemConstants {
     public static final boolean useDrive = false; // drive disabled, reenable later
-    public static final boolean useArm = true;
+    public static final boolean useArm = false;
     public static final boolean usePneumatics = false;
     public static final boolean useTurnTables = false;
     public static final boolean useIntake = false;
@@ -64,10 +66,10 @@ public final class Constants {
     public static final double driveGearRatio = 6.75;
     public static final double rotationGearRatio = 15.429;
 
-    public final static Translation2d kFrontLeftLocation = new Translation2d(0.244, 0.244); // TODO MENTOR: these are wrong. Should get an updated wheel location.
-    public final static Translation2d kFrontRightLocation = new Translation2d(0.244, -0.244);
-    public final static Translation2d kBackLeftLocation = new Translation2d(-0.244, 0.244);
-    public final static Translation2d kBackRightLocation = new Translation2d(-0.244, -0.244);
+    public final static Translation2d kFrontLeftLocation = new Translation2d(0.270, 0.270);
+    public final static Translation2d kFrontRightLocation = new Translation2d(0.270, -0.270);
+    public final static Translation2d kBackLeftLocation = new Translation2d(-0.270, 0.270);
+    public final static Translation2d kBackRightLocation = new Translation2d(-0.270, -0.270);
 
     public final static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         kFrontLeftLocation, kFrontRightLocation, kBackRightLocation, kBackLeftLocation);
@@ -136,7 +138,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 5; // TODO MENTOR: And note that we don't use them...
-    public static final double kMaxAccelerationMetersPerSecondSquared = 5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxChargeStationVelocity = 2;
     public static final double kMaxChargeStationAcceleration = 0.5;
@@ -147,7 +149,7 @@ public final class Constants {
 
     public static final double kPXController = 5;
     public static final double kDXController = 0.0;
-    public static final double kPYController = 1;
+    public static final double kPYController = 1; //TODO why is Y different?
     public static final double kPThetaController = 5; // TODO MENTOR: tune the theta PID
 
     // Constraint for the motion profiled robot angle controller
@@ -169,8 +171,8 @@ public final class Constants {
     public static final double motorkP = .1;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
-    public static final double clockwiseSpeed = .15;
-    public static final double counterClockwiseSpeed = -.15;
+    public static final double clockwiseSpeed = .5;
+    public static final double counterClockwiseSpeed = -.5;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
     public static final double kConeGThreshold = 3.0;

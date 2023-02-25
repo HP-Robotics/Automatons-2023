@@ -10,18 +10,20 @@ import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.List;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 /** An example command that uses an example subsystem. */
 public class MoveSetDistanceCommand extends CommandBase {
@@ -34,7 +36,8 @@ public class MoveSetDistanceCommand extends CommandBase {
   private final double m_Velocity;
   private final double m_Acceleration;
   private final List<Translation2d> m_MidPoints;
-  private ProfiledPIDController m_thetaController;
+  private final List<PathPoint> m_wayPoints;
+  private PIDController m_thetaController;
   private PIDController m_XController;
   private PIDController m_YController;
 
@@ -54,6 +57,7 @@ public class MoveSetDistanceCommand extends CommandBase {
     m_MidPoints = midPoints;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
+    m_wayPoints = List.of();
   }
 
   public MoveSetDistanceCommand(DriveSubsystem subsystem, Pose2d Destination) {
@@ -71,24 +75,33 @@ public class MoveSetDistanceCommand extends CommandBase {
           // Add kinematics to ensure max speed is actually obeyed
           .setKinematics(DriveConstants.kDriveKinematics);
 
-      m_thetaController = new ProfiledPIDController(
+      m_thetaController = new PIDController(
           //var thetaController = new ProfiledPIDController(
-          AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+          AutoConstants.kPThetaController, 0, 0);
       m_XController = new PIDController(AutoConstants.kPXController, 0, AutoConstants.kDXController);
       m_YController = new PIDController(AutoConstants.kPYController, 0, 0);
 
       m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
+      m_wayPoints.add(new PathPoint(new Translation2d(m_subsystem.getPoseX(), m_subsystem.getPoseY()),
+          Rotation2d.fromDegrees(0), m_subsystem.getPoseRot()));
+      for (int i = 0; i < m_MidPoints.size(); i++) {
+        m_wayPoints.add(new PathPoint(m_MidPoints.get(i), new Rotation2d(0)));
+      }
+      m_wayPoints.add(new PathPoint(new Translation2d(m_X, m_Y), new Rotation2d(0), m_Rot));
+
       // An example trajectory to follow. All units in meters.
-      Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(m_subsystem.getPoseX(), m_subsystem.getPoseY(), (m_subsystem.getPoseRot())),
-          // Pass through these two interior waypoints, making an 's' curve path
-          m_MidPoints,
-          // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(m_X, m_Y, m_Rot),
-          config); //Added robot poseX and y to this command
-      m_swerveControllerCommand = new SwerveControllerCommand(
+      PathPlannerTrajectory forwardTrajectory = PathPlanner.generatePath(
+          new PathConstraints(m_Velocity, m_Acceleration),
+          m_wayPoints
+      // Start at the origin facing the +X direction
+      //new PathPoint(new Translation2d(m_subsystem.getPoseX(), m_subsystem.getPoseY()), Rotation2d.fromDegrees(0), m_subsystem.getPoseRot()),
+      // Pass through these two interior waypoints, making an 's' curve path
+      // End 3 meters straight ahead of where we started, facing forward
+      //new Pose2d(m_X, m_Y, m_Rot),
+      //config); //Added robot poseX and y to this command
+      );
+      m_swerveControllerCommand = new PPSwerveControllerCommand(
           forwardTrajectory,
           m_subsystem::getPose, // Functional interface to feed supplier
           DriveConstants.kDriveKinematics,
@@ -96,6 +109,7 @@ public class MoveSetDistanceCommand extends CommandBase {
           // Position controllers
           m_XController, m_YController, m_thetaController,
           m_subsystem::setModuleStates,
+          false,
           m_subsystem);
 
       m_swerveControllerCommand.initialize();
@@ -115,7 +129,7 @@ public class MoveSetDistanceCommand extends CommandBase {
   public void execute() {
     if (m_swerveControllerCommand != null) {
       m_swerveControllerCommand.execute();
-      SmartDashboard.putNumber("thetaSetpoint", m_thetaController.getSetpoint().position);
+      SmartDashboard.putNumber("thetaSetpoint", m_thetaController.getSetpoint());
       SmartDashboard.putNumber("thetaError", m_thetaController.getPositionError());
       SmartDashboard.putNumber("XsetPoint", m_XController.getSetpoint());
       SmartDashboard.putNumber("XError", m_XController.getPositionError());
@@ -124,7 +138,7 @@ public class MoveSetDistanceCommand extends CommandBase {
       SmartDashboard.putNumber("XPosition", m_XController.getSetpoint() - m_XController.getPositionError());
       SmartDashboard.putNumber("YPosition", m_YController.getSetpoint() - m_YController.getPositionError());
       SmartDashboard.putNumber("thetaPosition",
-          m_thetaController.getSetpoint().position - m_thetaController.getPositionError());
+          m_thetaController.getSetpoint() - m_thetaController.getPositionError());
 
     }
     // if (m_vision != null) {

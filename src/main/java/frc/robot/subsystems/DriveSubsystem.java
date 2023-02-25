@@ -44,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
   SwerveDriveOdometry m_odometry;
 
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable table = inst.getTable("limelight-chloe"); //TODO MENTOR: we want to use the good limelight
+  NetworkTable table = inst.getTable("limelight-prada");
   NetworkTable pipeline = inst.getTable("SmartDashboard");
   NetworkTableEntry gamePieceX = table.getEntry("tx");
 
@@ -199,7 +199,7 @@ public class DriveSubsystem extends SubsystemBase {
     double sin = Math.sin(Math.toRadians(yaw));
     double cos = Math.cos(Math.toRadians(yaw));
     return (sin * -1 * roll) + (pitch * -1 * cos);
-  } // TODO: need to know whether we're on blue or red team, to mulitply by -1 or not.
+  }
 
   public void resetYaw() {
     m_pGyro.setYaw(0);
@@ -231,6 +231,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void switchCameraPipeline() { // for driver visibility
-    SmartDashboard.getEntry("limelight-chloe_PipelineName").setValue("Cube");
+    SmartDashboard.getEntry("limelight-prada_PipelineName").setValue("Cube");
   }
 }

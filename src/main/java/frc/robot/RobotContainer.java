@@ -12,18 +12,15 @@ import frc.robot.commands.ChompForward;
 import frc.robot.commands.ChompReverse;
 import frc.robot.commands.DriveTrackGamePiece;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MagicTurntable;
 import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.MoveWithVisionCommand;
-import frc.robot.commands.SpinClockwiseCommand;
-import frc.robot.commands.SpinCounterClockwiseCommand;
-import frc.robot.commands.TestCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.TurntableSubsystem;
 
-import java.lang.Character.Subset;
 import java.util.List;
 
 import edu.wpi.first.math.MathUtil;
@@ -38,8 +35,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -230,13 +225,18 @@ public class RobotContainer {
 
       // Create config for trajectory
 
-      //new JoystickButton(m_joystick, 12)
-      //    .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(0),
-      //        AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-      //        List.of(new Translation2d(1.0, 0.0))));
-      //new JoystickButton(m_joystick, 13).onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
-      //    AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, List.of()));
-
+      new JoystickButton(m_joystick, 13)
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.0, new Rotation2d(0),
+              AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+              List.of(new Translation2d(0.75, 0.0))));
+      new JoystickButton(m_joystick, 12)
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
+              AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, // List.of()));
+              List.of(new Translation2d(0.25, 0.0))));
+      new JoystickButton(m_joystick, 11)
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, -1.0, 0.0, new Rotation2d(0),
+              AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+              List.of(new Translation2d(-0.75, 0.0))));
     }
 
     if (SubsystemConstants.useArm) {
@@ -283,9 +283,13 @@ public class RobotContainer {
       new Trigger(() -> {
         return m_opJoystick.getPOV() == 0;
       }).onTrue(new InstantCommand(m_turntables::stopSpinning));
+
+      new JoystickButton(m_joystick, 9).onTrue(new MagicTurntable(m_turntables));
     }
+
     if (SubsystemConstants.useIntake) {
-      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake)); // TODO MENTOR: we need a lot of new logic
+      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics)); // TODO MENTOR: we need a lot of new logic
+      //TODO List of things for sequentialcommandgroup: 
 
     }
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
