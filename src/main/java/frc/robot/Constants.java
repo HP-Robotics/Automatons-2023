@@ -29,10 +29,12 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
-    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.35 + 0.4, 0.6096), new Rotation2d(0));
-    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.35 + 0.4, -0.6096), new Rotation2d(0));
-    public static Transform2d centerTrans = new Transform2d(new Translation2d(0.35 + 0.4, 0), new Rotation2d(0));
-    public static Transform2d cameraToRobot = new Transform2d(new Translation2d(-0.3302, 0.0127),
+    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.35 + 0.4 + .12, 0.6096),
+        new Rotation2d(0));
+    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.35 + 0.4 + 0.12, -0.6096),
+        new Rotation2d(0));
+    public static Transform2d centerTrans = new Transform2d(new Translation2d(0.35 + 0.4 + .12, 0), new Rotation2d(0));
+    public static Transform2d cameraToRobot = new Transform2d(new Translation2d(-0.3302, 0.0889),
         new Rotation2d(Math.PI));
     //0.0.05 is distance of outside of bumper, 2 inches, -0.3302 camera to robot
     //0.41 is the beilived distance from April Tags to the outside
@@ -46,19 +48,21 @@ public final class Constants {
   }
 
   public static class SubsystemConstants {
-    public static final boolean useDrive = false; // drive disabled, reenable later
-    public static final boolean useArm = false;
-    public static final boolean usePneumatics = false;
+    public static final boolean useDrive = true; // drive disabled, reenable later
+    public static final boolean useArm = true;
+    public static final boolean usePneumatics = true;
     public static final boolean useTurnTables = false;
-    public static final boolean useIntake = false;
-    public static final boolean useLimelight = false;
-    public static final boolean useVision = false;
+    public static final boolean useIntake = true;
+    public static final boolean useLimelight = true;
+    public static final boolean useVision = true;
     public static final boolean useDataManger = false;
   }
 
   public static class DriveConstants {
     public static final double kMaxSpeed = 5.0; // meters per second 
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second  // TODO MENTOR: is this a good turn speed?
+    public static final double kSlowSpeed = 2.0;
+    public static final double kSlowAngularspeed = Math.PI / 2; // 1/4 rotation per second  // TODO MENTOR: is this a good turn speed?
 
     public static final double kWheelRadius = 0.0508;
     public static final int kEncoderResolution = 2048;
@@ -105,12 +109,14 @@ public final class Constants {
 
   public static class ArmConstants {
     public static final int shoulderID = 17;
-    public static final double shoulderkP = .075; //.05
-    public static final double shoulderkI = .0000;
+    public static final double shoulderkP = .07; //.05
+    public static final double shoulderkI = .005;
     public static final double shoulderkD = 0;
+    public static final double shoulderMaxAllowableError = 200;
+    public static final double shoulderIZone = 500;
     public static final double shoulderGearRatio = 384; // just a guess
-    public static final int shoulderAcceleration = 10000;
-    public static final int shoulderMaxVelocity = 10000;
+    public static final int shoulderAcceleration = 20000;
+    public static final int shoulderMaxVelocity = 20000;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.82;
 
@@ -123,8 +129,6 @@ public final class Constants {
     public static final int elbowMaxVelocity = 10000;
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.28;
-    public static final double[] shoulderPositions = { 0.0, 69, 5308.0, -1199.0, 54674.0 };
-    public static final double[] elbowPositions = { 0.0, -6969, -69726.0, -115990.0, -171442.0 };
 
     public static final int intakeState = 0;
     public static final int stowState = 1;
@@ -134,6 +138,25 @@ public final class Constants {
 
     public static final double errorThreshold = 1000.0;
     public static final boolean useAbsoluteEncoders = false;
+
+    public static final double shoulderHigh = 56286;
+    public static final double elbowHigh = 202989;
+
+    public static final double shoulderMid = -3797;
+    public static final double elbowMid = 117997;
+
+    public static final double shoulderLow = 10094;
+    public static final double elbowLow = 45465;
+
+    public static final double shoulderStow = 0;
+    public static final double elbowStow = 0;
+
+    public static final double shoulderIntake = -72000;
+    public static final double elbowIntake = -3800;
+
+    public static final double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,
+        shoulderHigh };
+    public static final double[] elbowPositions = { elbowIntake, elbowStow, elbowLow, elbowMid, elbowHigh };
   }
 
   public static final class AutoConstants {
@@ -149,7 +172,7 @@ public final class Constants {
 
     public static final double kPXController = 5;
     public static final double kDXController = 0.0;
-    public static final double kPYController = 1; //TODO why is Y different?
+    public static final double kPYController = 5; //TODO why is Y different?
     public static final double kPThetaController = 5; // TODO MENTOR: tune the theta PID
 
     // Constraint for the motion profiled robot angle controller
@@ -167,7 +190,7 @@ public final class Constants {
   }
 
   public static final class TurntableConstants {
-    public static final int motorID = 31;
+    public static final int motorID = 10;
     public static final double motorkP = .1;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
@@ -195,8 +218,8 @@ public final class Constants {
     public static final double motorkP = .1;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
-    public static final double intakeSpeed = .15;
-    public static final double outakeSpeed = -.15;
+    public static final double intakeSpeed = .8;
+    public static final double outakeSpeed = -.6;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
   }
 

@@ -28,7 +28,14 @@ public class ArmCycleStateCommand extends CommandBase {
       return;
     } else {
       m_subsystem.setTargetState(newState);
+      int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();
+      if (direction > 0) {
+        m_subsystem.moveUpState();
+      } else if (direction < 0) {
+        m_subsystem.moveDownState();
+      }
     }
+    System.out.println("initialized, direction: " + m_direction);
 
   }
 

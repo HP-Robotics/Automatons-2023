@@ -24,13 +24,15 @@ public class PneumaticsSubsystem extends SubsystemBase {
 
     m_compressor = new Compressor(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH);
     m_compressor.enableAnalog(PneumaticsConstants.minPressure, PneumaticsConstants.maxPressure);
+    intakeIn();
+    ChompClose();
   }
 
-  public void forward() {
+  public void ChompClose() {
     m_chomp.set(DoubleSolenoid.Value.kForward);
   }
 
-  public void backward() {
+  public void ChompOpen() {
     m_chomp.set(DoubleSolenoid.Value.kReverse);
   }
 

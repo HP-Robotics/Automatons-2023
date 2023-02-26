@@ -8,6 +8,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
@@ -57,7 +58,7 @@ public class MoveSetDistanceCommand extends CommandBase {
     m_MidPoints = midPoints;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-    m_wayPoints = List.of();
+    m_wayPoints = new ArrayList();
   }
 
   public MoveSetDistanceCommand(DriveSubsystem subsystem, Pose2d Destination) {
@@ -101,6 +102,7 @@ public class MoveSetDistanceCommand extends CommandBase {
       //new Pose2d(m_X, m_Y, m_Rot),
       //config); //Added robot poseX and y to this command
       );
+      System.out.println("initialized");
       m_swerveControllerCommand = new PPSwerveControllerCommand(
           forwardTrajectory,
           m_subsystem::getPose, // Functional interface to feed supplier
@@ -119,6 +121,8 @@ public class MoveSetDistanceCommand extends CommandBase {
         System.out.println("It's working");
       }
     } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println(e);
       m_swerveControllerCommand = null;
 
     }

@@ -22,6 +22,7 @@ public class ArmSubsystem extends SubsystemBase {
   private int m_targetState;
   private int m_currentState;
   private boolean m_isChanging;
+  private int m_pastState = -1;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -31,8 +32,10 @@ public class ArmSubsystem extends SubsystemBase {
     m_shoulderMotor.config_kP(0, ArmConstants.shoulderkP);
     m_shoulderMotor.config_kI(0, ArmConstants.shoulderkI);
     m_shoulderMotor.config_kD(0, ArmConstants.shoulderkD);
-    m_shoulderMotor.configPeakOutputForward(0.3);
-    m_shoulderMotor.configPeakOutputReverse(-0.3); //TODO MENTOR: remove these eventually, once tuning is finished
+    m_shoulderMotor.config_IntegralZone(0, ArmConstants.shoulderIZone);
+    m_shoulderMotor.configAllowableClosedloopError(0, ArmConstants.shoulderMaxAllowableError);
+    m_shoulderMotor.configPeakOutputForward(1);
+    m_shoulderMotor.configPeakOutputReverse(-1); //TODO MENTOR: remove these eventually, once tuning is finished
     m_shoulderMotor.configMotionAcceleration(ArmConstants.shoulderAcceleration);
     m_shoulderMotor.configMotionCruiseVelocity(ArmConstants.shoulderMaxVelocity);
     m_shoulderMotor.configMotionSCurveStrength(ArmConstants.shoulderSCurve);
@@ -45,8 +48,8 @@ public class ArmSubsystem extends SubsystemBase {
     m_elbowMotor.config_kP(0, ArmConstants.shoulderkP);
     m_elbowMotor.config_kI(0, ArmConstants.shoulderkI);
     m_elbowMotor.config_kD(0, ArmConstants.shoulderkD);
-    m_elbowMotor.configPeakOutputForward(0.3);
-    m_elbowMotor.configPeakOutputReverse(-0.3); //TODO MENTOR: remove these eventually, once tuning is finished
+    m_elbowMotor.configPeakOutputForward(1);
+    m_elbowMotor.configPeakOutputReverse(-1); //TODO MENTOR: remove these eventually, once tuning is finished
     m_elbowMotor.configMotionAcceleration(ArmConstants.elbowAcceleration);
     m_elbowMotor.configMotionCruiseVelocity(ArmConstants.elbowMaxVelocity);
     m_elbowMotor.configMotionSCurveStrength(ArmConstants.elbowSCurve);
@@ -60,6 +63,8 @@ public class ArmSubsystem extends SubsystemBase {
     // TODO MENTOR:  If the arm is all the way out and we deploy new code, at enable, we would move the arm to starting state.  Is that safe?
     // m_shoulderMotor.set(ControlMode.Position, ArmConstants.shoulderPositions[m_currentState]);
     // m_elbowMotor.set(ControlMode.Position, ArmConstants.elbowPositions[m_currentState]);
+    // m_shoulderMotor.setSelectedSensorPosition(0);
+    // m_elbowMotor.setSelectedSensorPosition(0);
   }
 
   @Override
@@ -72,6 +77,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
 
+    SmartDashboard.putNumber("Past State", m_pastState);
+
     SmartDashboard.putNumber("Target State", m_targetState);
     SmartDashboard.putNumber("Current State", m_currentState);
     SmartDashboard.putBoolean("Is Changing?", m_isChanging);
@@ -79,11 +86,13 @@ public class ArmSubsystem extends SubsystemBase {
         m_shoulderMotor.getSelectedSensorPosition() - ArmConstants.shoulderPositions[m_currentState]);
     SmartDashboard.putNumber("Elbow Error",
         m_elbowMotor.getSelectedSensorPosition() - ArmConstants.elbowPositions[m_currentState]);
-
     m_isChanging = Math.abs(m_shoulderMotor.getSelectedSensorPosition()
         - ArmConstants.shoulderPositions[m_currentState]) > ArmConstants.errorThreshold
         || Math.abs(m_elbowMotor.getSelectedSensorPosition()
             - ArmConstants.elbowPositions[m_currentState]) > ArmConstants.errorThreshold;
+    if (!m_isChanging) {
+      m_pastState = m_currentState;
+    }
   }
 
   public void moveShoulder(double speed) {
@@ -123,29 +132,27 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveDownState() {
-    if (m_isChanging) {
-      return;
+    if (m_currentState == m_pastState && m_currentState != ArmConstants.intakeState) {
+      m_currentState--;
     }
-    if (m_currentState == ArmConstants.intakeState) {
-      return;
-    }
-    m_currentState--;
+
     m_isChanging = true;
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
+    SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
+    SmartDashboard.putNumber("Elbow Target", ArmConstants.elbowPositions[m_currentState]);
   }
 
   public void moveUpState() {
-    if (m_isChanging) {
-      return;
+    if (m_currentState == m_pastState && m_currentState != ArmConstants.highState) {
+      m_currentState++;
     }
-    if (m_currentState == ArmConstants.highState) {
-      return;
-    }
-    m_currentState++;
+
     m_isChanging = true;
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
+    SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
+    SmartDashboard.putNumber("Elbow Target", ArmConstants.elbowPositions[m_currentState]);
     //TODO MENTOR: We may need to set relative velocities to get the right movement
   }
 

@@ -36,6 +36,7 @@ public class IntakeCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intake.stopSpinning();
+    m_pneumatic.intakeIn();
   }
 
   // Returns true when the command should end.

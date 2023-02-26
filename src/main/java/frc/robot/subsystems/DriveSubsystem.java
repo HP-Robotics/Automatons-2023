@@ -28,10 +28,10 @@ import frc.robot.SwerveModule;
 public class DriveSubsystem extends SubsystemBase {
 
   // TODO MENTOR: the PDH has sensible channel numbering, so we could renumber these motors.
-  private final SwerveModule m_frontLeft = new SwerveModule(13, 12, 12, RobotConstants.swerveOffsetFL, "FL"); // BIG BONGO 2
-  private final SwerveModule m_frontRight = new SwerveModule(2, 3, 11, RobotConstants.swerveOffsetFR, "FR"); // BIG BONGO 1
-  private final SwerveModule m_backLeft = new SwerveModule(14, 15, 13, RobotConstants.swerveOffsetBL, "BL"); // BIG BONGO 3
-  private final SwerveModule m_backRight = new SwerveModule(50, 1, 14, RobotConstants.swerveOffsetBR, "BR"); // BIG BONGO 4
+  private final SwerveModule m_frontLeft = new SwerveModule(22, 23, 12, RobotConstants.swerveOffsetFL, "FL"); // BIG BONGO 2
+  private final SwerveModule m_frontRight = new SwerveModule(20, 21, 11, RobotConstants.swerveOffsetFR, "FR"); // BIG BONGO 1
+  private final SwerveModule m_backLeft = new SwerveModule(24, 25, 13, RobotConstants.swerveOffsetBL, "BL"); // BIG BONGO 3
+  private final SwerveModule m_backRight = new SwerveModule(26, 27, 14, RobotConstants.swerveOffsetBR, "BR"); // BIG BONGO 4
 
   public boolean m_fieldRelative = true;
   public boolean m_allowVisionUpdates = true;

@@ -8,8 +8,8 @@ import frc.robot.Constants.*;
 import frc.robot.commands.ArmChangeStateCommand;
 import frc.robot.commands.ArmCycleStateCommand;
 import frc.robot.commands.BalanceCommand;
-import frc.robot.commands.ChompForward;
-import frc.robot.commands.ChompReverse;
+import frc.robot.commands.ChompOpenCommand;
+import frc.robot.commands.ChompCloseCommand;
 import frc.robot.commands.DriveTrackGamePiece;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MagicTurntable;
@@ -223,6 +223,20 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       //new JoystickButton(m_joystick, 10).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); No go north for now
       new JoystickButton(m_joystick, 8).whileTrue(new BalanceCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
+          () -> {
+            m_robotDrive.m_allowVisionUpdates = true;
+            m_robotDrive.drive(
+                // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount? Also this is slowmode
+                Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kSlowSpeed,
+                Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1
+                    * DriveConstants.kSlowAngularspeed,
+                MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
+                    * DriveConstants.kMaxAngularSpeed,
+                //0.2 * DriveConstants.kMaxSpeed, 0, 0,
+                m_robotDrive.m_fieldRelative);
+          },
+          m_robotDrive));
 
       // Create config for trajectory
 
@@ -268,10 +282,13 @@ public class RobotContainer {
       }).onTrue(new ArmCycleStateCommand(m_robotArm, true));
 
       if (SubsystemConstants.usePneumatics) {
-        new JoystickButton(m_opJoystick, 6).onTrue(
-            new SequentialCommandGroup(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
-                new WaitCommand(0.4), new ChompForward(m_pneumatics)));
-        new JoystickButton(m_opJoystick, 5).onTrue(new ChompReverse(m_pneumatics));
+        new JoystickButton(m_opJoystick, 6).onTrue( //drop n chomp
+            new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
+                new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
+                new InstantCommand(m_pneumatics::intakeOut),
+                new WaitCommand(0.8),
+                new ChompCloseCommand(m_pneumatics)));
+        new JoystickButton(m_opJoystick, 5).onTrue(new ChompOpenCommand(m_pneumatics));
       }
     }
     if (SubsystemConstants.useTurnTables) {
