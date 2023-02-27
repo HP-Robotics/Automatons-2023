@@ -34,14 +34,23 @@ public class DriveTrackGamePiece extends CommandBase {
     public void execute() {
         if (m_subsystem.gamePieceSeen()) {
             m_subsystem.drive(
-                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
-                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
+                    Math.signum(m_joystick.getRawAxis(1))
+                            * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 2) * -1
+                            * DriveConstants.kMaxSpeed,
+                    Math.signum(m_joystick.getRawAxis(1))
+                            * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
+                            * DriveConstants.kMaxSpeed,
                     m_subsystem.getGamePieceX() * LimelightConstants.turnValue, false);
         } else {
             m_subsystem.drive(
-                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
-                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
-                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1
+                    Math.signum(m_joystick.getRawAxis(1))
+                            * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 2) * -1
+                            * DriveConstants.kMaxSpeed,
+                    Math.signum(m_joystick.getRawAxis(1))
+                            * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
+                            * DriveConstants.kMaxSpeed,
+                    Math.signum(m_joystick.getRawAxis(1))
+                            * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
                             * DriveConstants.kMaxAngularSpeed,
                     true);
         }
