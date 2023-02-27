@@ -40,13 +40,13 @@ public class VisionSubsystem extends SubsystemBase {
   List<Pose2d> m_blueScoring;
   List<Pose2d> m_redScoring;
   public Pose2d m_lastPosition;
+  public boolean tagVision = false;
 
   PhotonCamera camera = new PhotonCamera(VisionConstants.kcameraName);
 
   ShuffleboardTab Tab = Shuffleboard.getTab("Field");
   // Tab.add("CameraPose", null).withwidget;
 
-  /** Creates a new ExampleSubsystem. */
   public VisionSubsystem() {
 
     apriltags = new HashMap<Integer, Pose2d>();
@@ -113,7 +113,7 @@ public class VisionSubsystem extends SubsystemBase {
             (target.getBestCameraToTarget().getRotation().toRotation2d()));
         // robotPose.setValue(absolutePose);
         absolutePose = apriltagPose.plus(cameraTrans);
-
+        tagVision = true;
         return new Pose2d(absolutePose.getTranslation(), apriltagPose.getRotation().minus(cameraTrans.getRotation()));
       }
 
