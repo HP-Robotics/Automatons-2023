@@ -32,17 +32,22 @@ public class MoveWithVisionCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
+
   public void initialize() {
-    m_subsystem.m_allowVisionUpdates = false;
-    m_moveCommand = new MoveSetDistanceCommand(m_subsystem,
-        m_vision.getDestination(m_subsystem.getPose(), m_targetLocation));
-    m_moveCommand.initialize();
+    if (m_subsystem.tagVision == true) {
+      m_subsystem.m_allowVisionUpdates = false;
+      m_moveCommand = new MoveSetDistanceCommand(m_subsystem,
+          m_vision.getDestination(m_subsystem.getPose(), m_targetLocation));
+      m_moveCommand.initialize();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_moveCommand.execute();
+    if (m_subsystem.tagVision == true) {
+      m_moveCommand.execute();
+    }
   }
   // if (m_vision != null) {
   //   m_subsystem.resetOdometry(m_vision.getRobotAbsolute());
