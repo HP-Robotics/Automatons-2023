@@ -317,8 +317,9 @@ public class RobotContainer {
           .onFalse(new InstantCommand(m_turntables::stopMagicTurntable));
     }
 
-    if (SubsystemConstants.useIntake && SubsystemConstants.usePneumatics) {
-      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics)); // TODO MENTOR: we need a lot of new logic
+    if (SubsystemConstants.useIntake && SubsystemConstants.useTurnTables && SubsystemConstants.usePneumatics) {
+      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics))
+          .onTrue(new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
       //TODO List of things for sequentialcommandgroup: 
 
     }
