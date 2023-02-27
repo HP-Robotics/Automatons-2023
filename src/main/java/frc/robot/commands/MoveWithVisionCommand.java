@@ -34,7 +34,7 @@ public class MoveWithVisionCommand extends CommandBase {
   @Override
 
   public void initialize() {
-    if (m_subsystem.tagVision == true) {
+    if (m_vision.tagVision == true) {
       m_subsystem.m_allowVisionUpdates = false;
       m_moveCommand = new MoveSetDistanceCommand(m_subsystem,
           m_vision.getDestination(m_subsystem.getPose(), m_targetLocation));
@@ -45,7 +45,7 @@ public class MoveWithVisionCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_subsystem.tagVision == true) {
+    if (m_vision.tagVision == true) {
       m_moveCommand.execute();
     }
   }
