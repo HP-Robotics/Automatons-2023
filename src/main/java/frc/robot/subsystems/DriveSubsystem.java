@@ -226,7 +226,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void switchCubePipeline() {
-    table.getEntry("pipeline").setValue(1);
+    table.getEntry("pipeline").setValue(0);
     System.out.println("cube switch");
   }
 

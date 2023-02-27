@@ -17,7 +17,7 @@ public class TurntableSubsystem extends SubsystemBase {
   public final TalonFX m_turntableMotor;
   private ColorSensorV3 m_colorSensor;
   private NetworkTableEntry n_entry;
-  private int coneCounter = 0;
+  public int coneCounter = 0;
   private double pastEncoderValue;
   private double presentEncoderValue;
   public boolean m_intakeProcessRunning;

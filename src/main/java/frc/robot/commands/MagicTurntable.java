@@ -22,6 +22,7 @@ public class MagicTurntable extends CommandBase {
   public void initialize() {
     m_subsystem.magicTurntableStart();
     m_subsystem.spinClockwise();
+    m_subsystem.coneCounter = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.

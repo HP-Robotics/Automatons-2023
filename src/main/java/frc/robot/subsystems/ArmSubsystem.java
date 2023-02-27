@@ -56,6 +56,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_elbowEncoder = new DutyCycleEncoder(0);
 
+    SmartDashboard.putNumber("Elbow Mid", ArmConstants.elbowMid);
+    SmartDashboard.putNumber("Shoulder Mid", ArmConstants.shoulderMid);
+
     m_targetState = 1;
     m_currentState = 1;
     m_isChanging = false;
@@ -76,6 +79,11 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elbow Absolute Encoder", m_elbowEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
+
+    //ArmConstants.elbowPositions[ArmConstants.midState] = SmartDashboard.getNumber("Elbow Mid",
+    //  ArmConstants.elbowMid);
+    //ArmConstants.shoulderPositions[ArmConstants.midState] = SmartDashboard.getNumber("Shoulder Mid",
+    //  ArmConstants.shoulderMid);
 
     SmartDashboard.putNumber("Past State", m_pastState);
 

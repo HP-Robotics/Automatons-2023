@@ -51,7 +51,7 @@ public final class Constants {
     public static final boolean useDrive = true; // drive disabled, reenable later
     public static final boolean useArm = true;
     public static final boolean usePneumatics = true;
-    public static final boolean useTurnTables = false;
+    public static final boolean useTurnTables = true;
     public static final boolean useIntake = true;
     public static final boolean useLimelight = true;
     public static final boolean useVision = true;
@@ -139,11 +139,11 @@ public final class Constants {
     public static final double errorThreshold = 1000.0;
     public static final boolean useAbsoluteEncoders = false;
 
-    public static final double shoulderHigh = 56286;
-    public static final double elbowHigh = 202989;
+    public static final double shoulderHigh = 69286;
+    public static final double elbowHigh = 209989;
 
-    public static final double shoulderMid = -3797;
-    public static final double elbowMid = 117997;
+    public static final double shoulderMid = 5000;
+    public static final double elbowMid = 129997;
 
     public static final double shoulderLow = 10094;
     public static final double elbowLow = 45465;
@@ -154,9 +154,9 @@ public final class Constants {
     public static final double shoulderIntake = -72000;
     public static final double elbowIntake = -3800;
 
-    public static final double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,
+    public static double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,
         shoulderHigh };
-    public static final double[] elbowPositions = { elbowIntake, elbowStow, elbowLow, elbowMid, elbowHigh };
+    public static double[] elbowPositions = { elbowIntake, elbowStow, elbowLow, elbowMid, elbowHigh };
   }
 
   public static final class AutoConstants {
@@ -191,22 +191,22 @@ public final class Constants {
 
   public static final class TurntableConstants {
     public static final int motorID = 10;
-    public static final double motorkP = .1;
+    public static final double motorkP = .5;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
-    public static final double clockwiseSpeed = .5;
-    public static final double counterClockwiseSpeed = -.5;
+    public static final double clockwiseSpeed = .25;
+    public static final double counterClockwiseSpeed = -.25;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
     public static final double kConeGThreshold = 3.0;
     public static final double kCubeBThreshold = 2.7;
     public static final double kDistanceThreshold = 130;
 
-    public static final double coneCorrectionTicks = 1000;
+    public static final double coneCorrectionTicks = 3000;
     public static final double cubeCorrectionTicks = 250;
 
-    public static final double ticksThresholdMin = 100;
-    public static final double ticksThresholdMax = 4096;
+    public static final double ticksThresholdMin = 1000;
+    public static final double ticksThresholdMax = 8192;
 
     public static final double waitTime = 2;
 
@@ -218,7 +218,7 @@ public final class Constants {
     public static final double motorkP = .1;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
-    public static final double intakeSpeed = .8;
+    public static final double intakeSpeed = .6;
     public static final double outakeSpeed = -.6;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
   }
