@@ -137,9 +137,13 @@ public final class Constants {
     public static final int lowState = 2;
     public static final int midState = 3;
     public static final int highState = 4;
+    public static final int scoreState = 5;
 
     public static final double errorThreshold = 1000.0;
     public static final boolean useAbsoluteEncoders = false;
+
+    public static final double shoulderScore = 69286;
+    public static final double elbowScore = 209989;
 
     public static final double shoulderHigh = 69286;
     public static final double elbowHigh = 209989;
@@ -157,8 +161,8 @@ public final class Constants {
     public static final double elbowIntake = -3800;
 
     public static double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,
-        shoulderHigh };
-    public static double[] elbowPositions = { elbowIntake, elbowStow, elbowLow, elbowMid, elbowHigh };
+        shoulderHigh, shoulderScore };
+    public static double[] elbowPositions = { elbowIntake, elbowStow, elbowLow, elbowMid, elbowHigh, elbowScore };
   }
 
   public static final class AutoConstants {

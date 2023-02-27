@@ -159,7 +159,9 @@ public class RobotContainer {
     SequentialCommandGroup ret = new SequentialCommandGroup();
 
     ret.addCommands(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState), new WaitCommand(2),
+        new ArmChangeStateCommand(m_robotArm, ArmConstants.scoreState), new WaitCommand(0.5),
         new ChompOpenCommand(m_pneumatics), new WaitCommand(0.5),
+        new ArmChangeStateCommand(m_robotArm, ArmConstants.highState), new WaitCommand(0.5),
         new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
 
     m_robotDrive.m_allowVisionUpdates = false;
