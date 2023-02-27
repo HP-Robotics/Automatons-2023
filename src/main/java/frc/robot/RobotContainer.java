@@ -288,7 +288,11 @@ public class RobotContainer {
                 new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
                 new InstantCommand(m_pneumatics::intakeOut),
                 new WaitCommand(1),
-                new ChompCloseCommand(m_pneumatics)));
+                new ChompCloseCommand(m_pneumatics),
+                new WaitCommand(0.2),
+                new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+                new WaitCommand(0.5),
+                new InstantCommand(m_pneumatics::intakeIn)));
         new JoystickButton(m_opJoystick, 5).onTrue(new ChompOpenCommand(m_pneumatics));
       }
     }

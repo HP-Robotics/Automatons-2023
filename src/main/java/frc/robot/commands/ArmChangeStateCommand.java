@@ -59,6 +59,6 @@ public class ArmChangeStateCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();
-    return direction == 0;
+    return direction == 0 && m_subsystem.getDoneChanging();
   }
 }

@@ -23,6 +23,8 @@ public class ArmSubsystem extends SubsystemBase {
   private int m_currentState;
   private boolean m_isChanging;
   private int m_pastState = -1;
+  private int m_frameCounter;
+  private boolean m_doneChanging;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -62,6 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_targetState = 1;
     m_currentState = 1;
     m_isChanging = false;
+    m_frameCounter = 0;
 
     // TODO MENTOR:  If the arm is all the way out and we deploy new code, at enable, we would move the arm to starting state.  Is that safe?
     // m_shoulderMotor.set(ControlMode.Position, ArmConstants.shoulderPositions[m_currentState]);
@@ -98,9 +101,13 @@ public class ArmSubsystem extends SubsystemBase {
         - ArmConstants.shoulderPositions[m_currentState]) > ArmConstants.errorThreshold
         || Math.abs(m_elbowMotor.getSelectedSensorPosition()
             - ArmConstants.elbowPositions[m_currentState]) > ArmConstants.errorThreshold;
+
+    m_doneChanging = !m_isChanging && m_frameCounter >= ArmConstants.frameCounterThreshold;
     if (!m_isChanging) {
       m_pastState = m_currentState;
+      m_frameCounter++;
     }
+
   }
 
   public void moveShoulder(double speed) {
@@ -139,12 +146,18 @@ public class ArmSubsystem extends SubsystemBase {
     return m_isChanging;
   }
 
+  public boolean getDoneChanging() {
+    return m_doneChanging;
+  }
+
   public void moveDownState() {
     if (m_currentState == m_pastState && m_currentState != ArmConstants.intakeState) {
       m_currentState--;
     }
 
     m_isChanging = true;
+    m_doneChanging = false;
+    m_frameCounter = 0;
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
     SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
@@ -157,6 +170,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     m_isChanging = true;
+    m_doneChanging = false;
+    m_frameCounter = 0;
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
     SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
