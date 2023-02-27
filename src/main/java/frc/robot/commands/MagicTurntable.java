@@ -5,43 +5,48 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.PneumaticsSubsystem;
+import frc.robot.subsystems.TurntableSubsystem;
 
-public class IntakeCommand extends CommandBase {
-  private final IntakeSubsystem m_intake;
-  private final PneumaticsSubsystem m_pneumatic;
+public class MagicTurntable extends CommandBase {
+  private final TurntableSubsystem m_subsystem;
+  private boolean m_done = false;
 
-  /** Creates a new spinClockwise. */
-  public IntakeCommand(IntakeSubsystem subsystem, PneumaticsSubsystem psubsystem) {
-    m_intake = subsystem;
-    m_pneumatic = psubsystem;
+  public MagicTurntable(TurntableSubsystem subsystem) {
+    m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem, psubsystem);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_pneumatic.intakeOut();
-    m_intake.intake();
+    m_subsystem.magicTurntableStart();
+    m_subsystem.spinClockwise();
+    m_subsystem.coneCounter = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_subsystem.correctPosition()) {
+      m_done = true;
+
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.stopSpinning();
-    m_pneumatic.intakeIn();
+    if (m_done) {
+      m_subsystem.goToCorrectPosition();
+    } else {
+      m_subsystem.stopSpinning();
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_done || !m_subsystem.m_magicTurntableOn;
   }
 }

@@ -24,6 +24,12 @@ public class ArmChangeStateCommand extends CommandBase {
   @Override
   public void initialize() {
     m_subsystem.setTargetState(m_state);
+    int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();
+    if (direction > 0) {
+      m_subsystem.moveUpState();
+    } else if (direction < 0) {
+      m_subsystem.moveDownState();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

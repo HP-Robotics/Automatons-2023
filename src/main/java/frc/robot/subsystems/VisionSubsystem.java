@@ -169,9 +169,9 @@ public class VisionSubsystem extends SubsystemBase {
     loopCount += 1;
     if (loopCount % 5 == 1) {
       Pose2d position = getRobotAbsolute();
-      if (position != null) {
-        m_lastPosition = position;
-      }
+      //if (position != null) {
+      m_lastPosition = position;
+      //  }
 
       // if (m_updateDrive && position != null) {
       //updateRobotPos()

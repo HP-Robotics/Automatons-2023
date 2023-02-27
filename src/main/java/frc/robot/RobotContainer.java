@@ -8,25 +8,23 @@ import frc.robot.Constants.*;
 import frc.robot.commands.ArmChangeStateCommand;
 import frc.robot.commands.ArmCycleStateCommand;
 import frc.robot.commands.BalanceCommand;
-import frc.robot.commands.ChompForward;
-import frc.robot.commands.ChompReverse;
+import frc.robot.commands.ChompOpenCommand;
+import frc.robot.commands.ChompCloseCommand;
 import frc.robot.commands.DriveTrackGamePiece;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MagicTurntable;
 import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.MoveWithVisionCommand;
-import frc.robot.commands.SpinClockwiseCommand;
-import frc.robot.commands.SpinCounterClockwiseCommand;
-import frc.robot.commands.TestCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.TurntableSubsystem;
 
-import java.lang.Character.Subset;
 import java.util.List;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -38,8 +36,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -77,6 +73,8 @@ public class RobotContainer {
   private final SendableChooser<Boolean> m_grabPiece1;
   private final SendableChooser<Boolean> m_grabPiece2;
   private final SendableChooser<Boolean> m_chargeBalance;
+
+  private Boolean m_manualArm = false;
   // The driver's controller
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -138,8 +136,9 @@ public class RobotContainer {
               () -> {
                 m_robotDrive.m_allowVisionUpdates = true;
                 m_robotDrive.drive(
-                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
-                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1 * DriveConstants.kMaxSpeed,
+                    // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount?
+                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 3) * -1 * DriveConstants.kMaxSpeed,
+                    Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 3) * -1 * DriveConstants.kMaxSpeed,
                     MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
                         * DriveConstants.kMaxAngularSpeed,
                     //0.2 * DriveConstants.kMaxSpeed, 0, 0,
@@ -153,55 +152,56 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    SequentialCommandGroup ret = new SequentialCommandGroup();
+
+    ret.addCommands(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState), new WaitCommand(2),
+        new ChompOpenCommand(m_pneumatics), new WaitCommand(0.5),
+        new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
+
     m_robotDrive.m_allowVisionUpdates = false;
     System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
         + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "middle") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
-      if (m_chargeBalance.getSelected()) {
-        return new SequentialCommandGroup(
-            //Place cone
-            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 2.19, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-            new BalanceCommand(m_robotDrive));
-      }
+
+      ret.addCommands(
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 2.19, new Rotation2d(getAllianceTheta()),
+              AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()));
+
     }
 
     System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
         + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "station") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.20, new Rotation2d(getAllianceTheta())));
-      if (m_chargeBalance.getSelected()) {
-        return new SequentialCommandGroup(
-            //Place cone
-            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
-            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
-                List.of(new Translation2d(getAllianceX(7.1196), 2.7615))),
-            new BalanceCommand(m_robotDrive));
-      }
+
+      ret.addCommands(
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58, new Rotation2d(getAllianceTheta()),
+              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()));
+
     }
 
     System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
         + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "drive") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.65, new Rotation2d(getAllianceTheta())));
-      if (m_chargeBalance.getSelected()) {
-        return new SequentialCommandGroup(
-            //Place cone
-            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
-            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
-                List.of(new Translation2d(getAllianceX(7.1196), 2.7615))),
-            new BalanceCommand(m_robotDrive));
-      }
+
+      ret.addCommands(
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92, new Rotation2d(getAllianceTheta()),
+              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()));
+
     }
 
-    return new InstantCommand();
+    if (m_chargeBalance.getSelected()) {
+      ret.addCommands(
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
+              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
+              List.of(new Translation2d(getAllianceX(7.1196), 2.7615))),
+          new BalanceCommand(m_robotDrive));
+
+    }
+
+    return ret;
   }
 
   /**
@@ -224,16 +224,35 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       //new JoystickButton(m_joystick, 10).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); No go north for now
       new JoystickButton(m_joystick, 8).whileTrue(new BalanceCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
+          () -> {
+            m_robotDrive.m_allowVisionUpdates = true;
+            m_robotDrive.drive(
+                // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount? Also this is slowmode
+                Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kSlowSpeed,
+                Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1
+                    * DriveConstants.kSlowAngularspeed,
+                MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
+                    * DriveConstants.kMaxAngularSpeed,
+                //0.2 * DriveConstants.kMaxSpeed, 0, 0,
+                m_robotDrive.m_fieldRelative);
+          },
+          m_robotDrive));
 
       // Create config for trajectory
 
-      //new JoystickButton(m_joystick, 12)
-      //    .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.5, new Rotation2d(0),
-      //        AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-      //        List.of(new Translation2d(1.0, 0.0))));
-      //new JoystickButton(m_joystick, 13).onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
-      //    AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, List.of()));
-
+      //new JoystickButton(m_joystick, 13)
+      //  .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.0, new Rotation2d(0),
+      //    AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+      //  List.of(new Translation2d(0.75, 0.0))));
+      //  new JoystickButton(m_joystick, 12)
+      //    .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
+      //      AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, // List.of()));
+      //    List.of(new Translation2d(0.25, 0.0))));
+      // new JoystickButton(m_joystick, 11)
+      //   .onTrue(new MoveSetDistanceCommand(m_robotDrive, -1.0, 0.0, new Rotation2d(0),
+      //   AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+      // List.of(new Translation2d(-0.75, 0.0))));
     }
 
     if (SubsystemConstants.useArm) {
@@ -241,9 +260,15 @@ public class RobotContainer {
       //new JoystickButton(m_opJoystick, 7).onTrue(new BackToNormalCommand(m_robotArm));
 
       System.out.println("Im alive!");
+      new Trigger(() -> m_manualArm).whileTrue(
+          new RunCommand(() -> {
+            m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2);
+            m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2);
+          }, m_robotArm));
 
-      //new RunCommand(() -> m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2), m_robotArm);
-      //new RunCommand(() -> m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2), m_robotArm);
+      new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(() -> m_manualArm = true));
+      new JoystickButton(m_opJoystick, 8).onTrue(new InstantCommand(() -> m_manualArm = false));
+
       //new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
       new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
       new JoystickButton(m_opJoystick, 2).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.midState));
@@ -258,22 +283,35 @@ public class RobotContainer {
       }).onTrue(new ArmCycleStateCommand(m_robotArm, true));
 
       if (SubsystemConstants.usePneumatics) {
-        new JoystickButton(m_opJoystick, 6).onTrue(
-            new SequentialCommandGroup(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
-                new WaitCommand(0.4), new ChompForward(m_pneumatics)));
-        new JoystickButton(m_opJoystick, 5).onTrue(new ChompReverse(m_pneumatics));
+        new JoystickButton(m_opJoystick, 6).onTrue( //drop n chomp
+            new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
+                new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
+                new InstantCommand(m_pneumatics::intakeOut),
+                new WaitCommand(1),
+                new ChompCloseCommand(m_pneumatics)));
+        new JoystickButton(m_opJoystick, 5).onTrue(new ChompOpenCommand(m_pneumatics));
       }
     }
-    if (SubsystemConstants.usePneumatics) {
-      new JoystickButton(m_opJoystick, 2).onTrue(new ChompForward(m_pneumatics));
-      new JoystickButton(m_opJoystick, 3).onTrue(new ChompReverse(m_pneumatics));
-    }
     if (SubsystemConstants.useTurnTables) {
-      new JoystickButton(m_opJoystick, 9).whileTrue(new SpinClockwiseCommand(m_turntables));
-      new JoystickButton(m_opJoystick, 10).whileTrue(new SpinCounterClockwiseCommand(m_turntables));
+      new Trigger(() -> {
+        return m_opJoystick.getPOV() == 270;
+      }).whileTrue(new RunCommand(m_turntables::spinCounterClockwise))
+          .onFalse(new InstantCommand(m_turntables::stopSpinning));
+      new Trigger(() -> {
+        return m_opJoystick.getPOV() == 90;
+      }).whileTrue(new RunCommand(m_turntables::spinClockwise)).onFalse(new InstantCommand(m_turntables::stopSpinning));
+      new Trigger(() -> {
+        return m_opJoystick.getPOV() == 0;
+      }).onTrue(new InstantCommand(m_turntables::stopSpinning));
+
+      new JoystickButton(m_joystick, 9).onTrue(new MagicTurntable(m_turntables));
+      new JoystickButton(m_joystick, 9).debounce(TurntableConstants.waitTime, DebounceType.kFalling)
+          .onFalse(new InstantCommand(m_turntables::stopMagicTurntable));
     }
-    if (SubsystemConstants.useIntake) {
-      new JoystickButton(m_opJoystick, 7).whileTrue(new IntakeCommand(m_intake));
+
+    if (SubsystemConstants.useIntake && SubsystemConstants.usePneumatics) {
+      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics)); // TODO MENTOR: we need a lot of new logic
+      //TODO List of things for sequentialcommandgroup: 
 
     }
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
@@ -291,16 +329,17 @@ public class RobotContainer {
               () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
     }
 
-    new JoystickButton(m_opJoystick, 7).whileTrue(new TestCommand(m_turntables));
-  }
-
-  public void resetDriveOffsets() {
+    //new JoystickButton(m_opJoystick, 7).whileTrue(new TestCommand(m_turntables));
 
     if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
       new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
       new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
 
     }
+  }
+
+  public void resetDriveOffsets() {
+
     if (SubsystemConstants.useDrive) {
       m_robotDrive.resetOffsets();
 

@@ -26,13 +26,12 @@ import frc.robot.SwerveModule;
 
 /** Represents a swerve drive style drivetrain. */
 public class DriveSubsystem extends SubsystemBase {
-  public static final double kMaxSpeed = 4.0; // 3 meters per second
-  public static final double kMaxAngularSpeed = Math.PI * 4; // 1/2 rotation per second
 
-  private final SwerveModule m_frontLeft = new SwerveModule(13, 12, 12, RobotConstants.swerveOffsetFL, "FL"); // BIG BONGO 2
-  private final SwerveModule m_frontRight = new SwerveModule(2, 3, 11, RobotConstants.swerveOffsetFR, "FR"); // BIG BONGO 1
-  private final SwerveModule m_backLeft = new SwerveModule(14, 15, 13, RobotConstants.swerveOffsetBL, "BL"); // BIG BONGO 3
-  private final SwerveModule m_backRight = new SwerveModule(50, 1, 14, RobotConstants.swerveOffsetBR, "BR"); // BIG BONGO 4
+  // TODO MENTOR: the PDH has sensible channel numbering, so we could renumber these motors.
+  private final SwerveModule m_frontLeft = new SwerveModule(22, 23, 12, RobotConstants.swerveOffsetFL, "FL"); // BIG BONGO 2
+  private final SwerveModule m_frontRight = new SwerveModule(20, 21, 11, RobotConstants.swerveOffsetFR, "FR"); // BIG BONGO 1
+  private final SwerveModule m_backLeft = new SwerveModule(24, 25, 13, RobotConstants.swerveOffsetBL, "BL"); // BIG BONGO 3
+  private final SwerveModule m_backRight = new SwerveModule(26, 27, 14, RobotConstants.swerveOffsetBR, "BR"); // BIG BONGO 4
 
   public boolean m_fieldRelative = true;
   public boolean m_allowVisionUpdates = true;
@@ -40,12 +39,12 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   // Duty Encoders may have the wrong values
 
-  private final WPI_PigeonIMU m_pGyro = new WPI_PigeonIMU(57);
+  private final PigeonIMU m_pGyro = new PigeonIMU(57);
 
   SwerveDriveOdometry m_odometry;
 
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable table = inst.getTable("limelight-chloe");
+  NetworkTable table = inst.getTable("limelight-prada");
   NetworkTable pipeline = inst.getTable("SmartDashboard");
   NetworkTableEntry gamePieceX = table.getEntry("tx");
 
@@ -103,7 +102,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pigeon Yaw", m_pGyro.getYaw());
     SmartDashboard.putNumber("Pigeon Roll", m_pGyro.getRoll());
 
-    SmartDashboard.putData("Gyro", m_pGyro);
     m_frontLeft.getDrivePower("Front Left");
     m_frontRight.getDrivePower("Front Right");
     m_backLeft.getDrivePower("Back Left");
@@ -134,7 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, pigeonYaw)
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeed);
     setModuleStates(swerveModuleStates);
   }
 
@@ -159,9 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backRight.setDesiredState(swerveModuleStates[2]);
     m_backLeft.setDesiredState(swerveModuleStates[3]);
-    ;
-    SmartDashboard.putNumber("Speed (0)", swerveModuleStates[0].speedMetersPerSecond);
-    SmartDashboard.putNumber("Ticks (0)", m_frontLeft.metersToTicks(swerveModuleStates[0].speedMetersPerSecond));
+
   }
 
   public void forceRobotRelative() {
@@ -203,7 +199,7 @@ public class DriveSubsystem extends SubsystemBase {
     double sin = Math.sin(Math.toRadians(yaw));
     double cos = Math.cos(Math.toRadians(yaw));
     return (sin * -1 * roll) + (pitch * -1 * cos);
-  } // TODO: need to know whether we're on blue or red team, to mulitply by -1 or not.
+  }
 
   public void resetYaw() {
     m_pGyro.setYaw(0);
@@ -230,11 +226,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void switchCubePipeline() {
-    table.getEntry("pipeline").setValue(1);
+    table.getEntry("pipeline").setValue(0);
     System.out.println("cube switch");
   }
 
   public void switchCameraPipeline() { // for driver visibility
-    SmartDashboard.getEntry("limelight-chloe_PipelineName").setValue("Cube");
+    SmartDashboard.getEntry("limelight-prada_PipelineName").setValue("Cube");
   }
 }

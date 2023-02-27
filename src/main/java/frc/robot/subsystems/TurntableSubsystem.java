@@ -17,9 +17,12 @@ public class TurntableSubsystem extends SubsystemBase {
   public final TalonFX m_turntableMotor;
   private ColorSensorV3 m_colorSensor;
   private NetworkTableEntry n_entry;
-  private int coneCounter = 0;
+  public int coneCounter = 0;
   private double pastEncoderValue;
   private double presentEncoderValue;
+  public boolean m_intakeProcessRunning;
+  public boolean m_gamePieceDetected;
+  public boolean m_magicTurntableOn;
 
   /** Creates a new TurntablesSubsystem. */
   public TurntableSubsystem() {
@@ -30,6 +33,9 @@ public class TurntableSubsystem extends SubsystemBase {
     m_turntableMotor.config_kP(0, TurntableConstants.motorkP);
     m_turntableMotor.config_kI(0, TurntableConstants.motorkI);
     m_turntableMotor.config_kD(0, TurntableConstants.motorkD);
+    m_intakeProcessRunning = false;
+    m_gamePieceDetected = false;
+    m_magicTurntableOn = false;
     // TODO: Current limit + tuning
   }
 
@@ -51,20 +57,35 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Present Encoder Value", presentEncoderValue);
     SmartDashboard.putNumber("Real Encoder Value", m_turntableMotor.getSelectedSensorPosition());
 
+    if (m_intakeProcessRunning) {
+      if (isSomething()) {
+        m_gamePieceDetected = true;
+      }
+      if (m_gamePieceDetected) {
+        correctPosition();
+      }
+    }
   }
 
   public void spinClockwise() {
-    // TODO: Use velocity control
     m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.clockwiseSpeed);
   }
 
   public void spinCounterClockwise() {
-    // TODO: Use velocity control
     m_turntableMotor.set(ControlMode.PercentOutput, TurntableConstants.counterClockwiseSpeed);
   }
 
   public void stopSpinning() {
     m_turntableMotor.set(ControlMode.PercentOutput, 0);
+    stopMagicTurntable();
+  }
+
+  public void magicTurntableStart() {
+    m_magicTurntableOn = true;
+  }
+
+  public void stopMagicTurntable() {
+    m_magicTurntableOn = false;
   }
 
   public boolean isCube() {
@@ -84,7 +105,7 @@ public class TurntableSubsystem extends SubsystemBase {
     return m_colorSensor.getProximity() > TurntableConstants.kDistanceThreshold;
   }
 
-  public void correctPosition() {
+  public boolean correctPosition() {
     if (isCone()) {
       coneCounter++;
       if (coneCounter >= 2) {
@@ -94,20 +115,36 @@ public class TurntableSubsystem extends SubsystemBase {
       if (coneCounter >= 2) {
         if (Math.abs(presentEncoderValue - pastEncoderValue) <= TurntableConstants.ticksThresholdMax
             && Math.abs(presentEncoderValue - pastEncoderValue) >= TurntableConstants.ticksThresholdMin) {
-          // m_turntableMotor.set(ControlMode.Position,
-          // m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
-          SmartDashboard.putNumber("Cone Set Positon",
-              m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+          return true;
         } else {
           coneCounter--;
         }
       }
-
     } else if (isCube()) {
-      // m_turntableMotor.set(ControlMode.Position,
-      //   m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
+      return true;
+    }
+    return false;
+  }
+
+  public void goToCorrectPosition() {
+    if (coneCounter >= 2) {
+      m_turntableMotor.set(ControlMode.Position,
+          m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+      SmartDashboard.putNumber("Cone Set Positon",
+          m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
+    } else if (isCube()) {
+      m_turntableMotor.set(ControlMode.Position,
+          m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
       SmartDashboard.putNumber("Cube Set Positon",
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
     }
+  }
+
+  public void intakeOn() {
+    m_intakeProcessRunning = true;
+  }
+
+  public void intakeOff() {
+    m_intakeProcessRunning = false;
   }
 }
