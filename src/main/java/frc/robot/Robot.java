@@ -24,8 +24,8 @@ public class Robot extends TimedRobot {
     addPeriodic(() -> {
       m_robotContainer.updateDriveFromVision();
     }, kDefaultPeriod);
-    PowerDistribution pdp = new PowerDistribution();
-    SmartDashboard.putData("PDP", pdp);
+    //PowerDistribution pdp = new PowerDistribution();
+    //SmartDashboard.putData("PDP", pdp);
   }
 
   @Override
