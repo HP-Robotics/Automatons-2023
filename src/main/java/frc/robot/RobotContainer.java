@@ -268,8 +268,8 @@ public class RobotContainer {
       System.out.println("Im alive!");
       new Trigger(() -> m_manualArm).whileTrue(
           new RunCommand(() -> {
-            m_robotArm.moveShoulder(m_opJoystick.getRawAxis(1) * 0.2);
-            m_robotArm.moveElbow(m_opJoystick.getRawAxis(5) * 0.2);
+            m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 10);
+            m_robotArm.moveElbow(MathUtil.applyDeadband(m_opJoystick.getRawAxis(5), 0.1) * 10);
           }, m_robotArm));
 
       new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(() -> m_manualArm = true));

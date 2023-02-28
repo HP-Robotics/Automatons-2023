@@ -61,6 +61,12 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elbow Mid", ArmConstants.elbowMid);
     SmartDashboard.putNumber("Shoulder Mid", ArmConstants.shoulderMid);
 
+    SmartDashboard.putNumber("Elbow High", ArmConstants.elbowHigh);
+    SmartDashboard.putNumber("Shoulder High", ArmConstants.shoulderHigh);
+
+    SmartDashboard.putNumber("Elbow Score", ArmConstants.elbowScore);
+    SmartDashboard.putNumber("Shoulder Score", ArmConstants.shoulderScore);
+
     m_targetState = 1;
     m_currentState = 1;
     m_isChanging = false;
@@ -83,10 +89,20 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
 
-    //ArmConstants.elbowPositions[ArmConstants.midState] = SmartDashboard.getNumber("Elbow Mid",
-    //  ArmConstants.elbowMid);
-    //ArmConstants.shoulderPositions[ArmConstants.midState] = SmartDashboard.getNumber("Shoulder Mid",
-    //  ArmConstants.shoulderMid);
+    ArmConstants.elbowPositions[ArmConstants.midState] = SmartDashboard.getNumber("Elbow Mid",
+        ArmConstants.elbowMid);
+    ArmConstants.shoulderPositions[ArmConstants.midState] = SmartDashboard.getNumber("Shoulder Mid",
+        ArmConstants.shoulderMid);
+
+    ArmConstants.elbowPositions[ArmConstants.highState] = SmartDashboard.getNumber("Elbow High",
+        ArmConstants.elbowHigh);
+    ArmConstants.shoulderPositions[ArmConstants.highState] = SmartDashboard.getNumber("Shoulder High",
+        ArmConstants.shoulderHigh);
+
+    ArmConstants.elbowPositions[ArmConstants.scoreState] = SmartDashboard.getNumber("Elbow Score",
+        ArmConstants.elbowScore);
+    ArmConstants.shoulderPositions[ArmConstants.scoreState] = SmartDashboard.getNumber("Shoulder Score",
+        ArmConstants.shoulderScore);
 
     SmartDashboard.putNumber("Past State", m_pastState);
 
@@ -110,14 +126,14 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
-  public void moveShoulder(double speed) {
-    m_shoulderMotor.set(ControlMode.PercentOutput, speed);
-    System.out.println("shoulder running at " + speed);
+  public void moveShoulder(double newSetpoint) {
+    m_shoulderMotor.set(ControlMode.MotionMagic, m_shoulderMotor.getClosedLoopTarget() + newSetpoint);
+    System.out.println("shoulder running at " + newSetpoint);
   }
 
-  public void moveElbow(double speed) {
-    m_elbowMotor.set(ControlMode.PercentOutput, -speed);
-    System.out.println("elbow running at " + speed);
+  public void moveElbow(double newSetpoint) {
+    m_elbowMotor.set(ControlMode.MotionMagic, m_elbowMotor.getClosedLoopTarget() - newSetpoint);
+    System.out.println("elbow running at " + newSetpoint);
   }
 
   public double absoluteToAngle(double absValue) {
