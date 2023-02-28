@@ -99,9 +99,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (result.hasTargets()) {
       List<PhotonTrackedTarget> targets = result.getTargets();
       for (PhotonTrackedTarget target : targets) {
-        //System.out.println(target.getBestCameraToTarget().getX());
-        //System.out.println(target.getBestCameraToTarget().getY());
-        //System.out.println(target.getBestCameraToTarget().getZ());
+
         int apriltagid = target.getFiducialId();
 
         apriltagPose = apriltags.get(apriltagid);
@@ -131,25 +129,20 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public Pose2d getDestination(Pose2d ourPos, String direction) {
-    ///////////////////////////////////////////////////////////////////
-    //System.out.println(direction);
 
     Pose2d target = bestApriltag(ourPos);
 
     Pose2d destination;
     if (direction == "left") {
       destination = target.transformBy(VisionConstants.leftTrans);
-      System.out.println(destination.getX() + "x" + destination.getY());
       return destination;
 
     } else if (direction == "right") {
       destination = target.transformBy(VisionConstants.rightTrans);
-      System.out.println(destination.getX() + "x" + destination.getY());
       return destination;
 
     } else {
       destination = target.transformBy(VisionConstants.centerTrans);
-      System.out.println(destination.getX() + "x" + destination.getY());
       return destination;
 
     }

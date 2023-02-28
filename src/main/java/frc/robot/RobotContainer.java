@@ -166,8 +166,8 @@ public class RobotContainer {
         new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
 
     m_robotDrive.m_allowVisionUpdates = false;
-    System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-        + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
+    // System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
+    //     + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "middle") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
 
@@ -179,8 +179,6 @@ public class RobotContainer {
 
     }
 
-    System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-        + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "station") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.20, new Rotation2d(getAllianceTheta())));
 
@@ -192,8 +190,6 @@ public class RobotContainer {
 
     }
 
-    System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-        + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "drive") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.65, new Rotation2d(getAllianceTheta())));
 
@@ -253,25 +249,23 @@ public class RobotContainer {
 
       // Create config for trajectory
 
-      //new JoystickButton(m_joystick, 13)
-      //  .onTrue(new MoveSetDistanceCommand(m_robotDrive, 1.0, 0.0, new Rotation2d(0),
-      //    AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-      //  List.of(new Translation2d(0.75, 0.0))));
-      //  new JoystickButton(m_joystick, 12)
-      //    .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
-      //      AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, // List.of()));
-      //    List.of(new Translation2d(0.25, 0.0))));
-      // new JoystickButton(m_joystick, 11)
-      //   .onTrue(new MoveSetDistanceCommand(m_robotDrive, -1.0, 0.0, new Rotation2d(0),
-      //   AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-      // List.of(new Translation2d(-0.75, 0.0))));
+      new JoystickButton(m_joystick, 13)
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0.5, 0.75, new Rotation2d(Math.PI / 16),
+              AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+              List.of(new Translation2d(0.75, 0.0))));
+      new JoystickButton(m_joystick, 12)
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
+              AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared, // List.of()));
+              List.of(new Translation2d(0.25, 0.0))));
+      new JoystickButton(m_joystick, 11)
+          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0.0, new Rotation2d(-Math.PI / 16),
+              AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+              List.of(new Translation2d(0.75, 0.0))));
     }
 
     if (SubsystemConstants.useArm) {
       //new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
       //new JoystickButton(m_opJoystick, 7).onTrue(new BackToNormalCommand(m_robotArm));
-
-      System.out.println("Im alive!");
       new Trigger(() -> m_manualArm).whileTrue(
           new RunCommand(() -> {
             m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 500);

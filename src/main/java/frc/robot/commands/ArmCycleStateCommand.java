@@ -35,7 +35,7 @@ public class ArmCycleStateCommand extends CommandBase {
         m_subsystem.moveDownState();
       }
     }
-    System.out.println("initialized, direction: " + m_direction);
+    //System.out.println("initialized, direction: " + m_direction);
 
   }
 

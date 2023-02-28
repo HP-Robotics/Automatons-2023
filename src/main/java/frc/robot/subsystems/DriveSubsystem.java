@@ -78,10 +78,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_backRight.getPosition(),
             m_backLeft.getPosition()
         });
-    //System.out.println("Distance " + (m_frontLeft.getDistance() + m_frontRight.getDistance() + m_backLeft.getDistance()
-    //    + m_backRight.getDistance()) / 4);
+
     m_field.setRobotPose(getPose());
-    // System.out.println(getPose().getX());
     SmartDashboard.putNumber("Robot x", m_odometry.getPoseMeters().getX());
 
     SmartDashboard.putNumber("Front Left Drive Output", m_frontLeft.drivePower());
@@ -222,12 +220,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void switchConePipeline() {
     table.getEntry("pipeline").setValue(2);
-    System.out.println("cone switch");
+
   }
 
   public void switchCubePipeline() {
     table.getEntry("pipeline").setValue(0);
-    System.out.println("cube switch");
+
   }
 
   public void switchCameraPipeline() { // for driver visibility
