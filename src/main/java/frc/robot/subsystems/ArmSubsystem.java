@@ -163,12 +163,12 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveShoulder(double newSetpoint) {
     m_shoulderMotor.set(ControlMode.MotionMagic, m_shoulderMotor.getClosedLoopTarget() + newSetpoint);
-    System.out.println("shoulder running at " + newSetpoint);
+    // System.out.println("shoulder running at " + newSetpoint);
   }
 
   public void moveElbow(double newSetpoint) {
     m_elbowMotor.set(ControlMode.MotionMagic, m_elbowMotor.getClosedLoopTarget() - newSetpoint);
-    System.out.println("elbow running at " + newSetpoint);
+    // System.out.println("elbow running at " + newSetpoint);
   }
 
   public double absoluteToAngle(double absValue) {

@@ -70,7 +70,7 @@ public class MoveSetDistanceCommand extends CommandBase {
   @Override
   public void initialize() {
     try {
-      System.out.println("Success");
+      // System.out.println("Success");
 
       TrajectoryConfig config = new TrajectoryConfig(m_Velocity, m_Acceleration)
           // Add kinematics to ensure max speed is actually obeyed
@@ -102,7 +102,7 @@ public class MoveSetDistanceCommand extends CommandBase {
       //new Pose2d(m_X, m_Y, m_Rot),
       //config); //Added robot poseX and y to this command
       );
-      System.out.println("initialized");
+      // System.out.println("initialized");
       m_swerveControllerCommand = new PPSwerveControllerCommand(
           forwardTrajectory,
           m_subsystem::getPose, // Functional interface to feed supplier
@@ -116,13 +116,13 @@ public class MoveSetDistanceCommand extends CommandBase {
 
       m_swerveControllerCommand.initialize();
       if (m_swerveControllerCommand == null) {
-        System.out.println("ItsVoid!");
+        // System.out.println("ItsVoid!");
       } else {
-        System.out.println("It's working");
+        // System.out.println("It's working");
       }
     } catch (Exception e) {
       e.printStackTrace();
-      System.out.println(e);
+      // System.out.println(e);
       m_swerveControllerCommand = null;
 
     }

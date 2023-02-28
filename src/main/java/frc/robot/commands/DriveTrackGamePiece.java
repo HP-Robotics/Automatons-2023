@@ -17,7 +17,7 @@ public class DriveTrackGamePiece extends CommandBase {
         m_joystick = joystick;
         m_isCone = isCone;
         addRequirements(m_subsystem);
-        System.out.println("IsCone: " + isCone);
+        // System.out.println("IsCone: " + isCone);
 
     }
 
