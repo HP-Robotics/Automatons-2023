@@ -37,7 +37,7 @@ public class DriveTrackGamePiece extends CommandBase {
                     Math.signum(m_joystick.getRawAxis(1))
                             * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 2) * -1
                             * DriveConstants.kMaxSpeed,
-                    Math.signum(m_joystick.getRawAxis(1))
+                    Math.signum(m_joystick.getRawAxis(0))
                             * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
                             * DriveConstants.kMaxSpeed,
                     m_subsystem.getGamePieceX() * LimelightConstants.turnValue, false);
@@ -46,11 +46,11 @@ public class DriveTrackGamePiece extends CommandBase {
                     Math.signum(m_joystick.getRawAxis(1))
                             * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 2) * -1
                             * DriveConstants.kMaxSpeed,
-                    Math.signum(m_joystick.getRawAxis(1))
+                    Math.signum(m_joystick.getRawAxis(0))
                             * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
                             * DriveConstants.kMaxSpeed,
-                    Math.signum(m_joystick.getRawAxis(1))
-                            * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
+                    Math.signum(m_joystick.getRawAxis(2))
+                            * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.1), 2) * -1
                             * DriveConstants.kMaxAngularSpeed,
                     true);
         }

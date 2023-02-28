@@ -140,7 +140,7 @@ public class RobotContainer {
                     Math.signum(m_joystick.getRawAxis(1))
                         * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 2) * -1
                         * DriveConstants.kMaxSpeed,
-                    Math.signum(m_joystick.getRawAxis(1))
+                    Math.signum(m_joystick.getRawAxis(0))
                         * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
                         * DriveConstants.kMaxSpeed,
                     MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
@@ -268,8 +268,8 @@ public class RobotContainer {
       System.out.println("Im alive!");
       new Trigger(() -> m_manualArm).whileTrue(
           new RunCommand(() -> {
-            m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 10);
-            m_robotArm.moveElbow(MathUtil.applyDeadband(m_opJoystick.getRawAxis(5), 0.1) * 10);
+            m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 500);
+            m_robotArm.moveElbow(MathUtil.applyDeadband(m_opJoystick.getRawAxis(5), 0.1) * 500);
           }, m_robotArm));
 
       new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(() -> m_manualArm = true));
@@ -291,14 +291,15 @@ public class RobotContainer {
       if (SubsystemConstants.usePneumatics) {
         new JoystickButton(m_opJoystick, 6).onTrue( //drop n chomp
             new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
-                new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
                 new InstantCommand(m_pneumatics::intakeOut),
+                new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
                 new WaitCommand(1),
                 new ChompCloseCommand(m_pneumatics),
-                new WaitCommand(0.2),
-                new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-                new WaitCommand(0.5),
-                new InstantCommand(m_pneumatics::intakeIn)));
+                new WaitCommand(0.2)//,
+            // new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+            // new WaitCommand(0.5),
+            // new InstantCommand(m_pneumatics::intakeIn)));
+            ));
         new JoystickButton(m_opJoystick, 5).onTrue(new ChompOpenCommand(m_pneumatics));
       }
     }

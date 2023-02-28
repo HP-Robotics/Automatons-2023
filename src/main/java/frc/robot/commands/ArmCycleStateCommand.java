@@ -24,7 +24,7 @@ public class ArmCycleStateCommand extends CommandBase {
   @Override
   public void initialize() {
     int newState = m_subsystem.getCurrentState() + m_direction;
-    if (newState <= ArmConstants.stowState || newState > ArmConstants.scoreState) {
+    if (newState < ArmConstants.stowState || newState > ArmConstants.scoreState) {
       return;
     } else {
       m_subsystem.setTargetState(newState);
