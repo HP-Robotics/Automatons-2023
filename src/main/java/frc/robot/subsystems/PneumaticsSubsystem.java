@@ -18,6 +18,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
   private final DoubleSolenoid m_intake = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 0,
       1);
   Compressor m_compressor;
+  public boolean m_chompClosed;
 
   /** Creates a new PneumaticsSubsystem. */
   public PneumaticsSubsystem() {
@@ -30,10 +31,12 @@ public class PneumaticsSubsystem extends SubsystemBase {
 
   public void ChompClose() {
     m_chomp.set(DoubleSolenoid.Value.kForward);
+    m_chompClosed = true;
   }
 
   public void ChompOpen() {
     m_chomp.set(DoubleSolenoid.Value.kReverse);
+    m_chompClosed = false;
   }
 
   public void intakeOut() {
