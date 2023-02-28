@@ -280,6 +280,7 @@ public class RobotContainer {
       new JoystickButton(m_opJoystick, 2).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.midState));
       new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState));
       new JoystickButton(m_opJoystick, 3).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
+      new Trigger(() -> m_robotArm.m_movingFromIntake).onTrue(new InstantCommand(m_pneumatics::intakeIn));
 
       new Trigger(() -> {
         return m_opJoystick.getRawAxis(2) > 0.95;
@@ -293,7 +294,7 @@ public class RobotContainer {
             new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
                 new InstantCommand(m_pneumatics::intakeOut),
                 new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
-                new WaitCommand(1),
+                new WaitCommand(1), //Alec wants this number smaller
                 new ChompCloseCommand(m_pneumatics),
                 new WaitCommand(0.2)//,
             // new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
