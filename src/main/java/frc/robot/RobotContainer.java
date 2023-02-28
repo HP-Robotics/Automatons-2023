@@ -300,7 +300,14 @@ public class RobotContainer {
             // new WaitCommand(0.5),
             // new InstantCommand(m_pneumatics::intakeIn)));
             ));
-        new JoystickButton(m_opJoystick, 5).onTrue(new ChompOpenCommand(m_pneumatics));
+
+        if (m_pneumatics.m_chompClosed) {
+          new JoystickButton(m_opJoystick, 5).onTrue(new ChompOpenCommand(m_pneumatics));
+        } else {
+          new JoystickButton(m_opJoystick, 5).onTrue(new ChompCloseCommand(m_pneumatics));
+        }
+        ;
+
       }
     }
     if (SubsystemConstants.useTurnTables) {
