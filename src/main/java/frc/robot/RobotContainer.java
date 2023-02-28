@@ -140,12 +140,12 @@ public class RobotContainer {
                 m_robotDrive.drive(
                     // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount?
                     Math.signum(m_joystick.getRawAxis(1))
-                        * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 2) * -1
+                        * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.05), 2) * -1
                         * DriveConstants.kMaxSpeed,
                     Math.signum(m_joystick.getRawAxis(0))
-                        * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 2) * -1
+                        * Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.05), 2) * -1
                         * DriveConstants.kMaxSpeed,
-                    MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
+                    MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.1) * -1
                         * DriveConstants.kMaxAngularSpeed,
                     //0.2 * DriveConstants.kMaxSpeed, 0, 0,
                     m_robotDrive.m_fieldRelative);
