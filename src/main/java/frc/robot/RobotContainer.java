@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -158,10 +159,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     SequentialCommandGroup ret = new SequentialCommandGroup();
 
-    ret.addCommands(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState), new WaitCommand(2),
-        new ArmChangeStateCommand(m_robotArm, ArmConstants.scoreState), new WaitCommand(0.5),
-        new ChompOpenCommand(m_pneumatics), new WaitCommand(0.5),
-        new ArmChangeStateCommand(m_robotArm, ArmConstants.highState), new WaitCommand(0.5),
+    ret.addCommands(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState), new WaitCommand(0.1),
+        new ArmChangeStateCommand(m_robotArm, ArmConstants.scoreState), new WaitCommand(0.3),
+        new ChompOpenCommand(m_pneumatics), new WaitCommand(0.1),
         new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
 
     m_robotDrive.m_allowVisionUpdates = false;
@@ -171,8 +171,11 @@ public class RobotContainer {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
 
       ret.addCommands(
-          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 2.19, new Rotation2d(getAllianceTheta()),
-              AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()));
+          new ParallelCommandGroup(
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 2.19, new Rotation2d(getAllianceTheta()),
+                  AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
+              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))
+                  .withTimeout(3)));
 
     }
 
@@ -182,8 +185,11 @@ public class RobotContainer {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.20, new Rotation2d(getAllianceTheta())));
 
       ret.addCommands(
-          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58, new Rotation2d(getAllianceTheta()),
-              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()));
+          new ParallelCommandGroup(
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58, new Rotation2d(getAllianceTheta()),
+                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
+              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))
+                  .withTimeout(3)));
 
     }
 
@@ -193,9 +199,11 @@ public class RobotContainer {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.65, new Rotation2d(getAllianceTheta())));
 
       ret.addCommands(
-          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92, new Rotation2d(getAllianceTheta()),
-              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()));
-
+          new ParallelCommandGroup(
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92, new Rotation2d(getAllianceTheta()),
+                  AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, List.of()),
+              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))
+                  .withTimeout(3)));
     }
 
     if (m_chargeBalance.getSelected()) {
@@ -330,7 +338,6 @@ public class RobotContainer {
     if (SubsystemConstants.useIntake && SubsystemConstants.useTurnTables && SubsystemConstants.usePneumatics) {
       new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics))
           .onTrue(new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
-      //TODO List of things for sequentialcommandgroup: 
 
     }
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
