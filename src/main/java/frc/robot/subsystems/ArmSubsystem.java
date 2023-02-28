@@ -27,6 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
   private int m_pastState = -1;
   private int m_frameCounter;
   private boolean m_doneChanging;
+  public boolean m_movingFromIntake;
   //private AHRS elbowGyro;
   private AHRS shoulderGyro;
   //private double elbowTicks0 = 1;
@@ -83,6 +84,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_currentState = 1;
     m_isChanging = false;
     m_frameCounter = 0;
+    m_movingFromIntake = false;
 
     //elbowGyro = new AHRS(Port.kUSB1);
     shoulderGyro = new AHRS(Port.kUSB2);
@@ -223,6 +225,9 @@ public class ArmSubsystem extends SubsystemBase {
     m_isChanging = true;
     m_doneChanging = false;
     m_frameCounter = 0;
+    if (m_targetState == ArmConstants.stowState) {
+      m_movingFromIntake = true;
+    }
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
     SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
