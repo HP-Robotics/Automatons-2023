@@ -161,6 +161,57 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+
+    SequentialCommandGroup ret = new SequentialCommandGroup();
+
+    ret.addCommands(
+        new ArmChangeStateCommand(m_robotArm, ArmConstants.scoreState), new WaitCommand(0.1),
+        new ChompOpenCommand(m_pneumatics), new WaitCommand(0.1));
+
+    if (m_startPosition.getSelected() == "middle") {
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
+      ret.addCommands(
+          new ParallelCommandGroup(
+
+              new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+              new SequentialCommandGroup(
+                  new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615,
+                      new Rotation2d(getAllianceTheta()),
+                      AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
+                      List.of(
+                          new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
+                              new Rotation2d(getAllianceTheta())))),
+                  new BalanceCommand(m_robotDrive))));
+    }
+
+    if (m_startPosition.getSelected() == "station") {
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.20, new Rotation2d(getAllianceTheta())));
+      ret.addCommands(
+          new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+          new ParallelRaceGroup(
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58,
+                  new Rotation2d(getAllianceTheta()),
+                  AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
+              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+    }
+
+    if (m_startPosition.getSelected() == "drive") {
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.65, new Rotation2d(getAllianceTheta())));
+      ret.addCommands(
+          new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+          new ParallelRaceGroup(
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92,
+                  new Rotation2d(getAllianceTheta()),
+                  AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
+              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+
+    }
+
+    return ret;
+
+  }
+
+  public Command getAutonomousCommandGood() {
     SequentialCommandGroup ret = new SequentialCommandGroup();
     ParallelCommandGroup move = new ParallelCommandGroup();
 
@@ -220,9 +271,9 @@ public class RobotContainer {
       if (m_grabPiece1.getSelected()) {
         ret.addCommands(
             new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
+                AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxAutoAcceleration,
                 List.of(
-                    new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615),
+                    new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
                         new Rotation2d(getAllianceTheta())))),
             new BalanceCommand(m_robotDrive));
       } else {
@@ -230,9 +281,9 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615,
                     new Rotation2d(getAllianceTheta()),
-                    AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
+                    AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
                     List.of(
-                        new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615),
+                        new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
                             new Rotation2d(getAllianceTheta())))),
                 new BalanceCommand(m_robotDrive)));
       }
@@ -279,18 +330,18 @@ public class RobotContainer {
 
       // Create config for trajectory
 
-      new JoystickButton(m_joystick, 13)
-          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0.5, 0.75, new Rotation2d(Math.PI / 16),
-              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
-              List.of()));
-      new JoystickButton(m_joystick, 12)
-          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
-              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, // List.of()));
-              List.of()));
-      new JoystickButton(m_joystick, 11)
-          .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0.0, new Rotation2d(-Math.PI / 16),
-              AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
-              List.of()));
+      //   new JoystickButton(m_joystick, 13)
+      //       .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0.5, 0.75, new Rotation2d(Math.PI / 16),
+      //           AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
+      //           List.of()));
+      //   new JoystickButton(m_joystick, 12)
+      //       .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0, new Rotation2d(0),
+      //           AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration, // List.of()));
+      //           List.of()));
+      //   new JoystickButton(m_joystick, 11)
+      //       .onTrue(new MoveSetDistanceCommand(m_robotDrive, 0, 0.0, new Rotation2d(-Math.PI / 16),
+      //           AutoConstants.kMaxAutoVelocity, AutoConstants.kMaxAutoAcceleration,
+      //           List.of()));
     }
 
     if (SubsystemConstants.useArm) {
@@ -319,6 +370,8 @@ public class RobotContainer {
       new Trigger(() -> {
         return m_opJoystick.getRawAxis(3) > 0.95;
       }).onTrue(new ArmCycleStateCommand(m_robotArm, true));
+
+      new JoystickButton(m_opJoystick, 10).onTrue(new InstantCommand(m_robotArm::resetArmEncoders));
 
       if (SubsystemConstants.usePneumatics) {
         new JoystickButton(m_opJoystick, 6).onTrue( //drop n chomp

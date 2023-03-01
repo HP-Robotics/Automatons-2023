@@ -246,21 +246,20 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
-  /*public double elbowTicksToDegrees(double ticks) {
-    double m = (elbowDegrees1 - elbowDegrees0) / (elbowTicks1 - elbowTicks0);
-    double b = (elbowDegrees0 * elbowTicks1 - elbowTicks0 * elbowDegrees1) / (elbowTicks1 - elbowTicks0);
-  
-    return m * ticks + b;
-  
+  public void resetArmEncoders() {
+    if (m_currentState == ArmConstants.stowState) {
+      m_shoulderMotor.setSelectedSensorPosition(0);
+      m_elbowMotor.setSelectedSensorPosition(0);
+    }
   }
-  
+
   public double elbowDegreesToTicks(double degrees) {
     double m = (elbowDegrees1 - elbowDegrees0) / (elbowTicks1 - elbowTicks0);
     double b = (elbowDegrees0 * elbowTicks1 - elbowTicks0 * elbowDegrees1) / (elbowTicks1 - elbowTicks0);
-  
+
     return (degrees - b) / m;
-  
-  } */
+
+  }*/
 
   public double shoulderTicksToDegrees(double ticks) {
     double m = (shoulderDegrees1 - shoulderDegrees0) / (shoulderTicks1 - shoulderTicks0);
@@ -278,4 +277,14 @@ public class ArmSubsystem extends SubsystemBase {
     return (degrees - b) / m;
   }
 
+/*public double elbowTicksToDegrees(double ticks) {
+    double m = (elbowDegrees1 - elbowDegrees0) / (elbowTicks1 - elbowTicks0);
+    double b = (elbowDegrees0 * elbowTicks1 - elbowTicks0 * elbowDegrees1) / (elbowTicks1 - elbowTicks0);
+  
+    return m * ticks + b;
+  
+  }
+  
 }
+}
+
