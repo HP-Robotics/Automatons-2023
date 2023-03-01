@@ -142,16 +142,6 @@ public class ArmSubsystem extends SubsystemBase {
     return 0;
   }
 
-  public void changeState(int state) {
-    if (state < ArmConstants.intakeState) {
-      state = ArmConstants.intakeState;
-    } else if (state > ArmConstants.scoreState) {
-      state = ArmConstants.scoreState;
-    }
-    m_targetState = state;
-
-  }
-
   public int getCurrentState() {
     return m_currentState;
   }
@@ -180,6 +170,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
     SmartDashboard.putNumber("Elbow Target", ArmConstants.elbowPositions[m_currentState]);
+    SmartDashboard.putBoolean("Leaving Intake", m_movingFromIntake);
   }
 
   public void moveUpState() {
@@ -190,9 +181,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_isChanging = true;
     m_doneChanging = false;
     m_frameCounter = 0;
-    if (m_targetState == ArmConstants.stowState) {
-      m_movingFromIntake = true;
-    }
+
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
     SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
@@ -207,6 +196,9 @@ public class ArmSubsystem extends SubsystemBase {
       state = ArmConstants.scoreState;
     }
     m_targetState = state;
+    if (m_targetState == ArmConstants.stowState) {
+      m_movingFromIntake = true;
+    }
   }
 
   public void setFalconEncoders() {

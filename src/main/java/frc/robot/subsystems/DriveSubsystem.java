@@ -81,6 +81,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_field.setRobotPose(getPose());
     SmartDashboard.putNumber("Robot x", m_odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Robot y", m_odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("Robot theta", m_odometry.getPoseMeters().getRotation().getDegrees());
 
     SmartDashboard.putNumber("Front Left Drive Output", m_frontLeft.drivePower());
     SmartDashboard.putNumber("Front Right Drive Output", m_frontRight.drivePower());
