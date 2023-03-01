@@ -169,17 +169,22 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 5; // TODO MENTOR: And note that we don't use them...
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxChargeStationVelocity = 2;
-    public static final double kMaxChargeStationAcceleration = 0.5;
+    public static final double kMaxChargeStationVelocity = 2.5;
+    public static final double kMaxChargeStationAcceleration = 0.75;
+    public static final double kFastAutoVelocity = 4.5;
+    public static final double kfastAutoAcceleration = 3.0;
     public static final double kMaxAutoVelocity = 3;
     public static final double kMaxAutoAcceleration = 3;
 
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
     public static final double kPXController = 5;
+    public static final double kIXController = 0.03;
     public static final double kDXController = 0.0;
+    public static final double kIYController = 0.03;
     public static final double kPYController = 5; //TODO why is Y different?
-    public static final double kPThetaController = 5; // TODO MENTOR: tune the theta PID
+    public static final double kPThetaController = 3; // TODO MENTOR: tune the theta PID
+    public static final double kIThetaController = 0.05;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
