@@ -210,4 +210,11 @@ public class ArmSubsystem extends SubsystemBase {
     m_shoulderMotor.setSelectedSensorPosition(ticksS);
 
   }
+
+  public void resetArmEncoders() {
+    if (m_currentState == ArmConstants.stowState) {
+      m_shoulderMotor.setSelectedSensorPosition(0);
+      m_elbowMotor.setSelectedSensorPosition(0);
+    }
+  }
 }
