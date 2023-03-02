@@ -171,17 +171,14 @@ public class RobotContainer {
     if (m_startPosition.getSelected() == "middle") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
       ret.addCommands(
-          new ParallelCommandGroup(
-
-              new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-              new SequentialCommandGroup(
-                  new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615,
-                      new Rotation2d(getAllianceTheta()),
-                      AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
-                      List.of(
-                          new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
-                              new Rotation2d(getAllianceTheta())))),
-                  new BalanceCommand(m_robotDrive))));
+          new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615,
+              new Rotation2d(getAllianceTheta()),
+              AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
+              List.of(
+                  new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
+                      new Rotation2d(getAllianceTheta())))),
+          new BalanceCommand(m_robotDrive));
     }
 
     if (m_startPosition.getSelected() == "station") {
@@ -378,7 +375,7 @@ public class RobotContainer {
             new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
                 new InstantCommand(m_pneumatics::intakeOut),
                 new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
-                new WaitCommand(0.2),
+                new WaitCommand(0.1),
                 new ChompCloseCommand(m_pneumatics)));
 
         new JoystickButton(m_opJoystick, 5).onTrue(new ChompToggleCommand(m_pneumatics));
