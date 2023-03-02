@@ -195,7 +195,7 @@ public final class Constants {
 
   public static final class PneumaticsConstants {
     public static final int hubID = 49;
-    public static final int minPressure = 110;
+    public static final int minPressure = 100;
     public static final int maxPressure = 118;
 
   }
