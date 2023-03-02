@@ -58,7 +58,7 @@ public class MoveWithVisionCommand extends CommandBase {
   public void end(boolean interrupted) {
     if (m_vision.tagVision == true) {
       m_moveCommand.end(interrupted);
-      m_subsystem.m_allowVisionUpdates = true;
+      m_subsystem.m_allowVisionUpdates = false;
     }
   }
 
