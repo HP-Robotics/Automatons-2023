@@ -195,7 +195,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveDownState() {
     if (m_currentState == m_pastState && m_currentState != ArmConstants.intakeState) {
-      m_currentState--;
+      if (m_targetState == ArmConstants.stowState && m_currentState == ArmConstants.highState) {
+        m_currentState = ArmConstants.lowState;
+      } else {
+        m_currentState--;
+      }
     }
 
     m_isChanging = true;
@@ -210,7 +214,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveUpState() {
     if (m_currentState == m_pastState && m_currentState != ArmConstants.scoreState) {
-      m_currentState++;
+      if (m_targetState == ArmConstants.highState && m_pastState == ArmConstants.lowState) {
+        m_currentState = ArmConstants.highState;
+      } else {
+        m_currentState++;
+      }
     }
 
     m_isChanging = true;
