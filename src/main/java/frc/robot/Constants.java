@@ -55,7 +55,7 @@ public final class Constants {
     public static final boolean useIntake = true;
     public static final boolean useLimelight = true;
     public static final boolean useVision = true;
-    public static final boolean useDataManger = false;
+    public static final boolean useDataManger = true;
   }
 
   public static class DriveConstants {
@@ -115,8 +115,8 @@ public final class Constants {
     public static final double shoulderMaxAllowableError = 200;
     public static final double shoulderIZone = 500;
     public static final double shoulderGearRatio = 384; // just a guess
-    public static final int shoulderAcceleration = 17500;
-    public static final int shoulderMaxVelocity = 35000;
+    public static final int shoulderAcceleration = 25000;//20000 works
+    public static final int shoulderMaxVelocity = 50000;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.82;
 
@@ -125,8 +125,8 @@ public final class Constants {
     public static final double elbowkI = .0000;
     public static final double elbowkD = 0;
     public static final double elbowGearRatio = 225;
-    public static final int elbowAcceleration = 20000;
-    public static final int elbowMaxVelocity = 40000;
+    public static final int elbowAcceleration = 30000;
+    public static final int elbowMaxVelocity = 60000;
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.28;
 
@@ -206,7 +206,7 @@ public final class Constants {
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
     public static final double clockwiseSpeed = .25;
-    public static final double counterClockwiseSpeed = -.25;
+    public static final double counterClockwiseSpeed = -.5;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
     public static final double kConeGThreshold = 3.0;
