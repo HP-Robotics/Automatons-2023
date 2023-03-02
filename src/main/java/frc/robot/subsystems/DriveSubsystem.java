@@ -34,7 +34,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule m_backRight = new SwerveModule(26, 27, 14, RobotConstants.swerveOffsetBR, "BR"); // BIG BONGO 4
 
   public boolean m_fieldRelative = true;
-  public boolean m_allowVisionUpdates = true;
+  public boolean m_allowVisionUpdates = false;
 
   private final Field2d m_field = new Field2d();
   // Duty Encoders may have the wrong values

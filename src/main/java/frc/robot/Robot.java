@@ -20,10 +20,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-    addPeriodic(() -> {
-      m_robotContainer.updateDriveFromVision();
-    }, kDefaultPeriod);
+
     //PowerDistribution pdp = new PowerDistribution();
     //SmartDashboard.putData("PDP", pdp);
   }
@@ -61,7 +58,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
+    m_robotContainer = new RobotContainer();
+    addPeriodic(() -> {
+      m_robotContainer.updateDriveFromVision();
+    }, kDefaultPeriod);
     m_robotContainer.resetDriveOffsets();
 
     if (m_autonomousCommand != null) {

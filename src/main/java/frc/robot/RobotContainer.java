@@ -139,7 +139,7 @@ public class RobotContainer {
           new RunCommand(
 
               () -> {
-                m_robotDrive.m_allowVisionUpdates = true;
+                m_robotDrive.m_allowVisionUpdates = false;
                 m_robotDrive.drive(
                     // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount?
                     Math.signum(m_joystick.getRawAxis(1))
@@ -161,6 +161,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    m_robotDrive.m_allowVisionUpdates = false;
 
     SequentialCommandGroup ret = new SequentialCommandGroup();
 
@@ -176,7 +177,7 @@ public class RobotContainer {
               new Rotation2d(getAllianceTheta()),
               AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
               List.of(
-                  new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
+                  new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(getAllianceTheta()),
                       new Rotation2d(getAllianceTheta())))),
           new BalanceCommand(m_robotDrive));
     }
@@ -312,7 +313,7 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 8).whileTrue(new BalanceCommand(m_robotDrive));
       new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
           () -> {
-            m_robotDrive.m_allowVisionUpdates = true;
+            m_robotDrive.m_allowVisionUpdates = false;
             m_robotDrive.drive(
                 // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount? Also this is slowmode
                 Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kSlowSpeed,
