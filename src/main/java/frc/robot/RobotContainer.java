@@ -174,7 +174,7 @@ public class RobotContainer {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(5.1196), 2.7615,
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(5.1196), 2.7615, //X value is not actually correct, goes over, but should end in roughly the right place because the robot thinks it is a different place than where it is.
               new Rotation2d(getAllianceTheta()),
               AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
               List.of()),
