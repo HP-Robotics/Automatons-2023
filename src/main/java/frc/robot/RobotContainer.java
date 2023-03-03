@@ -309,8 +309,8 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       //new JoystickButton(m_joystick, 10).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); No go north for now
-      new JoystickButton(m_joystick, 10).whileTrue(new DriveParkingBrakeCommand(m_robotDrive));
-      new JoystickButton(m_joystick, 8).whileTrue(new BalanceCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 16).whileTrue(new DriveParkingBrakeCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
       new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
           () -> {
             m_robotDrive.m_allowVisionUpdates = false;
@@ -404,20 +404,20 @@ public class RobotContainer {
           .onTrue(new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
 
     }
-    if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
-      new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
-          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
-          new RunCommand(
-              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-      new JoystickButton(m_joystick, 15).whileTrue(new SequentialCommandGroup(
-          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
-          new RunCommand(
-              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-      new JoystickButton(m_joystick, 14).whileTrue(new SequentialCommandGroup(
-          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
-          new RunCommand(
-              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-    }
+    // if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
+    //   new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
+    //       new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
+    //       new RunCommand(
+    //           () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+    //   new JoystickButton(m_joystick, 15).whileTrue(new SequentialCommandGroup(
+    //       new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
+    //       new RunCommand(
+    //           () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+    //   new JoystickButton(m_joystick, 14).whileTrue(new SequentialCommandGroup(
+    //       new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
+    //       new RunCommand(
+    //           () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+    // }
 
     //new JoystickButton(m_opJoystick, 7).whileTrue(new TestCommand(m_turntables));
 
