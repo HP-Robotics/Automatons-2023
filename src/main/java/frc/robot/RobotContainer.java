@@ -175,7 +175,7 @@ public class RobotContainer {
       SequentialCommandGroup temp = new SequentialCommandGroup();
       temp.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(5.1196), 2.7615, //X value is not actually correct, goes over, but should end in roughly the right place because the robot thinks it is a different place than where it is.
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.1196), 2.7615, //X value is not actually correct, goes over, but should end in roughly the right place because the robot thinks it is a different place than where it is.
               new Rotation2d(getAllianceTheta()),
               AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
               List.of()),
