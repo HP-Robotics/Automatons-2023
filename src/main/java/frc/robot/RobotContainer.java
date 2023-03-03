@@ -186,7 +186,7 @@ public class RobotContainer {
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
           new ParallelRaceGroup(
-              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58,
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 4.58,
                   new Rotation2d(getAllianceTheta()),
                   AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
               new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
@@ -197,7 +197,7 @@ public class RobotContainer {
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
           new ParallelRaceGroup(
-              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92,
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 0.92,
                   new Rotation2d(getAllianceTheta()),
                   AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
               new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
