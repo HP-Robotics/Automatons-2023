@@ -174,12 +174,10 @@ public class RobotContainer {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615,
+          new MoveSetDistanceCommand(m_robotDrive, getAllianceX(5.1196), 2.7615,
               new Rotation2d(getAllianceTheta()),
               AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
-              List.of(
-                  new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(getAllianceTheta()),
-                      new Rotation2d(getAllianceTheta())))),
+              List.of()),
           new BalanceCommand(m_robotDrive));
     }
 
