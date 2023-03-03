@@ -170,7 +170,7 @@ public final class Constants {
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxChargeStationVelocity = 2.5;
-    public static final double kMaxChargeStationAcceleration = 0.75;
+    public static final double kMaxChargeStationAcceleration = 1.25;
     public static final double kFastAutoVelocity = 4.5;
     public static final double kfastAutoAcceleration = 3.0;
     public static final double kMaxAutoVelocity = 3;
