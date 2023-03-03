@@ -172,13 +172,16 @@ public class RobotContainer {
 
     if (m_startPosition.getSelected() == "middle") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
-      ret.addCommands(
+      SequentialCommandGroup temp = new SequentialCommandGroup();
+      temp.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
           new MoveSetDistanceCommand(m_robotDrive, getAllianceX(5.1196), 2.7615, //X value is not actually correct, goes over, but should end in roughly the right place because the robot thinks it is a different place than where it is.
               new Rotation2d(getAllianceTheta()),
               AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
               List.of()),
           new BalanceCommand(m_robotDrive));
+
+      ret.addCommands(temp.withTimeout(10.5), new DriveParkingBrakeCommand(m_robotDrive));
     }
 
     if (m_startPosition.getSelected() == "station") {
