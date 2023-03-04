@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.AltBalanceCommand;
 import frc.robot.commands.ArmChangeStateCommand;
 import frc.robot.commands.ArmCycleStateCommand;
 import frc.robot.commands.BalanceCommand;
@@ -314,6 +315,7 @@ public class RobotContainer {
       //new JoystickButton(m_joystick, 10).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); No go north for now
       new JoystickButton(m_joystick, 16).whileTrue(new DriveParkingBrakeCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 11).whileTrue(new AltBalanceCommand(m_robotDrive));
       new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
           () -> {
             m_robotDrive.m_allowVisionUpdates = false;
