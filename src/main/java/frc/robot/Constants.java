@@ -91,7 +91,7 @@ public final class Constants {
     public static final double turningkD = 4; //TODO: please tune for final robot eventually
     public static final double turningkAllowableError = 50;
 
-    public static final double balancekP = 0.03;
+    public static final double balancekP = 0.04;
     public static final double balancekI = 0.0;
     public static final double balancekD = 0.012; //0.01
     public static final int balanceThreshold = 2;
