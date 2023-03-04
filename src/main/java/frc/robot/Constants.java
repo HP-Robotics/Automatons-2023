@@ -54,7 +54,7 @@ public final class Constants {
     public static final boolean useTurnTables = true;
     public static final boolean useIntake = true;
     public static final boolean useLimelight = true;
-    public static final boolean useVision = true;
+    public static final boolean useVision = false;
     public static final boolean useDataManger = true;
   }
 
@@ -95,6 +95,9 @@ public final class Constants {
     public static final double balancekI = 0.0;
     public static final double balancekD = 0.012; //0.01
     public static final int balanceThreshold = 2;
+
+    public static final double altBalanceAlpha = 0.2;
+    public static final double altRateThreshold = 0.2;
 
     public static final double encoderTolerance = 0.01;
   }
