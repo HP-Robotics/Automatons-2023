@@ -383,7 +383,6 @@ public class RobotContainer {
             new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
                 new InstantCommand(m_pneumatics::intakeOut),
                 new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
-                new WaitCommand(0.1),
                 new ChompCloseCommand(m_pneumatics)));
 
         new JoystickButton(m_opJoystick, 5).onTrue(new ChompToggleCommand(m_pneumatics));

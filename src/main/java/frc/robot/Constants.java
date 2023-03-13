@@ -133,7 +133,7 @@ public final class Constants {
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.28;
 
-    public static final int frameCounterThreshold = 25;
+    public static final int frameCounterThreshold = 5;
 
     public static final int intakeState = 0;
     public static final int stowState = 1;
