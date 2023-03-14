@@ -114,12 +114,6 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Is elbow moving? ", elbowGyro.isMoving());
     SmartDashboard.putBoolean("is elbow rotating?", elbowGyro.isRotating());*/
 
-    SmartDashboard.putNumber("Shoulder Pitch", shoulderGyro.getPitch());
-    SmartDashboard.putNumber("Shoulder Yaw", shoulderGyro.getYaw());
-    SmartDashboard.putNumber("Shoulder Roll", shoulderGyro.getRoll());
-    SmartDashboard.putBoolean("Is shoulder moving? ", shoulderGyro.isMoving());
-    SmartDashboard.putBoolean("is shoulder rotating?", shoulderGyro.isRotating());
-
     SmartDashboard.putNumber("Past State", m_pastState);
     SmartDashboard.putNumber("Target State", m_targetState);
     SmartDashboard.putNumber("Current State", m_currentState);
