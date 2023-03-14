@@ -27,16 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
   private int m_pastState = -1;
   private int m_frameCounter;
   private boolean m_doneChanging;
-  //private AHRS elbowGyro;
-  private AHRS shoulderGyro;
-  //private double elbowTicks0 = 1;
-  // private double elbowTicks1 = 2;
-  //private double elbowDegrees0 = 1;
-  //private double elbowDegrees1 = 2;
-  private double shoulderTicks0 = 1;
-  private double shoulderTicks1 = 2;
-  private double shoulderDegrees0 = 1;
-  private double shoulderDegrees1 = 2;
+  public boolean m_movingFromIntake;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -83,9 +74,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_currentState = 1;
     m_isChanging = false;
     m_frameCounter = 0;
-
-    //elbowGyro = new AHRS(Port.kUSB1);
-    shoulderGyro = new AHRS(Port.kUSB2);
+    m_movingFromIntake = false;
 
     // TODO MENTOR:  If the arm is all the way out and we deploy new code, at enable, we would move the arm to starting state.  Is that safe?
     // m_shoulderMotor.set(ControlMode.Position, ArmConstants.shoulderPositions[m_currentState]);
@@ -163,26 +152,16 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveShoulder(double newSetpoint) {
     m_shoulderMotor.set(ControlMode.MotionMagic, m_shoulderMotor.getClosedLoopTarget() + newSetpoint);
-    System.out.println("shoulder running at " + newSetpoint);
+    // System.out.println("shoulder running at " + newSetpoint);
   }
 
   public void moveElbow(double newSetpoint) {
     m_elbowMotor.set(ControlMode.MotionMagic, m_elbowMotor.getClosedLoopTarget() - newSetpoint);
-    System.out.println("elbow running at " + newSetpoint);
+    // System.out.println("elbow running at " + newSetpoint);
   }
 
   public double absoluteToAngle(double absValue) {
     return 0;
-  }
-
-  public void changeState(int state) {
-    if (state < ArmConstants.intakeState) {
-      state = ArmConstants.intakeState;
-    } else if (state > ArmConstants.scoreState) {
-      state = ArmConstants.scoreState;
-    }
-    m_targetState = state;
-
   }
 
   public int getCurrentState() {
@@ -203,7 +182,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveDownState() {
     if (m_currentState == m_pastState && m_currentState != ArmConstants.intakeState) {
-      m_currentState--;
+      if (m_targetState == ArmConstants.stowState && m_currentState == ArmConstants.highState) {
+        m_currentState = ArmConstants.lowState;
+      } else {
+        m_currentState--;
+      }
     }
 
     m_isChanging = true;
@@ -213,16 +196,22 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
     SmartDashboard.putNumber("Elbow Target", ArmConstants.elbowPositions[m_currentState]);
+    SmartDashboard.putBoolean("Leaving Intake", m_movingFromIntake);
   }
 
   public void moveUpState() {
     if (m_currentState == m_pastState && m_currentState != ArmConstants.scoreState) {
-      m_currentState++;
+      if (m_targetState == ArmConstants.highState && m_pastState == ArmConstants.lowState) {
+        m_currentState = ArmConstants.highState;
+      } else {
+        m_currentState++;
+      }
     }
 
     m_isChanging = true;
     m_doneChanging = false;
     m_frameCounter = 0;
+
     m_shoulderMotor.set(ControlMode.MotionMagic, ArmConstants.shoulderPositions[m_currentState]);
     SmartDashboard.putNumber("Shoulder Target", ArmConstants.shoulderPositions[m_currentState]);
     m_elbowMotor.set(ControlMode.MotionMagic, ArmConstants.elbowPositions[m_currentState]);
@@ -237,6 +226,9 @@ public class ArmSubsystem extends SubsystemBase {
       state = ArmConstants.scoreState;
     }
     m_targetState = state;
+    if (m_targetState == ArmConstants.stowState) {
+      m_movingFromIntake = true;
+    }
   }
 
   public void setFalconEncoders() {
@@ -249,36 +241,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
-  /*public double elbowTicksToDegrees(double ticks) {
-    double m = (elbowDegrees1 - elbowDegrees0) / (elbowTicks1 - elbowTicks0);
-    double b = (elbowDegrees0 * elbowTicks1 - elbowTicks0 * elbowDegrees1) / (elbowTicks1 - elbowTicks0);
-  
-    return m * ticks + b;
-  
+  public void resetArmEncoders() {
+    if (m_currentState == ArmConstants.stowState) {
+      m_shoulderMotor.setSelectedSensorPosition(0);
+      m_elbowMotor.setSelectedSensorPosition(0);
+    }
   }
-  
-  public double elbowDegreesToTicks(double degrees) {
-    double m = (elbowDegrees1 - elbowDegrees0) / (elbowTicks1 - elbowTicks0);
-    double b = (elbowDegrees0 * elbowTicks1 - elbowTicks0 * elbowDegrees1) / (elbowTicks1 - elbowTicks0);
-  
-    return (degrees - b) / m;
-  
-  } */
-
-  public double shoulderTicksToDegrees(double ticks) {
-    double m = (shoulderDegrees1 - shoulderDegrees0) / (shoulderTicks1 - shoulderTicks0);
-    double b = (shoulderDegrees0 * shoulderTicks1 - shoulderTicks0 * shoulderDegrees1)
-        / (shoulderTicks1 - shoulderTicks0);
-
-    return m * ticks + b;
-  }
-
-  public double shoulderDegreesToTicks(double degrees) {
-    double m = (shoulderDegrees1 - shoulderDegrees0) / (shoulderTicks1 - shoulderTicks0);
-    double b = (shoulderDegrees0 * shoulderTicks1 - shoulderTicks0 * shoulderDegrees1)
-        / (shoulderTicks1 - shoulderTicks0);
-
-    return (degrees - b) / m;
-  }
-
 }

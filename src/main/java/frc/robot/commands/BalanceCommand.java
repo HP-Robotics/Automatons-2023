@@ -44,9 +44,10 @@ public class BalanceCommand extends CommandBase {
     @Override
     public void execute() {
 
-
         // TODO MENTOR: put our PID values to the smartdashboard for pid tuning
         double power = m_PidController.calculate(m_subsystem.getCombinedRoll());
+        double combinedAngle = m_subsystem.getCombinedRoll();
+        SmartDashboard.putNumber("Combined Roll", combinedAngle);
         if (power > DriveConstants.balanceThreshold) {
             power = DriveConstants.balanceThreshold;
         }

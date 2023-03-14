@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PneumaticsConstants;
 
@@ -18,6 +19,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
   private final DoubleSolenoid m_intake = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 0,
       1);
   Compressor m_compressor;
+  public boolean m_chompClosed;
 
   /** Creates a new PneumaticsSubsystem. */
   public PneumaticsSubsystem() {
@@ -30,10 +32,12 @@ public class PneumaticsSubsystem extends SubsystemBase {
 
   public void ChompClose() {
     m_chomp.set(DoubleSolenoid.Value.kForward);
+    m_chompClosed = true;
   }
 
   public void ChompOpen() {
     m_chomp.set(DoubleSolenoid.Value.kReverse);
+    m_chompClosed = false;
   }
 
   public void intakeOut() {
@@ -46,6 +50,6 @@ public class PneumaticsSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Pressure", m_compressor.getPressure());
   }
 }

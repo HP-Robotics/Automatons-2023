@@ -56,13 +56,18 @@ public class MoveWithVisionCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_moveCommand.end(interrupted);
-    m_subsystem.m_allowVisionUpdates = true;
+    if (m_vision.tagVision == true) {
+      m_moveCommand.end(interrupted);
+      m_subsystem.m_allowVisionUpdates = false;
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (m_vision.tagVision == false) {
+      return true;
+    }
     return m_moveCommand.isFinished();
   }
 }

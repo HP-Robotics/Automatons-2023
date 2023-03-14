@@ -36,8 +36,8 @@ public class MoveSetDistanceCommand extends CommandBase {
   private final Rotation2d m_Rot;
   private final double m_Velocity;
   private final double m_Acceleration;
-  private final List<Translation2d> m_MidPoints;
-  private final List<PathPoint> m_wayPoints;
+  private final List<PathPoint> m_MidPoints;
+  private List<PathPoint> m_wayPoints;
   private PIDController m_thetaController;
   private PIDController m_XController;
   private PIDController m_YController;
@@ -48,7 +48,7 @@ public class MoveSetDistanceCommand extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public MoveSetDistanceCommand(DriveSubsystem subsystem, double X, double Y, Rotation2d Rot, double Velocity,
-      double Acceleration, List<Translation2d> midPoints) {
+      double Acceleration, List<PathPoint> midPoints) {
     m_subsystem = subsystem;
     m_X = X;
     m_Y = Y;
@@ -58,7 +58,7 @@ public class MoveSetDistanceCommand extends CommandBase {
     m_MidPoints = midPoints;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-    m_wayPoints = new ArrayList();
+
   }
 
   public MoveSetDistanceCommand(DriveSubsystem subsystem, Pose2d Destination) {
@@ -70,24 +70,25 @@ public class MoveSetDistanceCommand extends CommandBase {
   @Override
   public void initialize() {
     try {
-      System.out.println("Success");
-
+      // System.out.println("Success");
+      m_wayPoints = new ArrayList();
       TrajectoryConfig config = new TrajectoryConfig(m_Velocity, m_Acceleration)
           // Add kinematics to ensure max speed is actually obeyed
           .setKinematics(DriveConstants.kDriveKinematics);
 
       m_thetaController = new PIDController(
           //var thetaController = new ProfiledPIDController(
-          AutoConstants.kPThetaController, 0, 0);
-      m_XController = new PIDController(AutoConstants.kPXController, 0, AutoConstants.kDXController);
-      m_YController = new PIDController(AutoConstants.kPYController, 0, 0);
+          AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0);
+      m_XController = new PIDController(AutoConstants.kPXController, AutoConstants.kIXController,
+          AutoConstants.kDXController);
+      m_YController = new PIDController(AutoConstants.kPYController, AutoConstants.kIYController, 0);
 
       m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
       m_wayPoints.add(new PathPoint(new Translation2d(m_subsystem.getPoseX(), m_subsystem.getPoseY()),
           Rotation2d.fromDegrees(0), m_subsystem.getPoseRot()));
       for (int i = 0; i < m_MidPoints.size(); i++) {
-        m_wayPoints.add(new PathPoint(m_MidPoints.get(i), new Rotation2d(0)));
+        m_wayPoints.add(m_MidPoints.get(i));
       }
       m_wayPoints.add(new PathPoint(new Translation2d(m_X, m_Y), new Rotation2d(0), m_Rot));
 
@@ -102,7 +103,7 @@ public class MoveSetDistanceCommand extends CommandBase {
       //new Pose2d(m_X, m_Y, m_Rot),
       //config); //Added robot poseX and y to this command
       );
-      System.out.println("initialized");
+      // System.out.println("initialized");
       m_swerveControllerCommand = new PPSwerveControllerCommand(
           forwardTrajectory,
           m_subsystem::getPose, // Functional interface to feed supplier
@@ -116,13 +117,13 @@ public class MoveSetDistanceCommand extends CommandBase {
 
       m_swerveControllerCommand.initialize();
       if (m_swerveControllerCommand == null) {
-        System.out.println("ItsVoid!");
+        // System.out.println("ItsVoid!");
       } else {
-        System.out.println("It's working");
+        // System.out.println("It's working");
       }
     } catch (Exception e) {
       e.printStackTrace();
-      System.out.println(e);
+      // System.out.println(e);
       m_swerveControllerCommand = null;
 
     }

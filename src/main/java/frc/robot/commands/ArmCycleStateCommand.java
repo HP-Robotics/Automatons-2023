@@ -24,7 +24,7 @@ public class ArmCycleStateCommand extends CommandBase {
   @Override
   public void initialize() {
     int newState = m_subsystem.getCurrentState() + m_direction;
-    if (newState <= ArmConstants.stowState || newState > ArmConstants.scoreState) {
+    if (newState < ArmConstants.stowState || newState > ArmConstants.scoreState) {
       return;
     } else {
       m_subsystem.setTargetState(newState);
@@ -35,7 +35,7 @@ public class ArmCycleStateCommand extends CommandBase {
         m_subsystem.moveDownState();
       }
     }
-    System.out.println("initialized, direction: " + m_direction);
+    //System.out.println("initialized, direction: " + m_direction);
 
   }
 
@@ -60,6 +60,7 @@ public class ArmCycleStateCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_subsystem.m_movingFromIntake = false;
   }
 
   // Returns true when the command should end.

@@ -54,8 +54,8 @@ public final class Constants {
     public static final boolean useTurnTables = true;
     public static final boolean useIntake = true;
     public static final boolean useLimelight = true;
-    public static final boolean useVision = true;
-    public static final boolean useDataManger = false;
+    public static final boolean useVision = false;
+    public static final boolean useDataManger = true;
   }
 
   public static class DriveConstants {
@@ -91,10 +91,13 @@ public final class Constants {
     public static final double turningkD = 4; //TODO: please tune for final robot eventually
     public static final double turningkAllowableError = 50;
 
-    public static final double balancekP = 0.05;
-    public static final double balancekI = 0.0001;
-    public static final double balancekD = 0.0075;
+    public static final double balancekP = 0.04;
+    public static final double balancekI = 0.0;
+    public static final double balancekD = 0.012; //0.01
     public static final int balanceThreshold = 2;
+
+    public static final double altBalanceAlpha = 0.2;
+    public static final double altRateThreshold = 0.2;
 
     public static final double encoderTolerance = 0.01;
   }
@@ -115,8 +118,8 @@ public final class Constants {
     public static final double shoulderMaxAllowableError = 200;
     public static final double shoulderIZone = 500;
     public static final double shoulderGearRatio = 384; // just a guess
-    public static final int shoulderAcceleration = 20000;
-    public static final int shoulderMaxVelocity = 20000;
+    public static final int shoulderAcceleration = 25000;//20000 works
+    public static final int shoulderMaxVelocity = 50000;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.82;
 
@@ -125,8 +128,8 @@ public final class Constants {
     public static final double elbowkI = .0000;
     public static final double elbowkD = 0;
     public static final double elbowGearRatio = 225;
-    public static final int elbowAcceleration = 10000;
-    public static final int elbowMaxVelocity = 10000;
+    public static final int elbowAcceleration = 30000;
+    public static final int elbowMaxVelocity = 60000;
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.28;
 
@@ -142,23 +145,23 @@ public final class Constants {
     public static final double errorThreshold = 1000.0;
     public static final boolean useAbsoluteEncoders = false;
 
-    public static final double shoulderScore = 69286;
-    public static final double elbowScore = 209989;
+    public static final double shoulderScore = 53143;
+    public static final double elbowScore = 196500;
 
-    public static final double shoulderHigh = 69286;
-    public static final double elbowHigh = 209989;
+    public static final double shoulderHigh = 59650;
+    public static final double elbowHigh = 217205;
 
-    public static final double shoulderMid = 5000;
-    public static final double elbowMid = 129997;
+    public static final double shoulderMid = 2688;
+    public static final double elbowMid = 129338;
 
-    public static final double shoulderLow = 10094;
-    public static final double elbowLow = 45465;
+    public static final double shoulderLow = -26100;
+    public static final double elbowLow = 80000;
 
     public static final double shoulderStow = 0;
     public static final double elbowStow = 0;
 
-    public static final double shoulderIntake = -72000;
-    public static final double elbowIntake = -3800;
+    public static final double shoulderIntake = -69061;
+    public static final double elbowIntake = 2279;
 
     public static double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,
         shoulderHigh, shoulderScore };
@@ -169,17 +172,22 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 5; // TODO MENTOR: And note that we don't use them...
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxChargeStationVelocity = 2;
-    public static final double kMaxChargeStationAcceleration = 0.5;
+    public static final double kMaxChargeStationVelocity = 2.5;
+    public static final double kMaxChargeStationAcceleration = 1.25;
+    public static final double kFastAutoVelocity = 4.5;
+    public static final double kfastAutoAcceleration = 3.0;
     public static final double kMaxAutoVelocity = 3;
     public static final double kMaxAutoAcceleration = 3;
 
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
     public static final double kPXController = 5;
+    public static final double kIXController = 0.03;
     public static final double kDXController = 0.0;
+    public static final double kIYController = 0.03;
     public static final double kPYController = 5; //TODO why is Y different?
-    public static final double kPThetaController = 5; // TODO MENTOR: tune the theta PID
+    public static final double kPThetaController = 3; // TODO MENTOR: tune the theta PID
+    public static final double kIThetaController = 0.05;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -201,7 +209,7 @@ public final class Constants {
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
     public static final double clockwiseSpeed = .25;
-    public static final double counterClockwiseSpeed = -.25;
+    public static final double counterClockwiseSpeed = -.5;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
     public static final double kConeGThreshold = 3.0;
