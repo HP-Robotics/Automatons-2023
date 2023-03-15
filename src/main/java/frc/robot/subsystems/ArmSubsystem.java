@@ -47,10 +47,10 @@ public class ArmSubsystem extends SubsystemBase {
   // private double elbowTicks1 = 2;
   //private double elbowDegrees0 = 1;
   //private double elbowDegrees1 = 2;
-  private double shoulderTicks0 = 1;
-  private double shoulderTicks1 = 2;
-  private double shoulderDegrees0 = 1;
-  private double shoulderDegrees1 = 2;
+  private double shoulderTicks0 = 71780;
+  private double shoulderTicks1 = -82763;
+  private double shoulderDegrees0 = 35.8;
+  private double shoulderDegrees1 = -48.4;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -123,6 +123,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Pitch", m_shoulderGyro.getPitch());
     SmartDashboard.putNumber("Shoulder Yaw", m_shoulderGyro.getYaw());
     SmartDashboard.putNumber("Shoulder Roll", m_shoulderGyro.getRoll());
+    SmartDashboard.putNumber("Shoulder Gyro Absolute", shoulderDegreesToTicks(m_shoulderGyro.getRoll()));
 
     ArmConstants.elbowPositions[ArmConstants.midState] = SmartDashboard.getNumber("Elbow Mid",
         ArmConstants.elbowMid);
@@ -307,7 +308,7 @@ public class ArmSubsystem extends SubsystemBase {
     if (m_elbowEncoder.getAbsolutePosition() != 0.0) {
       //  m_elbowMotor.setSelectedSensorPosition(ticksE);
     }
-    // m_shoulderMotor.setSelectedSensorPosition(ticksS);
+    // m_shoulderMotor.setSelectedSensorPosition(shoulderDegreesToTicks(m_shoulderGyro.getRoll()));
 
   }
 
@@ -317,13 +318,13 @@ public class ArmSubsystem extends SubsystemBase {
       m_elbowMotor.setSelectedSensorPosition(0);
     }
   }
-
+  /*
   public double elbowDegreesToTicks(double degrees) {
     double m = (elbowDegrees1 - elbowDegrees0) / (elbowTicks1 - elbowTicks0);
     double b = (elbowDegrees0 * elbowTicks1 - elbowTicks0 * elbowDegrees1) / (elbowTicks1 - elbowTicks0);
-
+  
     return (degrees - b) / m;
-
+  
   }*/
 
   public double shoulderTicksToDegrees(double ticks) {
@@ -342,15 +343,12 @@ public class ArmSubsystem extends SubsystemBase {
     return (degrees - b) / m;
   }
 
-/*public double elbowTicksToDegrees(double ticks) {
+  /*public double elbowTicksToDegrees(double ticks) {
     double m = (elbowDegrees1 - elbowDegrees0) / (elbowTicks1 - elbowTicks0);
     double b = (elbowDegrees0 * elbowTicks1 - elbowTicks0 * elbowDegrees1) / (elbowTicks1 - elbowTicks0);
   
     return m * ticks + b;
   
   }
-  
+  */
 }
-}
-
-
