@@ -117,11 +117,12 @@ public final class Constants {
     public static final double shoulderkD = 0;
     public static final double shoulderMaxAllowableError = 200;
     public static final double shoulderIZone = 500;
-    public static final double shoulderGearRatio = 384; // just a guess
+    public static final double shoulderGearRatio = 460; // just a guess // it is 575 according to builders, 383 working
     public static final int shoulderAcceleration = 25000;//20000 works
     public static final int shoulderMaxVelocity = 50000;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.82;
+    public static final int shoulderEncoderID = 22;
 
     public static final int elbowID = 19;
     public static final double elbowkP = .075; //.05
@@ -131,9 +132,12 @@ public final class Constants {
     public static final int elbowAcceleration = 30000;
     public static final int elbowMaxVelocity = 60000;
     public static final int elbowSCurve = 0;
-    public static final double elbowStarting = 0.28;
+    public static final double elbowStarting = -0.160;
+    public static final int elbowEncoderID = 21;
 
     public static final int frameCounterThreshold = 5;
+    public static final double trajectoryMaxAcceleration = 0;
+    public static final double trajectoryMaxVelocity = 0;
 
     public static final int intakeState = 0;
     public static final int stowState = 1;
@@ -143,24 +147,24 @@ public final class Constants {
     public static final int scoreState = 5;
 
     public static final double errorThreshold = 1000.0;
-    public static final boolean useAbsoluteEncoders = false;
+    public static final boolean useAbsoluteEncoders = true;
 
-    public static final double shoulderScore = 53143;
+    public static final double shoulderScore = 63772; //old val: 53143
     public static final double elbowScore = 196500;
 
-    public static final double shoulderHigh = 59650;
+    public static final double shoulderHigh = 71580; //old val: 59650
     public static final double elbowHigh = 217205;
 
-    public static final double shoulderMid = 2688;
+    public static final double shoulderMid = 3226; //old val: 2688
     public static final double elbowMid = 129338;
 
-    public static final double shoulderLow = -26100;
+    public static final double shoulderLow = -31320; //old val: -26100
     public static final double elbowLow = 80000;
 
     public static final double shoulderStow = 0;
     public static final double elbowStow = 0;
 
-    public static final double shoulderIntake = -69061;
+    public static final double shoulderIntake = -82873; //old val: -69061
     public static final double elbowIntake = 2279;
 
     public static double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,

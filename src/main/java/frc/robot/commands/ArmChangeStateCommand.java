@@ -30,6 +30,9 @@ public class ArmChangeStateCommand extends CommandBase {
     } else if (direction < 0) {
       m_subsystem.moveDownState();
     }
+    if (ArmConstants.useAbsoluteEncoders) {
+      m_subsystem.setFalconEncoders();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,9 +40,6 @@ public class ArmChangeStateCommand extends CommandBase {
   public void execute() {
     if (m_subsystem.getIsChanging()) {
       return;
-    }
-    if (ArmConstants.useAbsoluteEncoders) {
-      m_subsystem.setFalconEncoders();
     }
 
     int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();

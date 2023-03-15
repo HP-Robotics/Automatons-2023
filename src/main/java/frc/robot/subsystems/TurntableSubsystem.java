@@ -90,7 +90,7 @@ public class TurntableSubsystem extends SubsystemBase {
 
   public boolean isCube() {
     // double blueNormal = (double) m_colorSensor.getBlue() / m_colorSensor.getProximity();
-    // return blueNormal > TurntableConstants.kCubeBThreshold && isSomething();
+    // return blueNormal > TurntableConstants.kCubeBThreshold && isSomething();  
     return false;
   }
 

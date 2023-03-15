@@ -4,16 +4,28 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
+import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.spline.Spline;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.math.spline.Spline;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -23,6 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final DutyCycleEncoder m_elbowEncoder;
   private int m_targetState;
   private int m_currentState;
+  private AHRS m_shoulderGyro;
   private boolean m_isChanging;
   private int m_pastState = -1;
   private int m_frameCounter;
@@ -55,7 +68,8 @@ public class ArmSubsystem extends SubsystemBase {
     m_shoulderMotor.configMotionCruiseVelocity(ArmConstants.shoulderMaxVelocity);
     m_shoulderMotor.configMotionSCurveStrength(ArmConstants.shoulderSCurve);
 
-    m_shoulderEncoder = new DutyCycleEncoder(1);
+    m_shoulderEncoder = new DutyCycleEncoder(ArmConstants.shoulderEncoderID);
+    m_shoulderGyro = new AHRS(Port.kUSB);
 
     m_elbowMotor = new TalonFX(ArmConstants.elbowID);
     m_elbowMotor.configFactoryDefault();
@@ -69,7 +83,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_elbowMotor.configMotionCruiseVelocity(ArmConstants.elbowMaxVelocity);
     m_elbowMotor.configMotionSCurveStrength(ArmConstants.elbowSCurve);
 
-    m_elbowEncoder = new DutyCycleEncoder(0);
+    m_elbowEncoder = new DutyCycleEncoder(ArmConstants.elbowEncoderID);
 
     SmartDashboard.putNumber("Elbow Mid", ArmConstants.elbowMid);
     SmartDashboard.putNumber("Shoulder Mid", ArmConstants.shoulderMid);
@@ -101,10 +115,14 @@ public class ArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     //moveShoulder(m_joystick.getRawAxis(1) * -0.3);
     //moveElbow(m_joystick.getRawAxis(5) * 0.3);
-    SmartDashboard.putNumber("Shoulder Absolute Encoder", m_shoulderEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("Elbow Absolute Encoder", m_elbowEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Shoulder Absolute Encoder", m_shoulderEncoder.get());
+    SmartDashboard.putNumber("Elbow Absolute Encoder", m_elbowEncoder.get());
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
+
+    SmartDashboard.putNumber("Shoulder Pitch", m_shoulderGyro.getPitch());
+    SmartDashboard.putNumber("Shoulder Yaw", m_shoulderGyro.getYaw());
+    SmartDashboard.putNumber("Shoulder Roll", m_shoulderGyro.getRoll());
 
     ArmConstants.elbowPositions[ArmConstants.midState] = SmartDashboard.getNumber("Elbow Mid",
         ArmConstants.elbowMid);
@@ -151,6 +169,37 @@ public class ArmSubsystem extends SubsystemBase {
       m_pastState = m_currentState;
       m_frameCounter++;
     }
+
+  }
+
+  //This is Trajectory for the arm
+  public BufferedTrajectoryPointStream generateArmTrajectory(Translation2d start, Translation2d end,
+      List<Translation2d> waypoints) {
+    TrajectoryConfig config = new TrajectoryConfig(ArmConstants.trajectoryMaxVelocity,
+        ArmConstants.trajectoryMaxAcceleration);
+    Spline.ControlVector startPos = new Spline.ControlVector(new double[] { start.getX(), 0 },
+        new double[] { start.getY(), 0 });
+    Spline.ControlVector endPos = new Spline.ControlVector(new double[] { end.getX(), 0 },
+        new double[] { end.getY(), 0 });
+    Trajectory armTrajectory = TrajectoryGenerator.generateTrajectory(startPos, waypoints, endPos, config);
+    int trajectorylength = armTrajectory.getStates().size();
+    BufferedTrajectoryPointStream armTrajectoryPoints = new BufferedTrajectoryPointStream();
+    for (int i = 0; i <= trajectorylength; i++) {
+      TrajectoryPoint pointI = new TrajectoryPoint();
+      pointI.position = armTrajectory.getStates().get(i).poseMeters.getX();//do this again with getY() for elbow/arm
+      pointI.velocity = armTrajectory.getStates().get(i).velocityMetersPerSecond;
+      pointI.isLastPoint = (i == trajectorylength);
+      pointI.timeDur = 20; //or zero
+      armTrajectory.getStates().get(i);
+      armTrajectoryPoints.Write(pointI);
+    }
+
+    return null;
+  }
+
+  public void followTrajectory(Translation2d start, Translation2d end, List<Translation2d> waypoints) {
+    m_elbowMotor.startMotionProfile(generateArmTrajectory(start, end, waypoints), 0, ControlMode.MotionProfile);
+    new BufferedTrajectoryPointStream();
 
     /*  if (!shoulderGyro.isMoving() && m_doneChanging) {
       double trueValue = shoulderDegreesToTicks(shoulderGyro.getRoll());
@@ -245,12 +294,20 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setFalconEncoders() {
-    double deltaE = ArmConstants.elbowStarting - m_elbowEncoder.getAbsolutePosition();
-    double ticksE = deltaE * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
-    double deltaS = (ArmConstants.shoulderStarting - m_shoulderEncoder.getAbsolutePosition()) * -1;
+    double deltaE = ArmConstants.elbowStarting - m_elbowEncoder.get();
+    double ticksE = -1 * deltaE * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
+    double deltaS = (ArmConstants.shoulderStarting - m_shoulderEncoder.get()) * -1;
     double ticksS = deltaS * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
-    m_elbowMotor.setSelectedSensorPosition(ticksE);
-    m_shoulderMotor.setSelectedSensorPosition(ticksS);
+
+    System.out.println("Elbow target " + ticksE);
+    System.out.println("Elbow delta " + deltaE);
+    System.out.println("Elbow current " + m_elbowMotor.getSelectedSensorPosition());
+    // System.out.println("Shoulder target " + ticksS);
+    // System.out.println("Shoulder current " + m_shoulderMotor.getSelectedSensorPosition());
+    if (m_elbowEncoder.getAbsolutePosition() != 0.0) {
+      //  m_elbowMotor.setSelectedSensorPosition(ticksE);
+    }
+    // m_shoulderMotor.setSelectedSensorPosition(ticksS);
 
   }
 
@@ -295,4 +352,5 @@ public class ArmSubsystem extends SubsystemBase {
   
 }
 }
+
 
