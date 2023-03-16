@@ -101,14 +101,25 @@ public class ArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     //moveShoulder(m_joystick.getRawAxis(1) * -0.3);
     //moveElbow(m_joystick.getRawAxis(5) * 0.3);
-    SmartDashboard.putNumber("Shoulder Absolute Encoder", m_shoulderEncoder.get());
-    SmartDashboard.putNumber("Elbow Absolute Encoder", m_elbowEncoder.get());
+    double deltaE = ArmConstants.elbowStarting - getAdjustedAbsoluteElbow();
+    double ticksE = -1 * 0.823 * deltaE * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
+    double deltaS = ArmConstants.shoulderStarting - getAdjustedAbsoluteShoulder();
+    double ticksS = deltaS * 0.688 * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
+
+    SmartDashboard.putNumber("Elbow ticksE", ticksE);
+    SmartDashboard.putNumber("Shoulder ticksS", ticksS);
+    SmartDashboard.putNumber("Shoulder Absolute Encoder", getAdjustedAbsoluteShoulder());
+    SmartDashboard.putNumber("Elbow Absolute Encoder", getAdjustedAbsoluteElbow());
+    SmartDashboard.putNumber("Elbow Real Absolute Encoder", m_elbowEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
 
     SmartDashboard.putNumber("Shoulder Pitch", m_shoulderGyro.getPitch());
     SmartDashboard.putNumber("Shoulder Yaw", m_shoulderGyro.getYaw());
     SmartDashboard.putNumber("Shoulder Roll", m_shoulderGyro.getRoll());
+
+    SmartDashboard.putNumber("Shoulder Output Percent", m_shoulderMotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Elbow Output Percent", m_elbowMotor.getMotorOutputPercent());
 
     ArmConstants.elbowPositions[ArmConstants.midState] = SmartDashboard.getNumber("Elbow Mid",
         ArmConstants.elbowMid);
@@ -143,6 +154,10 @@ public class ArmSubsystem extends SubsystemBase {
     if (!m_isChanging) {
       m_pastState = m_currentState;
       m_frameCounter++;
+    }
+
+    if (m_isChanging) {
+      //setFalconEncoders();
     }
 
   }
@@ -260,18 +275,20 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setFalconEncoders() {
-    double deltaE = ArmConstants.elbowStarting - m_elbowEncoder.get();
+    double deltaE = ArmConstants.elbowStarting - getAdjustedAbsoluteElbow();
     double ticksE = -1 * deltaE * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
-    double deltaS = (ArmConstants.shoulderStarting - m_shoulderEncoder.get()) * -1;
-    double ticksS = deltaS * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
+    double deltaS = (ArmConstants.shoulderStarting - getAdjustedAbsoluteShoulder()) * -1;
+    double ticksS = -1 * deltaS * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
 
-    System.out.println("Elbow target " + ticksE);
-    System.out.println("Elbow delta " + deltaE);
-    System.out.println("Elbow current " + m_elbowMotor.getSelectedSensorPosition());
+    // System.out.println("Elbow target " + ticksE);
+    // System.out.println("Elbow delta " + deltaE);
+    // System.out.println("Elbow current " + m_elbowMotor.getSelectedSensorPosition());
+    System.out.println("Elbow Error: " + (ticksE - m_elbowMotor.getSelectedSensorPosition()));
+    System.out.println("Shoulder Error: " + (ticksS - m_shoulderMotor.getSelectedSensorPosition()));
     // System.out.println("Shoulder target " + ticksS);
     // System.out.println("Shoulder current " + m_shoulderMotor.getSelectedSensorPosition());
     if (m_elbowEncoder.getAbsolutePosition() != 0.0) {
-      //  m_elbowMotor.setSelectedSensorPosition(ticksE);
+      m_elbowMotor.setSelectedSensorPosition(ticksE);
     }
     // m_shoulderMotor.setSelectedSensorPosition(ticksS);
 
@@ -281,6 +298,22 @@ public class ArmSubsystem extends SubsystemBase {
     if (m_currentState == ArmConstants.stowState) {
       m_shoulderMotor.setSelectedSensorPosition(0);
       m_elbowMotor.setSelectedSensorPosition(0);
+    }
+  }
+
+  public double getAdjustedAbsoluteElbow() {
+    if (m_elbowEncoder.getAbsolutePosition() < 0.4) {
+      return m_elbowEncoder.getAbsolutePosition() + 1;
+    } else {
+      return m_elbowEncoder.getAbsolutePosition();
+    }
+  }
+
+  public double getAdjustedAbsoluteShoulder() {
+    if (m_shoulderEncoder.getAbsolutePosition() < 0.0) { //TODO: 0.0 is a filler number, this needs to be tuned
+      return m_shoulderEncoder.getAbsolutePosition() + 1;
+    } else {
+      return m_shoulderEncoder.getAbsolutePosition();
     }
   }
 }

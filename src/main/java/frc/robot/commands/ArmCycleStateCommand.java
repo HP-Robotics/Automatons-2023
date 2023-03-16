@@ -23,6 +23,11 @@ public class ArmCycleStateCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (ArmConstants.useAbsoluteEncoders) {
+      if (m_subsystem.getCurrentState() == ArmConstants.stowState) {
+        m_subsystem.setFalconEncoders();
+      }
+    }
     int newState = m_subsystem.getCurrentState() + m_direction;
     if (newState < ArmConstants.stowState || newState > ArmConstants.scoreState) {
       return;
@@ -33,9 +38,6 @@ public class ArmCycleStateCommand extends CommandBase {
         m_subsystem.moveUpState();
       } else if (direction < 0) {
         m_subsystem.moveDownState();
-      }
-      if (ArmConstants.useAbsoluteEncoders) {
-        m_subsystem.setFalconEncoders();
       }
 
     }

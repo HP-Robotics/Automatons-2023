@@ -121,18 +121,18 @@ public final class Constants {
     public static final int shoulderAcceleration = 25000;//20000 works
     public static final int shoulderMaxVelocity = 50000;
     public static final int shoulderSCurve = 0;
-    public static final double shoulderStarting = 0.82;
+    public static final double shoulderStarting = 0.454;
     public static final int shoulderEncoderID = 22;
 
     public static final int elbowID = 19;
     public static final double elbowkP = .075; //.05
     public static final double elbowkI = .0000;
     public static final double elbowkD = 0;
-    public static final double elbowGearRatio = 225;
+    public static final double elbowGearRatio = 231.81;
     public static final int elbowAcceleration = 30000;
     public static final int elbowMaxVelocity = 60000;
     public static final int elbowSCurve = 0;
-    public static final double elbowStarting = -0.160;
+    public static final double elbowStarting = 0.840;
     public static final int elbowEncoderID = 21;
 
     public static final int frameCounterThreshold = 5;

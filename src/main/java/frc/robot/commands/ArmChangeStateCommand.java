@@ -23,6 +23,11 @@ public class ArmChangeStateCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (ArmConstants.useAbsoluteEncoders) {
+      if (m_state == ArmConstants.stowState) {
+        m_subsystem.setFalconEncoders();
+      }
+    }
     m_subsystem.setTargetState(m_state);
     int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();
     if (direction > 0) {
@@ -30,9 +35,7 @@ public class ArmChangeStateCommand extends CommandBase {
     } else if (direction < 0) {
       m_subsystem.moveDownState();
     }
-    if (ArmConstants.useAbsoluteEncoders) {
-      m_subsystem.setFalconEncoders();
-    }
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
