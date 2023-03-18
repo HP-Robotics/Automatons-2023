@@ -24,9 +24,7 @@ public class ArmCycleStateCommand extends CommandBase {
   @Override
   public void initialize() {
     if (ArmConstants.useAbsoluteEncoders) {
-      if (m_subsystem.getCurrentState() == ArmConstants.stowState) {
-        m_subsystem.setFalconEncoders();
-      }
+      m_subsystem.setFalconEncoders();
     }
     int newState = m_subsystem.getCurrentState() + m_direction;
     if (newState < ArmConstants.stowState || newState > ArmConstants.scoreState) {

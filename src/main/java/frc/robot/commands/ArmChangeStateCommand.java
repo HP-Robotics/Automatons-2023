@@ -24,9 +24,7 @@ public class ArmChangeStateCommand extends CommandBase {
   @Override
   public void initialize() {
     if (ArmConstants.useAbsoluteEncoders) {
-      if (m_state == ArmConstants.stowState) {
-        m_subsystem.setFalconEncoders();
-      }
+      m_subsystem.setFalconEncoders();
     }
     m_subsystem.setTargetState(m_state);
     int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();

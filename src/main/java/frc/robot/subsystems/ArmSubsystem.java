@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.spline.Spline;
@@ -20,6 +20,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,12 +35,13 @@ public class ArmSubsystem extends SubsystemBase {
   private final DutyCycleEncoder m_elbowEncoder;
   private int m_targetState;
   private int m_currentState;
-  private AHRS m_shoulderGyro;
   private boolean m_isChanging;
   private int m_pastState = -1;
   private int m_frameCounter;
   private boolean m_doneChanging;
   public boolean m_movingFromIntake;
+  private Timer m_start = new Timer();
+  private Boolean m_initializedEncoders = false;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -58,7 +60,6 @@ public class ArmSubsystem extends SubsystemBase {
     m_shoulderMotor.configMotionSCurveStrength(ArmConstants.shoulderSCurve);
 
     m_shoulderEncoder = new DutyCycleEncoder(ArmConstants.shoulderEncoderID);
-    m_shoulderGyro = new AHRS(Port.kUSB);
 
     m_elbowMotor = new TalonFX(ArmConstants.elbowID);
     m_elbowMotor.configFactoryDefault();
@@ -83,6 +84,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elbow Score", ArmConstants.elbowScore);
     SmartDashboard.putNumber("Shoulder Score", ArmConstants.shoulderScore);
 
+    m_start.start();
+
     m_targetState = 1;
     m_currentState = 1;
     m_isChanging = false;
@@ -102,21 +105,35 @@ public class ArmSubsystem extends SubsystemBase {
     //moveShoulder(m_joystick.getRawAxis(1) * -0.3);
     //moveElbow(m_joystick.getRawAxis(5) * 0.3);
     double deltaE = ArmConstants.elbowStarting - getAdjustedAbsoluteElbow();
-    double ticksE = -1 * 0.823 * deltaE * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
+    double ticksE = -1 * deltaE * ArmConstants.elbowGearRatio * DriveConstants.kEncoderResolution;
     double deltaS = ArmConstants.shoulderStarting - getAdjustedAbsoluteShoulder();
-    double ticksS = deltaS * 0.688 * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
+    double ticksS = deltaS * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
+    double fancyEquation = 395650.6045342109 * getAdjustedAbsoluteElbow() - 307888.2646918395;
+    double fancyFunction = 340626.7792820861 - 721413.6886682262 * getAdjustedAbsoluteShoulder();
+    double fancyFunction2 = 302129.742102882 - 662435.677872067 * getAdjustedAbsoluteShoulder();
+
+    if (m_start.hasElapsed(2.5)) {
+      m_start.stop();
+      m_start.reset();
+      if (!m_initializedEncoders) {
+        setFalconEncoders();
+        m_initializedEncoders = true;
+      }
+    }
 
     SmartDashboard.putNumber("Elbow ticksE", ticksE);
+    SmartDashboard.putNumber("ElbowFancy-30", fancyEquation - 30000);
+    SmartDashboard.putNumber("ElbowFancyequation", fancyEquation);
+    SmartDashboard.putNumber("Shoulder Drop-Low Equation", fancyFunction);
+    SmartDashboard.putNumber("Shoulder High-Score Equation", fancyFunction2);
+    SmartDashboard.putNumber("ElbowVoltage", m_elbowMotor.getMotorOutputVoltage());
+    SmartDashboard.putNumber("ElbowCurrent", m_elbowMotor.getStatorCurrent());
     SmartDashboard.putNumber("Shoulder ticksS", ticksS);
     SmartDashboard.putNumber("Shoulder Absolute Encoder", getAdjustedAbsoluteShoulder());
     SmartDashboard.putNumber("Elbow Absolute Encoder", getAdjustedAbsoluteElbow());
     SmartDashboard.putNumber("Elbow Real Absolute Encoder", m_elbowEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
-
-    SmartDashboard.putNumber("Shoulder Pitch", m_shoulderGyro.getPitch());
-    SmartDashboard.putNumber("Shoulder Yaw", m_shoulderGyro.getYaw());
-    SmartDashboard.putNumber("Shoulder Roll", m_shoulderGyro.getRoll());
 
     SmartDashboard.putNumber("Shoulder Output Percent", m_shoulderMotor.getMotorOutputPercent());
     SmartDashboard.putNumber("Elbow Output Percent", m_elbowMotor.getMotorOutputPercent());
@@ -136,13 +153,17 @@ public class ArmSubsystem extends SubsystemBase {
     ArmConstants.shoulderPositions[ArmConstants.scoreState] = SmartDashboard.getNumber("Shoulder Score",
         ArmConstants.shoulderScore);
 
+    ArmConstants.elbowPositions[ArmConstants.intakeState] = SmartDashboard.getNumber("Elbow Chomp",
+        ArmConstants.elbowIntake);
+    ArmConstants.shoulderPositions[ArmConstants.intakeState] = SmartDashboard.getNumber("Shoulder Chomp",
+        ArmConstants.shoulderIntake);
+
     SmartDashboard.putNumber("Past State", m_pastState);
 
     SmartDashboard.putNumber("Target State", m_targetState);
     SmartDashboard.putNumber("Current State", m_currentState);
     SmartDashboard.putBoolean("Is Changing?", m_isChanging);
-    SmartDashboard.putNumber("Shoulder Error",
-        m_shoulderMotor.getSelectedSensorPosition() - ArmConstants.shoulderPositions[m_currentState]);
+    SmartDashboard.putNumber("Shoulder Error", m_shoulderMotor.getClosedLoopError(0));
     SmartDashboard.putNumber("Elbow Error",
         m_elbowMotor.getSelectedSensorPosition() - ArmConstants.elbowPositions[m_currentState]);
     m_isChanging = Math.abs(m_shoulderMotor.getSelectedSensorPosition()
@@ -280,6 +301,9 @@ public class ArmSubsystem extends SubsystemBase {
     double deltaS = (ArmConstants.shoulderStarting - getAdjustedAbsoluteShoulder()) * -1;
     double ticksS = -1 * deltaS * ArmConstants.shoulderGearRatio * DriveConstants.kEncoderResolution;
 
+    double elbowHighAbsTicks = 395650.6045342109 * getAdjustedAbsoluteElbow() - 307888.2646918395;
+    double shoulderLowAbsTicks = 340626.7792820861 - 721413.6886682262 * getAdjustedAbsoluteShoulder();
+    double shoulderHighAbsTicks = 302129.742102882 - 662435.677872067 * getAdjustedAbsoluteShoulder();
     // System.out.println("Elbow target " + ticksE);
     // System.out.println("Elbow delta " + deltaE);
     // System.out.println("Elbow current " + m_elbowMotor.getSelectedSensorPosition());
@@ -287,11 +311,28 @@ public class ArmSubsystem extends SubsystemBase {
     System.out.println("Shoulder Error: " + (ticksS - m_shoulderMotor.getSelectedSensorPosition()));
     // System.out.println("Shoulder target " + ticksS);
     // System.out.println("Shoulder current " + m_shoulderMotor.getSelectedSensorPosition());
-    if (m_elbowEncoder.getAbsolutePosition() != 0.0) {
-      m_elbowMotor.setSelectedSensorPosition(ticksE);
+    if (m_elbowEncoder.getAbsolutePosition() != 0.0
+        && (m_currentState >= ArmConstants.lowState || !m_initializedEncoders)) {
+      m_elbowMotor.setSelectedSensorPosition(elbowHighAbsTicks);
     }
+    if (m_shoulderEncoder.getAbsolutePosition() != 0.0
+        && (m_currentState == ArmConstants.lowState || m_currentState == ArmConstants.intakeState)
+        || !m_initializedEncoders) {
+      m_shoulderMotor.setSelectedSensorPosition(shoulderLowAbsTicks);
+    }
+    // if (m_shoulderEncoder.getAbsolutePosition() != 0.0
+    //     && (m_currentState == ArmConstants.highState || m_currentState == ArmConstants.scoreState)) {
+    //   m_shoulderMotor.setSelectedSensorPosition(shoulderHighAbsTicks);
+    // }
     // m_shoulderMotor.setSelectedSensorPosition(ticksS);
-
+    // if (m_shoulderEncoder.getAbsolutePosition() != 0.0) {
+    //   m_shoulderMotor.setSelectedSensorPosition(ticksS);
+    //   System.out.println("Setting shoulder to " + ticksS);
+    // }
+    // if (m_elbowEncoder.getAbsolutePosition() != 0.0) {
+    //   m_elbowMotor.setSelectedSensorPosition(ticksE);
+    //   System.out.println("Setting elbow to " + ticksE);
+    // }
   }
 
   public void resetArmEncoders() {

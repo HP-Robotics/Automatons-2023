@@ -117,9 +117,9 @@ public final class Constants {
     public static final double shoulderkD = 0;
     public static final double shoulderMaxAllowableError = 200;
     public static final double shoulderIZone = 500;
-    public static final double shoulderGearRatio = 460; // just a guess // it is 575 according to builders, 383 working
+    public static final double shoulderGearRatio = 345; // just a guess // it is 575 according to builders, 383 working
     public static final int shoulderAcceleration = 25000;//20000 works
-    public static final int shoulderMaxVelocity = 50000;
+    public static final int shoulderMaxVelocity = 25000;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.454;
     public static final int shoulderEncoderID = 22;
