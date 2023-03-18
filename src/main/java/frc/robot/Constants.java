@@ -215,6 +215,7 @@ public final class Constants {
     public static final double clockwiseSpeed = .25;
     public static final double counterClockwiseSpeed = -.5;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
+    public static final int sharpPort = 11;
 
     public static final double kConeGThreshold = 3.0;
     public static final double kCubeBThreshold = 2.7;

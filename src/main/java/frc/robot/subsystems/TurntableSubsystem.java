@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
+
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +25,7 @@ public class TurntableSubsystem extends SubsystemBase {
   public boolean m_intakeProcessRunning;
   public boolean m_gamePieceDetected;
   public boolean m_magicTurntableOn;
+  private AnalogInput m_sharp;
 
   /** Creates a new TurntablesSubsystem. */
   public TurntableSubsystem() {
@@ -36,6 +39,7 @@ public class TurntableSubsystem extends SubsystemBase {
     m_intakeProcessRunning = false;
     m_gamePieceDetected = false;
     m_magicTurntableOn = false;
+    m_sharp = new AnalogInput(TurntableConstants.sharpPort);
     // TODO: Current limit + tuning
   }
 
@@ -56,6 +60,7 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Past Encoder Value", pastEncoderValue);
     SmartDashboard.putNumber("Present Encoder Value", presentEncoderValue);
     SmartDashboard.putNumber("Real Encoder Value", m_turntableMotor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Sharp Distance", getPieceDistance());
 
     if (m_intakeProcessRunning) {
       if (isSomething()) {
@@ -139,6 +144,10 @@ public class TurntableSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Cube Set Positon",
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
     }
+  }
+
+  public double getPieceDistance() {
+    return (Math.pow(m_sharp.getAverageVoltage(), -1.2045)) * 27.726;
   }
 
   public void intakeOn() {
