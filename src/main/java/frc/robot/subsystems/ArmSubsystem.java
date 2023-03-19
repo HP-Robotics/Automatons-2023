@@ -215,6 +215,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveShoulder(double newSetpoint) {
+    // MENTOR TODO:  if (Math.abs(newSetPoint) > 1) {}, both here and in moveElbow()
     m_shoulderMotor.set(ControlMode.MotionMagic, m_shoulderMotor.getClosedLoopTarget() + newSetpoint);
     // System.out.println("shoulder running at " + newSetpoint);
   }

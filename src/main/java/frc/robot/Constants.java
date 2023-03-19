@@ -53,7 +53,7 @@ public final class Constants {
     public static final boolean usePneumatics = true;
     public static final boolean useTurnTables = true;
     public static final boolean useIntake = true;
-    public static final boolean useLimelight = true;
+    public static final boolean useLimelight = true; // MENTOR TODO: this should be false now...
     public static final boolean useVision = false;
     public static final boolean useDataManger = true;
   }
@@ -152,8 +152,8 @@ public final class Constants {
     public static final double shoulderScore = 63772; //old val: 53143
     public static final double elbowScore = 196500;
 
-    public static final double shoulderHigh = 71580; //old val: 59650
-    public static final double elbowHigh = 217205;
+    public static final double shoulderHigh = 37080; // MENTOR TODO:  this went from 71000 to 37000?  That feels unlikely.
+    public static final double elbowHigh = 207205;
 
     public static final double shoulderMid = 3226; //old val: 2688
     public static final double elbowMid = 129338;
@@ -164,8 +164,8 @@ public final class Constants {
     public static final double shoulderStow = 0;
     public static final double elbowStow = 0;
 
-    public static final double shoulderIntake = -82873; //old val: -69061
-    public static final double elbowIntake = 2279;
+    public static final double shoulderIntake = -79000; //old val: -69061
+    public static final double elbowIntake = -2500;
 
     public static double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,
         shoulderHigh, shoulderScore };
@@ -215,7 +215,7 @@ public final class Constants {
     public static final double clockwiseSpeed = .25;
     public static final double counterClockwiseSpeed = -.5;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
-    public static final int sharpPort = 11;
+    public static final int sharpPort = 5;
 
     public static final double kConeGThreshold = 3.0;
     public static final double kCubeBThreshold = 2.7;
