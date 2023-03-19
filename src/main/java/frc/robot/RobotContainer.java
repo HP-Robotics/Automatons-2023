@@ -205,7 +205,7 @@ public class RobotContainer {
                   new Rotation2d(getAllianceTheta()),
                   AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration,
                   List.of(new PathPoint(new Translation2d((getAllianceX(1.8)), (0.75)),
-                      Rotation2d.fromDegrees(0), getAllianceTheta()))),
+                      new Rotation2d(getAllianceTheta()), new Rotation2d(getAllianceTheta())))),
               new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
 
     }
