@@ -36,7 +36,8 @@ public class DriveSubsystem extends SubsystemBase {
   public boolean m_fieldRelative = true;
   public boolean m_allowVisionUpdates = false;
 
-  private final Field2d m_field = new Field2d();
+  public final Field2d m_field = new Field2d();
+
   // Duty Encoders may have the wrong values
 
   private final PigeonIMU m_pGyro = new PigeonIMU(57);

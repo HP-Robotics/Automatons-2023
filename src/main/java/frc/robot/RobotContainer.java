@@ -78,7 +78,7 @@ public class RobotContainer {
 
   private final SendableChooser<String> m_startPosition;
   private final SendableChooser<Boolean> m_grabPiece1;
-  private final SendableChooser<Boolean> m_grabPiece2;
+  private final SendableChooser<Boolean> m_placePiece1;
   private final SendableChooser<Boolean> m_chargeBalance;
 
   private Boolean m_manualArm = false;
@@ -116,11 +116,11 @@ public class RobotContainer {
     m_grabPiece1.setDefaultOption("No", false);
     SmartDashboard.putData("Grabbing First Piece?", m_grabPiece1);
 
-    m_grabPiece2 = new SendableChooser<Boolean>();
-    m_grabPiece2.addOption("Yes", true);
-    m_grabPiece2.addOption("No", false);
-    m_grabPiece2.setDefaultOption("No", false);
-    SmartDashboard.putData("Grabbing Second Piece?", m_grabPiece2);
+    m_placePiece1 = new SendableChooser<Boolean>();
+    m_placePiece1.addOption("Yes", true);
+    m_placePiece1.addOption("No", false);
+    m_placePiece1.setDefaultOption("No", false);
+    SmartDashboard.putData("Placing First Piece?", m_placePiece1);
 
     m_chargeBalance = new SendableChooser<Boolean>();
     m_chargeBalance.addOption("Yes", true);
@@ -207,7 +207,10 @@ public class RobotContainer {
                   List.of(new PathPoint(new Translation2d((getAllianceX(1.8)), (0.75)),
                       new Rotation2d(getAllianceTheta()), new Rotation2d(getAllianceTheta())))),
               new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
-
+      if (m_placePiece1.getSelected()) {
+        ret.addCommands(new MoveSetDistanceCommand(m_robotDrive,
+            new Pose2d(getAllianceX(1.36), 1.2596, new Rotation2d(getAllianceTheta()))));
+      }
     }
 
     return ret;
@@ -265,6 +268,7 @@ public class RobotContainer {
                     new Rotation2d(getAllianceTheta()),
                     AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
                 new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+
       } else {
 
       }
@@ -317,7 +321,8 @@ public class RobotContainer {
       //new JoystickButton(m_joystick, 10).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); No go north for now
       new JoystickButton(m_joystick, 16).whileTrue(new DriveParkingBrakeCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
-      new JoystickButton(m_joystick, 11).whileTrue(new AltBalanceCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 11).whileTrue(new SequentialCommandGroup(
+          new AltBalanceCommand(m_robotDrive), new DriveParkingBrakeCommand(m_robotDrive)));
       new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
           () -> {
             m_robotDrive.m_allowVisionUpdates = false;

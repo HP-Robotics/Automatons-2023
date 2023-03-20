@@ -96,8 +96,9 @@ public final class Constants {
     public static final double balancekD = 0.012; //0.01
     public static final int balanceThreshold = 2;
 
+    public static final double altBalanceSpeed = 1;
     public static final double altBalanceAlpha = 0.2;
-    public static final double altRateThreshold = 0.2;
+    public static final double altRateThreshold = 0.1;
 
     public static final double encoderTolerance = 0.01;
   }

@@ -45,7 +45,7 @@ public class AltBalanceCommand extends CommandBase {
   public void execute() {
 
     // TODO MENTOR: put our PID values to the smartdashboard for pid tuning
-    double power = DriveConstants.balanceThreshold;
+    double power = DriveConstants.altBalanceSpeed;
     m_currentAngle = m_subsystem.getCombinedRoll();
     m_rate = ((m_currentAngle - m_pastAngle) * DriveConstants.altBalanceAlpha)
         + (1 - DriveConstants.altBalanceAlpha) * m_rate;
