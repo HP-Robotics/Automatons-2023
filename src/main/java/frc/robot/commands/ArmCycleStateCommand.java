@@ -34,6 +34,10 @@ public class ArmCycleStateCommand extends CommandBase {
       } else if (direction < 0) {
         m_subsystem.moveDownState();
       }
+      if (ArmConstants.useAbsoluteEncoders) {
+        m_subsystem.setFalconEncoders();
+      }
+
     }
     //System.out.println("initialized, direction: " + m_direction);
 
@@ -44,9 +48,6 @@ public class ArmCycleStateCommand extends CommandBase {
   public void execute() {
     if (m_subsystem.getIsChanging()) {
       return;
-    }
-    if (ArmConstants.useAbsoluteEncoders) {
-      m_subsystem.setFalconEncoders();
     }
 
     int direction = m_subsystem.getTargetState() - m_subsystem.getCurrentState();
