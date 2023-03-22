@@ -313,7 +313,7 @@ public class ArmSubsystem extends SubsystemBase {
     // System.out.println("Shoulder target " + ticksS);
     // System.out.println("Shoulder current " + m_shoulderMotor.getSelectedSensorPosition());
     if (m_elbowEncoder.getAbsolutePosition() != 0.0
-        && (m_currentState >= ArmConstants.lowState || !m_initializedEncoders)) {
+        && (m_currentState == ArmConstants.lowState || !m_initializedEncoders)) {
       m_elbowMotor.setSelectedSensorPosition(elbowHighAbsTicks);
     }
     if (m_shoulderEncoder.getAbsolutePosition() != 0.0
