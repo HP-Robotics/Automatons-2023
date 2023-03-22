@@ -345,17 +345,17 @@ public class ArmSubsystem extends SubsystemBase {
 
   public double getAdjustedAbsoluteElbow() {
     if (m_elbowEncoder.getAbsolutePosition() < 0.4) {
-      return m_elbowEncoder.getAbsolutePosition() + 1;
+      return m_elbowEncoder.getAbsolutePosition() + 1 + ArmConstants.elbowOffset;
     } else {
-      return m_elbowEncoder.getAbsolutePosition();
+      return m_elbowEncoder.getAbsolutePosition() + ArmConstants.elbowOffset;
     }
   }
 
   public double getAdjustedAbsoluteShoulder() {
     if (m_shoulderEncoder.getAbsolutePosition() < 0.0) { //TODO: 0.0 is a filler number, this needs to be tuned
-      return m_shoulderEncoder.getAbsolutePosition() + 1;
+      return m_shoulderEncoder.getAbsolutePosition() + 1 + ArmConstants.shoulderOffset;
     } else {
-      return m_shoulderEncoder.getAbsolutePosition();
+      return m_shoulderEncoder.getAbsolutePosition() + ArmConstants.shoulderOffset;
     }
   }
 }
