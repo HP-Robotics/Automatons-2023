@@ -61,6 +61,7 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Present Encoder Value", presentEncoderValue);
     SmartDashboard.putNumber("Real Encoder Value", m_turntableMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Sharp Distance", getPieceDistance());
+    SmartDashboard.putNumber("Average Sharp Distance", m_sharp.getAverageVoltage());
 
     if (m_intakeProcessRunning) {
       if (isSomething()) {
@@ -103,11 +104,11 @@ public class TurntableSubsystem extends SubsystemBase {
     // if (!isCube()) {
     //   // double greenNormal = (double) m_colorSensor.getGreen() / m_colorSensor.getProximity();
     //   return greenNormal > TurntableConstants.kConeGThreshold && isSomething();
-    return false;
+    return m_sharp.getAverageVoltage() >= 0.6;
   } //TODO: tune colors, these are for sure not right
 
   public boolean isSomething() {
-    return false;
+    return m_sharp.getAverageVoltage() >= 0.4;
     //return m_colorSensor.getProximity() > TurntableConstants.kDistanceThreshold;
   }
 
@@ -147,7 +148,7 @@ public class TurntableSubsystem extends SubsystemBase {
   }
 
   public double getPieceDistance() {
-    return (Math.pow(m_sharp.getAverageVoltage(), -1.2045)) * 27.726;
+    return m_sharp.getAverageVoltage();
   }
 
   public void intakeOn() {

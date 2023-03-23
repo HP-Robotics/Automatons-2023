@@ -158,8 +158,8 @@ public final class Constants {
     public static final double shoulderHigh = 82370;
     public static final double elbowHigh = 221031;
 
-    public static final double shoulderMid = 2641;
-    public static final double elbowMid = 129338;
+    public static final double shoulderMid = 2880;
+    public static final double elbowMid = 124330;
 
     public static final double shoulderLow = -31320; //old val: -26100
     public static final double elbowLow = 80000;
@@ -215,7 +215,7 @@ public final class Constants {
     public static final double motorkP = .5;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
-    public static final double clockwiseSpeed = .25;
+    public static final double clockwiseSpeed = .3;
     public static final double counterClockwiseSpeed = -.5;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
     public static final int sharpPort = 5;

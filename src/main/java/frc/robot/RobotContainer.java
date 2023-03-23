@@ -230,7 +230,7 @@ public class RobotContainer {
     m_robotDrive.m_allowVisionUpdates = false;
 
     // System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-    //     + m_grabPiece2.getSelected() + " " + m_chargeBalance.getSelected());
+        + m_placePiece1.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "middle") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
       if (m_grabPiece1.getSelected()) {
@@ -355,8 +355,6 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useArm) {
-      //new JoystickButton(m_opJoystick, 4).onTrue(new ChickenCommand(m_robotArm));
-      //new JoystickButton(m_opJoystick, 7).onTrue(new BackToNormalCommand(m_robotArm));
       new Trigger(() -> m_manualArm).whileTrue(
           new RunCommand(() -> {
             m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 500);

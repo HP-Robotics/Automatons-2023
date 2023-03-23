@@ -134,6 +134,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elbow Real Absolute Encoder", m_elbowEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Shoulder Motion Position", m_shoulderMotor.getActiveTrajectoryPosition());
+    SmartDashboard.putNumber("Elbow Motion Position", m_shoulderMotor.getActiveTrajectoryPosition());
 
     SmartDashboard.putNumber("Shoulder Output Percent", m_shoulderMotor.getMotorOutputPercent());
     SmartDashboard.putNumber("Elbow Output Percent", m_elbowMotor.getMotorOutputPercent());
@@ -247,8 +249,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveDownState() {
     if (m_currentState == m_pastState && m_currentState != ArmConstants.intakeState) {
-      if (m_targetState == ArmConstants.stowState && m_currentState == ArmConstants.highState) {
+      if (m_targetState <= ArmConstants.lowState && m_pastState == ArmConstants.highState) {
         m_currentState = ArmConstants.lowState;
+      } else if (m_currentState == ArmConstants.lowState && m_targetState == ArmConstants.intakeState) {
+        m_currentState = ArmConstants.intakeState;
+
       } else {
         m_currentState--;
       }
@@ -266,8 +271,16 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveUpState() {
     if (m_currentState == m_pastState && m_currentState != ArmConstants.scoreState) {
-      if (m_targetState == ArmConstants.highState && m_pastState == ArmConstants.lowState) {
+      if (m_targetState >= ArmConstants.highState && m_pastState == ArmConstants.lowState) {
         m_currentState = ArmConstants.highState;
+
+      } /*else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.highState) {
+        m_currentState = ArmConstants.highState; 
+        } */else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.midState) {
+        m_currentState = ArmConstants.midState;
+
+      } else if (m_currentState == ArmConstants.intakeState && m_targetState >= ArmConstants.lowState) {
+        m_currentState = ArmConstants.lowState;
       } else {
         m_currentState++;
       }
