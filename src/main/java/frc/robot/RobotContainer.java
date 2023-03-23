@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -230,7 +231,7 @@ public class RobotContainer {
     m_robotDrive.m_allowVisionUpdates = false;
 
     // System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-        + m_placePiece1.getSelected() + " " + m_chargeBalance.getSelected());
+    //    + m_placePiece1.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "middle") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
       if (m_grabPiece1.getSelected()) {
@@ -388,7 +389,15 @@ public class RobotContainer {
                 new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
                 new ChompCloseCommand(m_pneumatics)));
 
-        new JoystickButton(m_opJoystick, 5).onTrue(new ChompToggleCommand(m_pneumatics));
+        new JoystickButton(m_opJoystick, 5).onTrue(
+            new ConditionalCommand(
+                new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
+                    new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+                    new ChompCloseCommand(m_pneumatics)),
+                new ChompToggleCommand(m_pneumatics),
+                () -> {
+                  return m_robotArm.getCurrentState() == ArmConstants.scoreState && m_pneumatics.m_chompClosed;
+                }));
       }
     }
     if (SubsystemConstants.useTurnTables) {
@@ -412,7 +421,10 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics))
           .onTrue(new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
 
-    }
+      new JoystickButton(m_joystick, 3).whileTrue(new InstantCommand(m_intake::outake))
+          .onFalse(new InstantCommand(m_pneumatics::intakeIn)).onTrue(new InstantCommand(m_pneumatics::intakeOut)); //Placeholder Button number, ask drivers where they want this
+    } //TODO: read the todo for the line above me
+
     // if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
     //   new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
     //       new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
