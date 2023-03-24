@@ -15,6 +15,7 @@ import frc.robot.commands.DriveParkingBrakeCommand;
 import frc.robot.commands.ChompCloseCommand;
 import frc.robot.commands.DriveTrackGamePiece;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeYuck;
 import frc.robot.commands.MagicTurntable;
 import frc.robot.commands.MoveSetDistanceCommand;
 import frc.robot.commands.MoveWithVisionCommand;
@@ -421,8 +422,7 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics))
           .onTrue(new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
 
-      new JoystickButton(m_joystick, 3).whileTrue(new InstantCommand(m_intake::outake))
-          .onFalse(new InstantCommand(m_pneumatics::intakeIn)).onTrue(new InstantCommand(m_pneumatics::intakeOut)); //Placeholder Button number, ask drivers where they want this
+      new JoystickButton(m_joystick, 3).whileTrue(new IntakeYuck(m_intake, m_pneumatics)); //Placeholder Button number, ask drivers where they want this
     } //TODO: read the todo for the line above me
 
     // if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
