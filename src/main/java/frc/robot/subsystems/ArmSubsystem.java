@@ -249,14 +249,19 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveDownState() {
-    if (m_currentState == m_pastState && m_currentState != ArmConstants.intakeState) {
-      if (m_targetState <= ArmConstants.lowState && m_pastState == ArmConstants.highState) {
+    if (m_currentState == m_pastState && m_isChanging) {
+      return;
+    }
+    if (m_currentState != ArmConstants.intakeState) {
+      if ((m_currentState - m_pastState) > 0) {
+        m_currentState = m_pastState;
+      } else if (m_targetState <= ArmConstants.lowState && m_pastState == ArmConstants.highState) {
         m_currentState = ArmConstants.lowState;
-      } else if (m_currentState == ArmConstants.lowState && m_targetState == ArmConstants.intakeState) {
+      } else if (m_pastState == ArmConstants.lowState && m_targetState == ArmConstants.intakeState) {
         m_currentState = ArmConstants.intakeState;
 
       } else {
-        m_currentState--;
+        m_currentState = m_pastState - 1;
       }
     }
 
@@ -271,19 +276,22 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveUpState() {
-    if (m_currentState == m_pastState && m_currentState != ArmConstants.scoreState) {
-      if (m_targetState >= ArmConstants.highState && m_pastState == ArmConstants.lowState) {
+    if (m_currentState == m_pastState && m_isChanging) {
+      return;
+    }
+    if (m_currentState != ArmConstants.scoreState) {
+      if ((m_currentState - m_pastState) < 0) {
+        m_currentState = m_pastState;
+      } else if (m_targetState >= ArmConstants.highState && m_pastState == ArmConstants.lowState) {
         m_currentState = ArmConstants.highState;
-
-        /* } else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.highState) {
-        m_currentState = ArmConstants.highState; //this hits the mid pole if we do it with a cone.
-        } */} else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.midState) {
+      } /*else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.highState) {
+        m_currentState = ArmConstants.highState;
+        } */else if (m_pastState == ArmConstants.intakeState && m_targetState == ArmConstants.midState) {
         m_currentState = ArmConstants.midState;
-
-      } else if (m_currentState == ArmConstants.intakeState && m_targetState >= ArmConstants.lowState) {
+      } else if (m_pastState == ArmConstants.intakeState && m_targetState >= ArmConstants.lowState) {
         m_currentState = ArmConstants.lowState;
       } else {
-        m_currentState++;
+        m_currentState = m_pastState + 1;
       }
     }
 
@@ -348,13 +356,6 @@ public class ArmSubsystem extends SubsystemBase {
     //   m_elbowMotor.setSelectedSensorPosition(ticksE);
     //   System.out.println("Setting elbow to " + ticksE);
     // }
-  }
-
-  public void resetArmEncoders() {
-    if (m_currentState == ArmConstants.stowState) {
-      m_shoulderMotor.setSelectedSensorPosition(0);
-      m_elbowMotor.setSelectedSensorPosition(0);
-    }
   }
 
   public double getAdjustedAbsoluteElbow() {

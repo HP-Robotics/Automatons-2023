@@ -231,8 +231,8 @@ public class RobotContainer {
 
     m_robotDrive.m_allowVisionUpdates = false;
 
-    // System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-    //    + m_placePiece1.getSelected() + " " + m_chargeBalance.getSelected());
+    //System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
+    //+ m_placePiece1.getSelected() + " " + m_chargeBalance.getSelected());
     if (m_startPosition.getSelected() == "middle") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
       if (m_grabPiece1.getSelected()) {
@@ -380,8 +380,6 @@ public class RobotContainer {
       new Trigger(() -> {
         return m_opJoystick.getRawAxis(3) > 0.95;
       }).onTrue(new ArmCycleStateCommand(m_robotArm, true));
-
-      new JoystickButton(m_opJoystick, 10).onTrue(new InstantCommand(m_robotArm::resetArmEncoders));
 
       if (SubsystemConstants.usePneumatics) {
         new JoystickButton(m_opJoystick, 6).onTrue( //drop n chomp
