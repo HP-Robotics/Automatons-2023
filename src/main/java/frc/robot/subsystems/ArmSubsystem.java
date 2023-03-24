@@ -350,13 +350,6 @@ public class ArmSubsystem extends SubsystemBase {
     // }
   }
 
-  public void resetArmEncoders() {
-    if (m_currentState == ArmConstants.stowState) {
-      m_shoulderMotor.setSelectedSensorPosition(0);
-      m_elbowMotor.setSelectedSensorPosition(0);
-    }
-  }
-
   public double getAdjustedAbsoluteElbow() {
     if (m_elbowEncoder.getAbsolutePosition() < 0.4) {
       return m_elbowEncoder.getAbsolutePosition() + 1 + ArmConstants.elbowOffset;

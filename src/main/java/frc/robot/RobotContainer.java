@@ -379,8 +379,6 @@ public class RobotContainer {
         return m_opJoystick.getRawAxis(3) > 0.95;
       }).onTrue(new ArmCycleStateCommand(m_robotArm, true));
 
-      new JoystickButton(m_opJoystick, 10).onTrue(new InstantCommand(m_robotArm::resetArmEncoders));
-
       if (SubsystemConstants.usePneumatics) {
         new JoystickButton(m_opJoystick, 6).onTrue( //drop n chomp
             new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
