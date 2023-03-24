@@ -53,8 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
     m_shoulderMotor.config_kD(0, ArmConstants.shoulderkD);
     m_shoulderMotor.config_IntegralZone(0, ArmConstants.shoulderIZone);
     m_shoulderMotor.configAllowableClosedloopError(0, ArmConstants.shoulderMaxAllowableError);
-    m_shoulderMotor.configPeakOutputForward(1);
-    m_shoulderMotor.configPeakOutputReverse(-1); //TODO MENTOR: remove these eventually, once tuning is finished
+    m_shoulderMotor.configPeakOutputForward(.6);
+    m_shoulderMotor.configPeakOutputReverse(-.6); //TODO MENTOR: remove these eventually, once tuning is finished
     m_shoulderMotor.configMotionAcceleration(ArmConstants.shoulderAcceleration);
     m_shoulderMotor.configMotionCruiseVelocity(ArmConstants.shoulderMaxVelocity);
     m_shoulderMotor.configMotionSCurveStrength(ArmConstants.shoulderSCurve);
@@ -275,9 +275,9 @@ public class ArmSubsystem extends SubsystemBase {
       if (m_targetState >= ArmConstants.highState && m_pastState == ArmConstants.lowState) {
         m_currentState = ArmConstants.highState;
 
-      } /*else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.highState) {
-        m_currentState = ArmConstants.highState;
-        } */else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.midState) {
+        /* } else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.highState) {
+        m_currentState = ArmConstants.highState; //this hits the mid pole if we do it with a cone.
+        } */} else if (m_currentState == ArmConstants.intakeState && m_targetState == ArmConstants.midState) {
         m_currentState = ArmConstants.midState;
 
       } else if (m_currentState == ArmConstants.intakeState && m_targetState >= ArmConstants.lowState) {
