@@ -127,9 +127,10 @@ public final class Constants {
     public static final double shoulderOffset = -.24; // adjusted abs should be 0.472 in stow
 
     public static final int elbowID = 19;
-    public static final double elbowkP = .075; //.05
-    public static final double elbowkI = .0000;
+    public static final double elbowkP = .07; //.05
+    public static final double elbowkI = .005;
     public static final double elbowkD = 0;
+    public static final double elbowIZone = 500;
     public static final double elbowGearRatio = 231.81;
     public static final int elbowAcceleration = 30000;
     public static final int elbowMaxVelocity = 60000;
