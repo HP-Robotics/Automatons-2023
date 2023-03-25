@@ -120,7 +120,7 @@ public final class Constants {
     public static final double shoulderIZone = 500;
     public static final double shoulderGearRatio = 345; // just a guess // it is 575 according to builders, 383 working
     public static final int shoulderAcceleration = 25000;//20000 works
-    public static final int shoulderMaxVelocity = 25000;
+    public static final int shoulderMaxVelocity = 13000;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.454;
     public static final int shoulderEncoderID = 22;
@@ -133,7 +133,7 @@ public final class Constants {
     public static final double elbowIZone = 500;
     public static final double elbowGearRatio = 231.81;
     public static final int elbowAcceleration = 30000;
-    public static final int elbowMaxVelocity = 60000;
+    public static final int elbowMaxVelocity = 19000;
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.840;
     public static final int elbowEncoderID = 21;
@@ -220,16 +220,19 @@ public final class Constants {
     public static final double counterClockwiseSpeed = -.5;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
     public static final int sharpPort = 5;
+    public static final int turntableAcceleration = 1000;
+    public static final int turntableMaxVelocity = 2500;
+    public static final int tunrtableSCurve = 0;
 
     public static final double kConeGThreshold = 3.0;
     public static final double kCubeBThreshold = 2.7;
     public static final double kDistanceThreshold = 130;
 
-    public static final double coneCorrectionTicks = 3000;
+    public static final double coneCorrectionTicks = 1500;
     public static final double cubeCorrectionTicks = 250;
 
-    public static final double ticksThresholdMin = 1000;
-    public static final double ticksThresholdMax = 8192;
+    public static final double ticksThresholdMin = 4000;
+    public static final double ticksThresholdMax = 15000;
 
     public static final double waitTime = 2;
 

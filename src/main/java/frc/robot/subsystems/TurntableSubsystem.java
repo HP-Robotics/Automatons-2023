@@ -36,7 +36,9 @@ public class TurntableSubsystem extends SubsystemBase {
     m_turntableMotor.config_kP(0, TurntableConstants.motorkP);
     m_turntableMotor.config_kI(0, TurntableConstants.motorkI);
     m_turntableMotor.config_kD(0, TurntableConstants.motorkD);
-    m_intakeProcessRunning = false;
+    m_turntableMotor.configMotionAcceleration(TurntableConstants.turntableAcceleration);
+    m_turntableMotor.configMotionCruiseVelocity(TurntableConstants.turntableMaxVelocity);
+    m_turntableMotor.configMotionSCurveStrength(TurntableConstants.tunrtableSCurve);
     m_gamePieceDetected = false;
     m_magicTurntableOn = false;
     m_sharp = new AnalogInput(TurntableConstants.sharpPort);
@@ -62,15 +64,7 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Real Encoder Value", m_turntableMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Sharp Distance", getPieceDistance());
     SmartDashboard.putNumber("Average Sharp Distance", m_sharp.getAverageVoltage());
-
-    if (m_intakeProcessRunning) {
-      if (isSomething()) {
-        m_gamePieceDetected = true;
-      }
-      if (m_gamePieceDetected) {
-        correctPosition();
-      }
-    }
+    SmartDashboard.putNumber("Turntable speed", m_turntableMotor.getSelectedSensorVelocity());
   }
 
   public void spinClockwise() {
@@ -127,20 +121,18 @@ public class TurntableSubsystem extends SubsystemBase {
           coneCounter--;
         }
       }
-    } else if (isCube()) {
-      return true;
     }
     return false;
   }
 
   public void goToCorrectPosition() {
     if (coneCounter >= 2) {
-      m_turntableMotor.set(ControlMode.Position,
+      m_turntableMotor.set(ControlMode.MotionMagic,
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
       SmartDashboard.putNumber("Cone Set Positon",
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.coneCorrectionTicks);
     } else if (isCube()) {
-      m_turntableMotor.set(ControlMode.Position,
+      m_turntableMotor.set(ControlMode.MotionMagic,
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
       SmartDashboard.putNumber("Cube Set Positon",
           m_turntableMotor.getSelectedSensorPosition() + TurntableConstants.cubeCorrectionTicks);
@@ -151,11 +143,4 @@ public class TurntableSubsystem extends SubsystemBase {
     return m_sharp.getAverageVoltage();
   }
 
-  public void intakeOn() {
-    m_intakeProcessRunning = true;
-  }
-
-  public void intakeOff() {
-    m_intakeProcessRunning = false;
-  }
 }

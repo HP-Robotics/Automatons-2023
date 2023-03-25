@@ -12,6 +12,7 @@ import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -58,6 +59,8 @@ public class ArmSubsystem extends SubsystemBase {
     m_shoulderMotor.configMotionAcceleration(ArmConstants.shoulderAcceleration);
     m_shoulderMotor.configMotionCruiseVelocity(ArmConstants.shoulderMaxVelocity);
     m_shoulderMotor.configMotionSCurveStrength(ArmConstants.shoulderSCurve);
+    //StatorCurrentLimitConfiguration fred = new StatorCurrentLimitConfiguration(true, 20, 25, 100);
+    //m_shoulderMotor.configStatorCurrentLimit(null);
 
     m_shoulderEncoder = new DutyCycleEncoder(ArmConstants.shoulderEncoderID);
 
@@ -113,7 +116,7 @@ public class ArmSubsystem extends SubsystemBase {
     double fancyFunction = 340626.7792820861 - 721413.6886682262 * getAdjustedAbsoluteShoulder();
     double fancyFunction2 = 302129.742102882 - 662435.677872067 * getAdjustedAbsoluteShoulder();
 
-    if (m_start.hasElapsed(2.5)) {
+    if (m_start.hasElapsed(5)) {
       m_start.stop();
       m_start.reset();
       if (!m_initializedEncoders) {
@@ -132,14 +135,23 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder ticksS", ticksS);
     SmartDashboard.putNumber("Shoulder Absolute Encoder", getAdjustedAbsoluteShoulder());
     SmartDashboard.putNumber("Elbow Absolute Encoder", getAdjustedAbsoluteElbow());
+    // SmartDashboard.putBoolean("Elbow Absolute Encoder is Connected", m_elbowEncoder.isConnected());
+
     SmartDashboard.putNumber("Elbow Real Absolute Encoder", m_elbowEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Shoulder Motion Position", m_shoulderMotor.getActiveTrajectoryPosition());
-    SmartDashboard.putNumber("Elbow Motion Position", m_elbowMotor.getActiveTrajectoryPosition());
+    // SmartDashboard.putNumber("Shoulder Motion Position", m_shoulderMotor.getActiveTrajectoryPosition());
+    SmartDashboard.putNumber("Shoulder Velocity", m_shoulderMotor.getSelectedSensorVelocity());
+    // SmartDashboard.putNumber("Shuolder Target Velocity", m_shoulderMotor.getActiveTrajectoryVelocity());
+    // SmartDashboard.putNumber("Elbow Motion Position", m_elbowMotor.getActiveTrajectoryPosition());
 
     SmartDashboard.putNumber("Shoulder Output Percent", m_shoulderMotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Shoulder Output Current", m_shoulderMotor.getStatorCurrent());
     SmartDashboard.putNumber("Elbow Output Percent", m_elbowMotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Elbow Output Current", m_elbowMotor.getStatorCurrent());
+
+    SmartDashboard.putNumber("Elbow Velocity", m_elbowMotor.getSelectedSensorVelocity());
+    // SmartDashboard.putNumber("ElbowTarget Velocity", m_elbowMotor.getActiveTrajectoryVelocity());
 
     ArmConstants.elbowPositions[ArmConstants.midState] = SmartDashboard.getNumber("Elbow Mid",
         ArmConstants.elbowMid);
@@ -175,7 +187,7 @@ public class ArmSubsystem extends SubsystemBase {
             - ArmConstants.elbowPositions[m_currentState]) > ArmConstants.errorThreshold;
 
     m_doneChanging = !m_isChanging && m_frameCounter >= ArmConstants.frameCounterThreshold;
-    if (!m_isChanging) {
+    if (!m_isChanging && m_pastState >= 0) {
       m_pastState = m_currentState;
       m_frameCounter++;
     }
@@ -253,7 +265,7 @@ public class ArmSubsystem extends SubsystemBase {
       return;
     }
     if (m_currentState != ArmConstants.intakeState) {
-      if ((m_currentState - m_pastState) > 0) {
+      if ((m_currentState - m_pastState) > 0 && m_pastState >= 0) {
         m_currentState = m_pastState;
       } else if (m_targetState <= ArmConstants.lowState && m_pastState == ArmConstants.highState) {
         m_currentState = ArmConstants.lowState;
@@ -261,6 +273,9 @@ public class ArmSubsystem extends SubsystemBase {
         m_currentState = ArmConstants.intakeState;
 
       } else {
+        if (m_pastState < 0) {
+          m_pastState = m_currentState;
+        }
         m_currentState = m_pastState - 1;
       }
     }
@@ -276,11 +291,12 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveUpState() {
+
     if (m_currentState == m_pastState && m_isChanging) {
       return;
     }
     if (m_currentState != ArmConstants.scoreState) {
-      if ((m_currentState - m_pastState) < 0) {
+      if ((m_currentState - m_pastState) < 0 && m_pastState >= 0) {
         m_currentState = m_pastState;
       } else if (m_targetState >= ArmConstants.highState && m_pastState == ArmConstants.lowState) {
         m_currentState = ArmConstants.highState;
@@ -291,7 +307,11 @@ public class ArmSubsystem extends SubsystemBase {
       } else if (m_pastState == ArmConstants.intakeState && m_targetState >= ArmConstants.lowState) {
         m_currentState = ArmConstants.lowState;
       } else {
+        if (m_pastState < 0) {
+          m_pastState = m_currentState;
+        }
         m_currentState = m_pastState + 1;
+
       }
     }
 

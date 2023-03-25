@@ -410,10 +410,10 @@ public class RobotContainer {
       new Trigger(() -> {
         return m_opJoystick.getPOV() == 0;
       }).onTrue(new InstantCommand(m_turntables::stopSpinning));
+      new Trigger(() -> {
+        return m_opJoystick.getPOV() == 180;
+      }).whileTrue(new MagicTurntable(m_turntables));
 
-      new JoystickButton(m_joystick, 9).onTrue(new MagicTurntable(m_turntables));
-      new JoystickButton(m_joystick, 9).debounce(TurntableConstants.waitTime, DebounceType.kFalling)
-          .onFalse(new InstantCommand(m_turntables::stopMagicTurntable));
     }
 
     if (SubsystemConstants.useIntake && SubsystemConstants.useTurnTables && SubsystemConstants.usePneumatics) {
