@@ -76,6 +76,25 @@ public class MoveSetDistanceCommand extends CommandBase {
           // Add kinematics to ensure max speed is actually obeyed
           .setKinematics(DriveConstants.kDriveKinematics);
 
+      /*double dx = m_X - m_subsystem.getPoseX(); // this cant be 0
+      double dy = m_Y - m_subsystem.getPoseY();
+      double theta;
+      if (dx == 0) {
+        if (dy < 0) {
+          theta = -90;
+        } else {
+          theta = 90;
+        }
+      } else {
+        theta = Math.toDegrees(Math.atan(dy / dx));
+        if (dx < 0) {
+          theta += 180;
+        }
+      }
+      System.out.println("Dx: " + dx);
+      System.out.println("Dy: " + dy);
+      System.out.println("Theta: " + theta); */
+
       m_thetaController = new PIDController(
           //var thetaController = new ProfiledPIDController(
           AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0);

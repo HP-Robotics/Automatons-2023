@@ -81,9 +81,8 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = SubsystemConstants.useIntake ? new IntakeSubsystem() : null;
 
   private final SendableChooser<String> m_startPosition;
-  private final SendableChooser<Boolean> m_grabPiece1;
-  private final SendableChooser<Boolean> m_placePiece1;
-  private final SendableChooser<Boolean> m_chargeBalance;
+  private final SendableChooser<Boolean> m_grabPiece2;
+  private final SendableChooser<Boolean> m_placePiece2;
 
   private Boolean m_manualArm = false;
   // The driver's controller
@@ -114,23 +113,17 @@ public class RobotContainer {
     m_startPosition.setDefaultOption("Middle", "middle");
     SmartDashboard.putData("Starting Position?", m_startPosition);
 
-    m_grabPiece1 = new SendableChooser<Boolean>();
-    m_grabPiece1.addOption("Yes", true);
-    m_grabPiece1.addOption("No", false);
-    m_grabPiece1.setDefaultOption("No", false);
-    SmartDashboard.putData("Grabbing First Piece?", m_grabPiece1);
+    m_grabPiece2 = new SendableChooser<Boolean>();
+    m_grabPiece2.addOption("Yes", true);
+    m_grabPiece2.addOption("No", false);
+    m_grabPiece2.setDefaultOption("No", false);
+    SmartDashboard.putData("Grabbing Second Piece?", m_grabPiece2);
 
-    m_placePiece1 = new SendableChooser<Boolean>();
-    m_placePiece1.addOption("Yes", true);
-    m_placePiece1.addOption("No", false);
-    m_placePiece1.setDefaultOption("No", false);
-    SmartDashboard.putData("Placing First Piece?", m_placePiece1);
-
-    m_chargeBalance = new SendableChooser<Boolean>();
-    m_chargeBalance.addOption("Yes", true);
-    m_chargeBalance.addOption("No", false);
-    m_chargeBalance.setDefaultOption("No", false);
-    SmartDashboard.putData("Balancing on Charge Station?", m_chargeBalance);
+    m_placePiece2 = new SendableChooser<Boolean>();
+    m_placePiece2.addOption("Yes", true);
+    m_placePiece2.addOption("No", false);
+    m_placePiece2.setDefaultOption("No", false);
+    SmartDashboard.putData("Placing Second Piece?", m_placePiece2);
 
     if (SubsystemConstants.useDataManger) {
       DataLogManager.start();
@@ -196,120 +189,53 @@ public class RobotContainer {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.08, new Rotation2d(getAllianceTheta())));//Y was 5.20
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-          new ChompCloseCommand(m_pneumatics),
-          new ParallelDeadlineGroup(
-              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 4.58,
-                  new Rotation2d(getAllianceTheta()),
-                  AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
-              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))),
-          new MagicTurntable(m_turntables));
+          new ChompCloseCommand(m_pneumatics));
+      if (m_grabPiece2.getSelected()) {
+        ret.addCommands(
+            new ParallelDeadlineGroup(
+                new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 4.58,
+                    new Rotation2d(getAllianceTheta()),
+                    AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
+                new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+
+        if (m_placePiece2.getSelected()) {
+          ret.addCommands(new ParallelCommandGroup(new MoveSetDistanceCommand(m_robotDrive,
+              new Pose2d(getAllianceX(3), 4.58, new Rotation2d(getAllianceTheta()))),
+              new MagicTurntable(m_turntables)));
+        } else {
+          ret.addCommands(new MagicTurntable(m_turntables));
+        }
+      }
     }
 
     if (m_startPosition.getSelected() == "drive") {
       m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.42, new Rotation2d(getAllianceTheta())));
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-          new ChompCloseCommand(m_pneumatics),
-          new ParallelDeadlineGroup(
-              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 0.92,
-                  new Rotation2d(getAllianceTheta()),
-                  AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration,
-                  List.of(new PathPoint(new Translation2d((getAllianceX(1.8)), (0.75)),
-                      new Rotation2d(getAllianceTheta()), new Rotation2d(getAllianceTheta())))),
-              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))),
-          new MagicTurntable(m_turntables));
-      if (m_placePiece1.getSelected()) {
-        ret.addCommands(new MoveSetDistanceCommand(m_robotDrive,
-            new Pose2d(getAllianceX(1.36), 1.2596, new Rotation2d(getAllianceTheta()))));
+          new ChompCloseCommand(m_pneumatics));
+      if (m_grabPiece2.getSelected()) {
+        ret.addCommands(new ParallelDeadlineGroup(
+            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 0.92,
+                new Rotation2d(getAllianceTheta()),
+                AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration,
+                List.of(new PathPoint(new Translation2d((getAllianceX(1.8)), (0.75)),
+                    new Rotation2d(getAllianceTheta()), new Rotation2d(getAllianceTheta())))),
+            new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
 
-      }
-    }
+        if (m_placePiece2.getSelected()) {
+          ret.addCommands(new ParallelCommandGroup(new MoveSetDistanceCommand(m_robotDrive,
+              new Pose2d(getAllianceX(3), 0.75, new Rotation2d(getAllianceTheta()))),
+              new MagicTurntable(m_turntables)));
+        } else {
+          ret.addCommands(new MagicTurntable(m_turntables));
+        }
 
-    return ret;
-
-  }
-
-  public Command getAutonomousCommandGood() {
-    SequentialCommandGroup ret = new SequentialCommandGroup();
-    ParallelCommandGroup move = new ParallelCommandGroup();
-
-    ret.addCommands(
-        new ArmChangeStateCommand(m_robotArm, ArmConstants.scoreState), new WaitCommand(0.1),
-        new ChompOpenCommand(m_pneumatics), new WaitCommand(0.1),
-        move);
-    move.addCommands(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
-
-    m_robotDrive.m_allowVisionUpdates = false;
-
-    //System.out.println(m_startPosition.getSelected() + " " + m_grabPiece1.getSelected() + " "
-    //+ m_placePiece1.getSelected() + " " + m_chargeBalance.getSelected());
-    if (m_startPosition.getSelected() == "middle") {
-      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 2.19, new Rotation2d(getAllianceTheta())));
-      if (m_grabPiece1.getSelected()) {
-        move.addCommands(
-            new ParallelRaceGroup(
-                new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 2.19,
-                    new Rotation2d(getAllianceTheta()),
-                    AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration, List.of()),
-                new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
-      } else {
-        //deliberatly adding nothing for else
-      }
-    }
-
-    if (m_startPosition.getSelected() == "station") {
-      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.20, new Rotation2d(getAllianceTheta())));
-      if (m_grabPiece1.getSelected()) {
-        move.addCommands(
-            new ParallelRaceGroup(
-                new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 4.58,
-                    new Rotation2d(getAllianceTheta()),
-                    AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
-                new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
-      } else {
-
-      }
-    }
-
-    if (m_startPosition.getSelected() == "drive") {
-      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.65, new Rotation2d(getAllianceTheta())));
-      if (m_grabPiece1.getSelected()) {
-        move.addCommands(
-            new ParallelRaceGroup(
-                new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.1196), 0.92,
-                    new Rotation2d(getAllianceTheta()),
-                    AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
-                new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
-
-      } else {
-
-      }
-    }
-
-    if (m_chargeBalance.getSelected()) {
-      if (m_grabPiece1.getSelected()) {
-        ret.addCommands(
-            new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615, new Rotation2d(getAllianceTheta()),
-                AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxAutoAcceleration,
-                List.of(
-                    new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
-                        new Rotation2d(getAllianceTheta())))),
-            new BalanceCommand(m_robotDrive));
-      } else {
-        move.addCommands(
-            new SequentialCommandGroup(
-                new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.485), 2.7615,
-                    new Rotation2d(getAllianceTheta()),
-                    AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
-                    List.of(
-                        new PathPoint(new Translation2d(getAllianceX(5.1196), 2.7615), new Rotation2d(0),
-                            new Rotation2d(getAllianceTheta())))),
-                new BalanceCommand(m_robotDrive)));
       }
 
     }
 
     return ret;
+
   }
 
   /**
