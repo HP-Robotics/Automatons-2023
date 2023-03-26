@@ -244,7 +244,8 @@ public final class Constants {
     public static final double motorkP = .1;
     public static final double motorkI = .0001;
     public static final double motorkD = 0;
-    public static final double intakeSpeed = .6;
+    public static final double intakeSpeed = .7;
+    public static final double intakeOnlySpeed = 1.0;
     public static final double outakeSpeed = -.6;
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
   }

@@ -38,6 +38,10 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.intakeSpeed);
   }
 
+  public void intakeOnly() {
+    m_intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.intakeOnlySpeed);
+  }
+
   public void outake() {
     // TODO: Use velocity control
     m_intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.outakeSpeed);
