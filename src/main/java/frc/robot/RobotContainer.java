@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -171,6 +172,8 @@ public class RobotContainer {
     SequentialCommandGroup ret = new SequentialCommandGroup();
 
     ret.addCommands(
+        new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState),
+        new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState),
         new ArmChangeStateCommand(m_robotArm, ArmConstants.scoreState), new WaitCommand(0.1),
         new ChompOpenCommand(m_pneumatics), new WaitCommand(0.1));
 
@@ -179,6 +182,7 @@ public class RobotContainer {
       SequentialCommandGroup temp = new SequentialCommandGroup();
       temp.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+          new ChompCloseCommand(m_pneumatics),
           new MoveSetDistanceCommand(m_robotDrive, getAllianceX(3.1196), 2.7615, //X value is not actually correct, goes over, but should end in roughly the right place because the robot thinks it is a different place than where it is.
               new Rotation2d(getAllianceTheta()),
               AutoConstants.kMaxChargeStationVelocity, AutoConstants.kMaxChargeStationAcceleration,
@@ -189,30 +193,35 @@ public class RobotContainer {
     }
 
     if (m_startPosition.getSelected() == "station") {
-      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.20, new Rotation2d(getAllianceTheta())));
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 5.08, new Rotation2d(getAllianceTheta())));//Y was 5.20
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-          new ParallelRaceGroup(
+          new ChompCloseCommand(m_pneumatics),
+          new ParallelDeadlineGroup(
               new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 4.58,
                   new Rotation2d(getAllianceTheta()),
                   AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
-              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))),
+          new MagicTurntable(m_turntables));
     }
 
     if (m_startPosition.getSelected() == "drive") {
-      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.65, new Rotation2d(getAllianceTheta())));
+      m_robotDrive.resetOdometry(new Pose2d(getAllianceX(1.36), 0.42, new Rotation2d(getAllianceTheta())));
       ret.addCommands(
           new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
-          new ParallelRaceGroup(
-              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 0.82,
+          new ChompCloseCommand(m_pneumatics),
+          new ParallelDeadlineGroup(
+              new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 0.92,
                   new Rotation2d(getAllianceTheta()),
                   AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration,
                   List.of(new PathPoint(new Translation2d((getAllianceX(1.8)), (0.75)),
                       new Rotation2d(getAllianceTheta()), new Rotation2d(getAllianceTheta())))),
-              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+              new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))),
+          new MagicTurntable(m_turntables));
       if (m_placePiece1.getSelected()) {
         ret.addCommands(new MoveSetDistanceCommand(m_robotDrive,
             new Pose2d(getAllianceX(1.36), 1.2596, new Rotation2d(getAllianceTheta()))));
+
       }
     }
 
@@ -420,7 +429,8 @@ public class RobotContainer {
     if (SubsystemConstants.useIntake && SubsystemConstants.useTurnTables && SubsystemConstants.usePneumatics) {
       new JoystickButton(m_joystick, 4).whileTrue(new IntakeOnlyCommand(m_intake));
       new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics))
-          .onTrue(new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
+          .onTrue(new MagicTurntable(m_turntables));
+      //new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
 
       new JoystickButton(m_joystick, 3).whileTrue(new IntakeYuck(m_intake, m_pneumatics)); //Placeholder Button number, ask drivers where they want this
     } //TODO: read the todo for the line above me

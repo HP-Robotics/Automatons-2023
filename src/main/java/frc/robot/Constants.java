@@ -64,7 +64,7 @@ public final class Constants {
     public static final double kSlowSpeed = 2.0;
     public static final double kSlowAngularspeed = Math.PI / 2; // 1/4 rotation per second  // TODO MENTOR: is this a good turn speed?
 
-    public static final double kWheelRadius = 0.0508;
+    public static final double kWheelRadius = 0.0508 * (218.5 / 225.6); //219 /225.6 is a fudge factor
     public static final int kEncoderResolution = 2048;
 
     public static final double driveGearRatio = 6.75;
@@ -190,11 +190,11 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
     public static final double kPXController = 5;
-    public static final double kIXController = 0.03;
+    public static final double kIXController = 0.04;
     public static final double kDXController = 0.0;
-    public static final double kIYController = 0.03;
-    public static final double kPYController = 5; //TODO why is Y different?
-    public static final double kPThetaController = 3; // TODO MENTOR: tune the theta PID
+    public static final double kIYController = 0.04;
+    public static final double kPYController = 5;
+    public static final double kPThetaController = 3;
     public static final double kIThetaController = 0.05;
 
     // Constraint for the motion profiled robot angle controller
