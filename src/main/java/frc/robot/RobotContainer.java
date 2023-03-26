@@ -15,6 +15,7 @@ import frc.robot.commands.DriveParkingBrakeCommand;
 import frc.robot.commands.ChompCloseCommand;
 import frc.robot.commands.DriveTrackGamePiece;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeOnlyCommand;
 import frc.robot.commands.IntakeYuck;
 import frc.robot.commands.MagicTurntable;
 import frc.robot.commands.MoveSetDistanceCommand;
@@ -417,6 +418,7 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useIntake && SubsystemConstants.useTurnTables && SubsystemConstants.usePneumatics) {
+      new JoystickButton(m_joystick, 4).whileTrue(new IntakeOnlyCommand(m_intake));
       new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics))
           .onTrue(new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
 
@@ -441,8 +443,8 @@ public class RobotContainer {
     //new JoystickButton(m_opJoystick, 7).whileTrue(new TestCommand(m_turntables));
 
     if (SubsystemConstants.useDrive && SubsystemConstants.useLimelight) {
-      new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
-      new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
+      // new JoystickButton(m_joystick, 4).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, true));
+      // new JoystickButton(m_joystick, 3).whileTrue(new DriveTrackGamePiece(m_robotDrive, m_joystick, false));
 
     }
   }
