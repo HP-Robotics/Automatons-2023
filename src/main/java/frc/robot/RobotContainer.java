@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -327,11 +328,11 @@ public class RobotContainer {
         new JoystickButton(m_opJoystick, 5).onTrue(
             new ConditionalCommand(
                 new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
-                    new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState),
+                    new ProxyCommand(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState)),
                     new ChompCloseCommand(m_pneumatics)),
                 new ChompToggleCommand(m_pneumatics),
                 () -> {
-                  return m_robotArm.getCurrentState() == ArmConstants.scoreState && m_pneumatics.m_chompClosed;
+                  return m_robotArm.getCurrentState() >= ArmConstants.lowState && m_pneumatics.m_chompClosed;
                 }));
       }
     }
