@@ -76,24 +76,12 @@ public class MoveSetDistanceCommand extends CommandBase {
           // Add kinematics to ensure max speed is actually obeyed
           .setKinematics(DriveConstants.kDriveKinematics);
 
-      /*double dx = m_X - m_subsystem.getPoseX(); // this cant be 0
+      double dx = m_X - m_subsystem.getPoseX(); // this cant be 0
       double dy = m_Y - m_subsystem.getPoseY();
-      double theta;
-      if (dx == 0) {
-        if (dy < 0) {
-          theta = -90;
-        } else {
-          theta = 90;
-        }
-      } else {
-        theta = Math.toDegrees(Math.atan(dy / dx));
-        if (dx < 0) {
-          theta += 180;
-        }
-      }
+      double theta = Math.toDegrees(Math.atan2(dy, dx));
       System.out.println("Dx: " + dx);
       System.out.println("Dy: " + dy);
-      System.out.println("Theta: " + theta); */
+      System.out.println("Theta: " + theta);
 
       m_thetaController = new PIDController(
           //var thetaController = new ProfiledPIDController(
@@ -105,11 +93,11 @@ public class MoveSetDistanceCommand extends CommandBase {
       m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
       m_wayPoints.add(new PathPoint(new Translation2d(m_subsystem.getPoseX(), m_subsystem.getPoseY()),
-          Rotation2d.fromDegrees(0), m_subsystem.getPoseRot()));
+          Rotation2d.fromDegrees(theta), m_subsystem.getPoseRot()));
       for (int i = 0; i < m_MidPoints.size(); i++) {
         m_wayPoints.add(m_MidPoints.get(i));
       }
-      m_wayPoints.add(new PathPoint(new Translation2d(m_X, m_Y), new Rotation2d(0), m_Rot));
+      m_wayPoints.add(new PathPoint(new Translation2d(m_X, m_Y), Rotation2d.fromDegrees(theta), m_Rot));
 
       // An example trajectory to follow. All units in meters.
       PathPlannerTrajectory forwardTrajectory = PathPlanner.generatePath(
