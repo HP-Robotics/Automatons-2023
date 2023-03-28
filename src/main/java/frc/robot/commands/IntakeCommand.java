@@ -6,24 +6,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.PneumaticsSubsystem;
 
 public class IntakeCommand extends CommandBase {
   private final IntakeSubsystem m_intake;
-  private final PneumaticsSubsystem m_pneumatic;
 
   /** Creates a new spinClockwise. */
-  public IntakeCommand(IntakeSubsystem subsystem, PneumaticsSubsystem psubsystem) {
+  public IntakeCommand(IntakeSubsystem subsystem) {
     m_intake = subsystem;
-    m_pneumatic = psubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem, psubsystem);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_pneumatic.intakeOut();
+    m_intake.intakeOut();
     m_intake.intake();
   }
 
@@ -36,7 +33,7 @@ public class IntakeCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intake.stopSpinning();
-    m_pneumatic.intakeIn();
+    m_intake.intakeIn();
   }
 
   // Returns true when the command should end.

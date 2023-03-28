@@ -8,11 +8,16 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.PneumaticsConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   public final TalonFX m_intakeMotor;
+  private final DoubleSolenoid m_intake = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 0,
+      1);
 
   /** Creates a new TurntablesSubsystem. */
   public IntakeSubsystem() {
@@ -24,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.config_kI(0, IntakeConstants.motorkI);
     m_intakeMotor.config_kD(0, IntakeConstants.motorkD);
     // TODO: Current limit + tuning
-
+    intakeIn();
   }
 
   @Override
@@ -49,6 +54,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stopSpinning() {
     m_intakeMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  public void intakeOut() {
+    m_intake.set(DoubleSolenoid.Value.kForward);
+  }
+
+  public void intakeIn() {
+    m_intake.set(DoubleSolenoid.Value.kReverse);
   }
 
 }

@@ -6,18 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.PneumaticsSubsystem;
 
 public class IntakeYuck extends CommandBase {
   private final IntakeSubsystem m_subsystem;
-  private final PneumaticsSubsystem m_intake;
 
   /** Creates a new IntakeYuck. */
-  public IntakeYuck(IntakeSubsystem subsystem, PneumaticsSubsystem intake) {
+  public IntakeYuck(IntakeSubsystem subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_subsystem = subsystem;
-    m_intake = intake;
-    addRequirements(m_subsystem, m_intake);
+    addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -29,14 +26,14 @@ public class IntakeYuck extends CommandBase {
   @Override
   public void execute() {
     m_subsystem.outake();
-    m_intake.intakeOut();
+    m_subsystem.intakeOut();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_subsystem.stopSpinning();
-    m_intake.intakeIn();
+    m_subsystem.intakeIn();
   }
 
   // Returns true when the command should end.

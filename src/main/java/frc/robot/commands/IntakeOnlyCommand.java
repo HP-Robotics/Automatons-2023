@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.PneumaticsSubsystem;
 
 public class IntakeOnlyCommand extends CommandBase {
   private final IntakeSubsystem m_subsystem;

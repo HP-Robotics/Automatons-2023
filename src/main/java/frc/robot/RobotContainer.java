@@ -195,7 +195,7 @@ public class RobotContainer {
                 new MoveSetDistanceCommand(m_robotDrive, getAllianceX(7.0196), 4.58,
                     new Rotation2d(getAllianceTheta()),
                     AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration, List.of()),
-                new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+                new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake))));
 
         if (m_placePiece2.getSelected()) {
           ret.addCommands(new ParallelCommandGroup(new MoveSetDistanceCommand(m_robotDrive,
@@ -219,7 +219,7 @@ public class RobotContainer {
                 AutoConstants.kFastAutoVelocity, AutoConstants.kfastAutoAcceleration,
                 List.of(new PathPoint(new Translation2d((getAllianceX(1.8)), (0.75)),
                     new Rotation2d(getAllianceTheta()), new Rotation2d(getAllianceTheta())))),
-            new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake, m_pneumatics))));
+            new SequentialCommandGroup(new WaitCommand(0.5), new IntakeCommand(m_intake))));
 
         if (m_placePiece2.getSelected()) {
           ret.addCommands(new ParallelCommandGroup(new MoveSetDistanceCommand(m_robotDrive,
@@ -306,7 +306,7 @@ public class RobotContainer {
       new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState));
       new JoystickButton(m_opJoystick, 3).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
 
-      new Trigger(() -> m_robotArm.m_movingFromIntake).onTrue(new InstantCommand(m_pneumatics::intakeIn));//This doesn't work when using ArmCycleStateCommand
+      new Trigger(() -> m_robotArm.m_movingFromIntake).onTrue(new InstantCommand(m_intake::intakeIn));//This doesn't work when using ArmCycleStateCommand
 
       new Trigger(() -> {
         return m_opJoystick.getRawAxis(2) > 0.95;
@@ -318,7 +318,7 @@ public class RobotContainer {
       if (SubsystemConstants.usePneumatics) {
         new JoystickButton(m_opJoystick, 6).onTrue( //drop n chomp
             new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
-                new InstantCommand(m_pneumatics::intakeOut),
+                new InstantCommand(m_intake::intakeOut),
                 new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
                 new ChompCloseCommand(m_pneumatics)));
 
@@ -352,11 +352,11 @@ public class RobotContainer {
 
     if (SubsystemConstants.useIntake && SubsystemConstants.useTurnTables && SubsystemConstants.usePneumatics) {
       new JoystickButton(m_joystick, 4).whileTrue(new IntakeOnlyCommand(m_intake));
-      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake, m_pneumatics))
+      new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake))
           .onTrue(new MagicTurntable(m_turntables));
       //new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
 
-      new JoystickButton(m_joystick, 3).whileTrue(new IntakeYuck(m_intake, m_pneumatics)); //Placeholder Button number, ask drivers where they want this
+      new JoystickButton(m_joystick, 3).whileTrue(new IntakeYuck(m_intake)); //Placeholder Button number, ask drivers where they want this
     } //TODO: read the todo for the line above me
 
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {

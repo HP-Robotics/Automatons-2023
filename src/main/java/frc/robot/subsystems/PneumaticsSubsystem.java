@@ -16,8 +16,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
   // DoubleSolenoid corresponds to a double solenoid.
   private final DoubleSolenoid m_chomp = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 2,
       3);
-  private final DoubleSolenoid m_intake = new DoubleSolenoid(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH, 0,
-      1);
+
   Compressor m_compressor;
   public boolean m_chompClosed;
 
@@ -26,7 +25,6 @@ public class PneumaticsSubsystem extends SubsystemBase {
 
     m_compressor = new Compressor(PneumaticsConstants.hubID, PneumaticsModuleType.REVPH);
     m_compressor.enableAnalog(PneumaticsConstants.minPressure, PneumaticsConstants.maxPressure);
-    intakeIn();
     ChompClose();
   }
 
@@ -38,14 +36,6 @@ public class PneumaticsSubsystem extends SubsystemBase {
   public void ChompOpen() {
     m_chomp.set(DoubleSolenoid.Value.kReverse);
     m_chompClosed = false;
-  }
-
-  public void intakeOut() {
-    m_intake.set(DoubleSolenoid.Value.kForward);
-  }
-
-  public void intakeIn() {
-    m_intake.set(DoubleSolenoid.Value.kReverse);
   }
 
   @Override
