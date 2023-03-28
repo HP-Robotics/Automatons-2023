@@ -79,9 +79,8 @@ public class MoveSetDistanceCommand extends CommandBase {
       double dx = m_X - m_subsystem.getPoseX(); // this cant be 0
       double dy = m_Y - m_subsystem.getPoseY();
       double theta = Math.toDegrees(Math.atan2(dy, dx));
-      System.out.println("Dx: " + dx);
-      System.out.println("Dy: " + dy);
-      System.out.println("Theta: " + theta);
+      SmartDashboard.putNumber("DeltaX", m_subsystem.getPoseX());
+      SmartDashboard.putNumber("DeltaY", m_subsystem.getPoseY());
 
       m_thetaController = new PIDController(
           //var thetaController = new ProfiledPIDController(

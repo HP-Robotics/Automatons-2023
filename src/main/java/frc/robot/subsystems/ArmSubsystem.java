@@ -350,8 +350,8 @@ public class ArmSubsystem extends SubsystemBase {
     // System.out.println("Elbow target " + ticksE);
     // System.out.println("Elbow delta " + deltaE);
     // System.out.println("Elbow current " + m_elbowMotor.getSelectedSensorPosition());
-    System.out.println("Elbow Error: " + (ticksE - m_elbowMotor.getSelectedSensorPosition()));
-    System.out.println("Shoulder Error: " + (ticksS - m_shoulderMotor.getSelectedSensorPosition()));
+    // System.out.println("Elbow Error: " + (ticksE - m_elbowMotor.getSelectedSensorPosition()));
+    // System.out.println("Shoulder Error: " + (ticksS - m_shoulderMotor.getSelectedSensorPosition()));
     // System.out.println("Shoulder target " + ticksS);
     // System.out.println("Shoulder current " + m_shoulderMotor.getSelectedSensorPosition());
     if (m_elbowEncoder.getAbsolutePosition() != 0.0
