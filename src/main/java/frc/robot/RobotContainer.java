@@ -85,7 +85,6 @@ public class RobotContainer {
   private final SendableChooser<Boolean> m_grabPiece2;
   private final SendableChooser<Boolean> m_placePiece2;
 
-  private Boolean m_manualArm = false;
   // The driver's controller
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -291,14 +290,14 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useArm) {
-      new Trigger(() -> m_manualArm).whileTrue(
+      new Trigger(() -> m_robotArm.m_manualArm).whileTrue(
           new RunCommand(() -> {
             m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 500);
             m_robotArm.moveElbow(MathUtil.applyDeadband(m_opJoystick.getRawAxis(5), 0.1) * 500);
           }, m_robotArm));
 
-      new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(() -> m_manualArm = true));
-      new JoystickButton(m_opJoystick, 8).onTrue(new InstantCommand(() -> m_manualArm = false));
+      new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(m_robotArm::enableManual));
+      new JoystickButton(m_opJoystick, 8).onTrue(new InstantCommand(m_robotArm::disableManual));
 
       //new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
       new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));

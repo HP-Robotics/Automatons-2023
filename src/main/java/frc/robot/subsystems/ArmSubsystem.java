@@ -43,6 +43,7 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean m_movingFromIntake;
   private Timer m_start = new Timer();
   private Boolean m_initializedEncoders = false;
+  public Boolean m_manualArm = false;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -95,7 +96,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_isChanging = false;
     m_frameCounter = 0;
     m_movingFromIntake = false;
-
+    m_manualArm = false;
     // TODO MENTOR:  If the arm is all the way out and we deploy new code, at enable, we would move the arm to starting state.  Is that safe?
     // m_shoulderMotor.set(ControlMode.Position, ArmConstants.shoulderPositions[m_currentState]);
     // m_elbowMotor.set(ControlMode.Position, ArmConstants.elbowPositions[m_currentState]);
@@ -254,6 +255,15 @@ public class ArmSubsystem extends SubsystemBase {
 
   public boolean getIsChanging() {
     return m_isChanging;
+  }
+
+  public void enableManual() {
+    m_pastState = -1;
+    m_manualArm = true;
+  }
+
+  public void disableManual() {
+    m_manualArm = false;
   }
 
   public boolean getDoneChanging() {
