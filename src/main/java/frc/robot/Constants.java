@@ -29,13 +29,16 @@ public final class Constants {
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
     public static boolean kHasVision = true;
-    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.35 + 0.4 + .12, 0.6096),
+    public static Transform2d leftTrans = new Transform2d(new Translation2d(0.35 + 0.4 + .12, 0.6096 - 0.05),
         new Rotation2d(0));
-    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.35 + 0.4 + 0.12, -0.6096),
+    public static Transform2d rightTrans = new Transform2d(new Translation2d(0.35 + 0.4 + 0.12, -0.6096 - 0.05),
         new Rotation2d(0));
     public static Transform2d centerTrans = new Transform2d(new Translation2d(0.35 + 0.4 + .12, 0), new Rotation2d(0));
     public static Transform2d cameraToRobot = new Transform2d(new Translation2d(-0.3302, 0.0889),
         new Rotation2d(Math.PI));
+
+    public static double acceleration = 1;
+    public static double velocity = 1;
     //0.0.05 is distance of outside of bumper, 2 inches, -0.3302 camera to robot
     //0.41 is the beilived distance from April Tags to the outside
   }
@@ -53,7 +56,7 @@ public final class Constants {
     public static final boolean usePneumatics = true;
     public static final boolean useTurnTables = true;
     public static final boolean useIntake = true;
-    public static final boolean useLimelight = true; // MENTOR TODO: this should be false now...
+    public static final boolean useLimelight = false; // MENTOR TODO: this should be false now...
     public static final boolean useVision = false;
     public static final boolean useDataManger = true;
   }
@@ -189,11 +192,11 @@ public final class Constants {
 
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    public static final double kPXController = 5;
-    public static final double kIXController = 0.04;
+    public static final double kPXController = 20; //5
+    public static final double kIXController = 0.2; //0.04
     public static final double kDXController = 0.0;
-    public static final double kIYController = 0.04;
-    public static final double kPYController = 5;
+    public static final double kIYController = 0.2; //0.04
+    public static final double kPYController = 20; //5
     public static final double kPThetaController = 3;
     public static final double kIThetaController = 0.05;
 

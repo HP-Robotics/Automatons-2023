@@ -74,7 +74,7 @@ public class RobotContainer {
   private final Joystick m_joystick = new Joystick(1);
   private final Joystick m_opJoystick = new Joystick(0);
 
-  private final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
+  final DriveSubsystem m_robotDrive = SubsystemConstants.useDrive ? new DriveSubsystem() : null;
   private final VisionSubsystem m_visionSubsystem = SubsystemConstants.useVision ? new VisionSubsystem() : null;
   private final ArmSubsystem m_robotArm = SubsystemConstants.useArm ? new ArmSubsystem() : null;
   private final PneumaticsSubsystem m_pneumatics = SubsystemConstants.usePneumatics ? new PneumaticsSubsystem() : null;
@@ -139,7 +139,6 @@ public class RobotContainer {
           new RunCommand(
 
               () -> {
-                m_robotDrive.m_allowVisionUpdates = false;
                 m_robotDrive.drive(
                     // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount?
                     Math.signum(m_joystick.getRawAxis(1))
@@ -161,7 +160,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    m_robotDrive.m_allowVisionUpdates = false;
 
     SequentialCommandGroup ret = new SequentialCommandGroup();
 
@@ -225,7 +223,7 @@ public class RobotContainer {
 
         if (m_placePiece2.getSelected()) {
           ret.addCommands(new ParallelCommandGroup(new MoveSetDistanceCommand(m_robotDrive,
-              new Pose2d(getAllianceX(3), 0.75, new Rotation2d(getAllianceTheta()))),
+              new Pose2d(getAllianceX(3), 0.75, new Rotation2d(getAllianceTheta()))), //(3,0.75)
               new MagicTurntable(m_turntables)));
         } else {
           ret.addCommands(new MagicTurntable(m_turntables));
@@ -264,14 +262,13 @@ public class RobotContainer {
           new AltBalanceCommand(m_robotDrive), new DriveParkingBrakeCommand(m_robotDrive)));
       new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
           () -> {
-            m_robotDrive.m_allowVisionUpdates = false;
             m_robotDrive.drive(
                 // TODO MENTOR:  are deadbands good?  Do we want to try to tweak turning so it's easier to turn a small amount? Also this is slowmode
                 Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(1), 0.1), 1) * -1 * DriveConstants.kSlowSpeed,
                 Math.pow(MathUtil.applyDeadband(m_joystick.getRawAxis(0), 0.1), 1) * -1
-                    * DriveConstants.kSlowAngularspeed,
+                    * DriveConstants.kSlowSpeed,
                 MathUtil.applyDeadband(m_joystick.getRawAxis(2), 0.2) * -1
-                    * DriveConstants.kMaxAngularSpeed,
+                    * DriveConstants.kSlowAngularspeed,
                 //0.2 * DriveConstants.kMaxSpeed, 0, 0,
                 m_robotDrive.m_fieldRelative);
           },
@@ -362,20 +359,20 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 3).whileTrue(new IntakeYuck(m_intake, m_pneumatics)); //Placeholder Button number, ask drivers where they want this
     } //TODO: read the todo for the line above me
 
-    // if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
-    //   new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
-    //       new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
-    //       new RunCommand(
-    //           () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-    //   new JoystickButton(m_joystick, 15).whileTrue(new SequentialCommandGroup(
-    //       new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
-    //       new RunCommand(
-    //           () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-    //   new JoystickButton(m_joystick, 14).whileTrue(new SequentialCommandGroup(
-    //       new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
-    //       new RunCommand(
-    //           () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
-    // }
+    if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
+      new JoystickButton(m_joystick, 8).whileTrue(new SequentialCommandGroup(
+          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
+          new RunCommand(
+              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+      new JoystickButton(m_joystick, 9).whileTrue(new SequentialCommandGroup(
+          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
+          new RunCommand(
+              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+      new JoystickButton(m_joystick, 10).whileTrue(new SequentialCommandGroup(
+          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "right"),
+          new RunCommand(
+              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+    }
 
     //new JoystickButton(m_opJoystick, 7).whileTrue(new TestCommand(m_turntables));
 

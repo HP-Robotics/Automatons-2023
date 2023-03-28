@@ -7,7 +7,11 @@ package frc.robot.commands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.VisionConstants;
 
 /** An example command that uses an example subsystem. */
 public class MoveWithVisionCommand extends CommandBase {
@@ -36,8 +40,13 @@ public class MoveWithVisionCommand extends CommandBase {
   public void initialize() {
     if (m_vision.tagVision == true) {
       m_subsystem.m_allowVisionUpdates = false;
-      m_moveCommand = new MoveSetDistanceCommand(m_subsystem,
-          m_vision.getDestination(m_subsystem.getPose(), m_targetLocation));
+      Pose2d pose = m_vision.getDestination(m_subsystem.getPose(), m_targetLocation);
+      System.out.printf("Vision move to: X %f Y %f \n", pose.getX(), pose.getY());
+      System.out.flush();
+      m_moveCommand = new MoveSetDistanceCommand(m_subsystem, pose.getX(), pose.getY(), pose.getRotation(),
+          VisionConstants.velocity,
+          VisionConstants.acceleration, List.of());
+
       m_moveCommand.initialize();
     }
   }
@@ -58,7 +67,7 @@ public class MoveWithVisionCommand extends CommandBase {
   public void end(boolean interrupted) {
     if (m_vision.tagVision == true) {
       m_moveCommand.end(interrupted);
-      m_subsystem.m_allowVisionUpdates = false;
+      m_subsystem.m_allowVisionUpdates = true; //TODO 10K: change before 10k
     }
   }
 
