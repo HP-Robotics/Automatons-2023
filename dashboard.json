@@ -113,6 +113,32 @@
               "_showGlyph": false,
               "Visuals/Show voltage and current values": true
             }
+          },
+          "12,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Robot x",
+              "_title": "SmartDashboard/Robot x",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "12,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Robot y",
+              "_title": "SmartDashboard/Robot y",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -530,6 +556,19 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Big Bongo 4 Abs Encoder",
               "_title": "SmartDashboard/Big Bongo 4 Abs Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,5": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pigeon Yaw",
+              "_title": "SmartDashboard/Pigeon Yaw",
               "_glyph": 148,
               "_showGlyph": false
             }
