@@ -254,7 +254,7 @@ public class RobotContainer {
     if (SubsystemConstants.useDrive) {
       new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
-      //new JoystickButton(m_joystick, 10).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); No go north for now
+      new JoystickButton(m_joystick, 8).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); // No go north for now
       new JoystickButton(m_joystick, 16).whileTrue(new DriveParkingBrakeCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
       new JoystickButton(m_joystick, 11).whileTrue(new SequentialCommandGroup(
@@ -359,10 +359,10 @@ public class RobotContainer {
     } //TODO: read the todo for the line above me
 
     if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
-      new JoystickButton(m_joystick, 8).whileTrue(new SequentialCommandGroup(
-          new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
-          new RunCommand(
-              () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive)));
+      // new JoystickButton(m_joystick, 8).whileTrue(new SequentialCommandGroup(
+      //     new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
+      //     new RunCommand(
+      //         () -> m_robotDrive.drive(0, 0, 0, m_robotDrive.m_fieldRelative), m_robotDrive))); //Disabled because North Button is using this button. 
       new JoystickButton(m_joystick, 9).whileTrue(new SequentialCommandGroup(
           new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "middle"),
           new RunCommand(
