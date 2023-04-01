@@ -156,11 +156,11 @@ public final class Constants {
     public static final double errorThreshold = 1000.0;
     public static final boolean useAbsoluteEncoders = true;
 
-    public static final double shoulderScore = 59949; //old val: 53143
-    public static final double elbowScore = 181793;
+    public static final double shoulderScore = 59949 - 2600; //old val: 53143
+    public static final double elbowScore = 181793 + 2600;
 
-    public static final double shoulderHigh = 82370;
-    public static final double elbowHigh = 221031;
+    public static final double shoulderHigh = 82370 - 2600;
+    public static final double elbowHigh = 221031 + 2600;
 
     public static final double shoulderMid = 2880;
     public static final double elbowMid = 124330;

@@ -255,9 +255,9 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       new JoystickButton(m_joystick, 8).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); // No go north for now
-      new JoystickButton(m_joystick, 16).whileTrue(new DriveParkingBrakeCommand(m_robotDrive));
+      new JoystickButton(m_joystick, 11).whileTrue(new DriveParkingBrakeCommand(m_robotDrive));
       new JoystickButton(m_joystick, 14).whileTrue(new BalanceCommand(m_robotDrive));
-      new JoystickButton(m_joystick, 11).whileTrue(new SequentialCommandGroup(
+      new JoystickButton(m_joystick, 16).whileTrue(new SequentialCommandGroup(
           new AltBalanceCommand(m_robotDrive), new DriveParkingBrakeCommand(m_robotDrive)));
       new JoystickButton(m_joystick, 5).whileTrue(new RunCommand(
           () -> {

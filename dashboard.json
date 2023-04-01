@@ -560,10 +560,10 @@
               "_showGlyph": false
             }
           },
-          "6,5": {
+          "3,2": {
             "size": [
-              3,
-              2
+              7,
+              3
             ],
             "content": {
               "_type": "Text View",
