@@ -139,6 +139,7 @@ public class ArmSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("Elbow Absolute Encoder is Connected", m_elbowEncoder.isConnected());
 
     SmartDashboard.putNumber("Elbow Real Absolute Encoder", m_elbowEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Shoulder Real Absolute Encoder", m_shoulderEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Shoulder Falcon Encoder", m_shoulderMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbow Falcon Encoder", m_elbowMotor.getSelectedSensorPosition());
     // SmartDashboard.putNumber("Shoulder Motion Position", m_shoulderMotor.getActiveTrajectoryPosition());
@@ -400,7 +401,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getAdjustedAbsoluteShoulder() {
-    if (m_shoulderEncoder.getAbsolutePosition() < 0.0) { //TODO: 0.0 is a filler number, this needs to be tuned
+    if (m_shoulderEncoder.getAbsolutePosition() < 0.5) { //TODO: 0.0 is a filler number, this needs to be tuned
       return m_shoulderEncoder.getAbsolutePosition() + 1 + ArmConstants.shoulderOffset;
     } else {
       return m_shoulderEncoder.getAbsolutePosition() + ArmConstants.shoulderOffset;
