@@ -14,7 +14,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPoint;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.spline.Spline;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -201,34 +204,65 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   //This is Trajectory for the arm
-  public BufferedTrajectoryPointStream generateArmTrajectory(Translation2d start, Translation2d end,
+  public BufferedTrajectoryPointStream[] generateArmTrajectory(Translation2d start, Translation2d end,
       List<Translation2d> waypoints) {
-    TrajectoryConfig config = new TrajectoryConfig(ArmConstants.trajectoryMaxVelocity,
-        ArmConstants.trajectoryMaxAcceleration);
-    Spline.ControlVector startPos = new Spline.ControlVector(new double[] { start.getX(), 0 },
-        new double[] { start.getY(), 0 });
-    Spline.ControlVector endPos = new Spline.ControlVector(new double[] { end.getX(), 0 },
-        new double[] { end.getY(), 0 });
-    Trajectory armTrajectory = TrajectoryGenerator.generateTrajectory(startPos, waypoints, endPos, config);
+    TrajectoryConfig config = new TrajectoryConfig(ArmConstants.trajectoryMaxVelocity / 10000, //divide by 10,000 to make trajectory generate
+        ArmConstants.trajectoryMaxAcceleration / 10000);
+    Spline.ControlVector startPos = new Spline.ControlVector(
+        new double[] { start.getX() / 10000, 0 },
+        new double[] { start.getY() / 10000, 1 });
+    Spline.ControlVector endPos = new Spline.ControlVector(
+        new double[] { end.getX() / 10000, 0 },
+        new double[] { end.getY() / 10000, 1 });
+    List<Translation2d> scaledWaypoints = new ArrayList<>();
+    waypoints.forEach((waypoint) -> {
+      scaledWaypoints.add(waypoint.div(10000));
+    });
+    PathPlanner.generatePath(null, null);
+    PathPoint startPP = new PathPoint(start, Rotation2d.fromDegrees(90));
+    PathPoint endPP = new PathPoint(end, Rotation2d.fromDegrees(90));
+
+    Trajectory armTrajectory = TrajectoryGenerator.generateTrajectory(startPos, scaledWaypoints, endPos, config);
     int trajectorylength = armTrajectory.getStates().size();
-    BufferedTrajectoryPointStream armTrajectoryPoints = new BufferedTrajectoryPointStream();
+    BufferedTrajectoryPointStream elbowTrajectoryPoints = new BufferedTrajectoryPointStream();
+    BufferedTrajectoryPointStream shoulderTrajectoryPoints = new BufferedTrajectoryPointStream();
+    double lastTime = 0;
     for (int i = 0; i <= trajectorylength; i++) {
       TrajectoryPoint pointI = new TrajectoryPoint();
-      pointI.position = armTrajectory.getStates().get(i).poseMeters.getX();//do this again with getY() for elbow/arm
-      pointI.velocity = armTrajectory.getStates().get(i).velocityMetersPerSecond;
+      pointI.position = armTrajectory.getStates().get(i).poseMeters.getX() * 10000;//do this again with getY() for elbow/arm
+      pointI.velocity = armTrajectory.getStates().get(i).velocityMetersPerSecond * 10000;
       pointI.isLastPoint = (i == trajectorylength);
-      pointI.timeDur = 20; //or zero
+      pointI.timeDur = (int) ((armTrajectory.getStates().get(i).timeSeconds - lastTime) * 1000);
       armTrajectory.getStates().get(i);
-      armTrajectoryPoints.Write(pointI);
-    }
+      elbowTrajectoryPoints.Write(pointI);
 
-    return null;
+      TrajectoryPoint shoulderPointI = new TrajectoryPoint();
+      shoulderPointI.position = armTrajectory.getStates().get(i).poseMeters.getY() * 10000;//do this again with getY() for elbow/arm
+      shoulderPointI.velocity = armTrajectory.getStates().get(i).velocityMetersPerSecond * 10000;
+      shoulderPointI.isLastPoint = (i == trajectorylength);
+      shoulderPointI.timeDur = (int) ((armTrajectory.getStates().get(i).timeSeconds - lastTime) * 1000);
+      armTrajectory.getStates().get(i);
+      shoulderTrajectoryPoints.Write(shoulderPointI);
+      lastTime = armTrajectory.getStates().get(i).timeSeconds;
+
+    }
+    BufferedTrajectoryPointStream[] output = { elbowTrajectoryPoints, shoulderTrajectoryPoints };
+    return output;
   }
 
   public void followTrajectory(Translation2d start, Translation2d end, List<Translation2d> waypoints) {
-    m_elbowMotor.startMotionProfile(generateArmTrajectory(start, end, waypoints), 0, ControlMode.MotionProfile);
-    new BufferedTrajectoryPointStream();
+    BufferedTrajectoryPointStream[] armTrajectory = generateArmTrajectory(start, end, waypoints);
+    m_elbowMotor.startMotionProfile(armTrajectory[0], 0, ControlMode.MotionProfile);
+    m_shoulderMotor.startMotionProfile(armTrajectory[1], 0, ControlMode.MotionProfile);
+  }
 
+  public void armTest() {
+    if (m_currentState == ArmConstants.stowState) {
+      followTrajectory(
+          new Translation2d(0, ArmConstants.shoulderStow),
+          new Translation2d(0, ArmConstants.shoulderLow),
+          List.of());
+    }
   }
 
   public void moveShoulder(double newSetpoint) {

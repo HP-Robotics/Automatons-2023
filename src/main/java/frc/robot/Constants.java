@@ -57,7 +57,7 @@ public final class Constants {
     public static final boolean useTurnTables = true;
     public static final boolean useIntake = true;
     public static final boolean useLimelight = false; // MENTOR TODO: this should be false now...
-    public static final boolean useVision = false;
+    public static final boolean useVision = true;
     public static final boolean useDataManger = true;
   }
 
@@ -122,8 +122,8 @@ public final class Constants {
     public static final double shoulderMaxAllowableError = 200;
     public static final double shoulderIZone = 500;
     public static final double shoulderGearRatio = 345; // just a guess // it is 575 according to builders, 383 working
-    public static final int shoulderAcceleration = 25000;//20000 works
-    public static final int shoulderMaxVelocity = 13000;
+    public static final int shoulderAcceleration = 2500;//20000 works //25000
+    public static final int shoulderMaxVelocity = 1300;//13000
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.454;
     public static final int shoulderEncoderID = 22;
@@ -135,16 +135,16 @@ public final class Constants {
     public static final double elbowkD = 0;
     public static final double elbowIZone = 500;
     public static final double elbowGearRatio = 231.81;
-    public static final int elbowAcceleration = 30000;
-    public static final int elbowMaxVelocity = 19000;
+    public static final int elbowAcceleration = 3000;//30000
+    public static final int elbowMaxVelocity = 1900;//19000
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.840;
     public static final int elbowEncoderID = 21;
     public static final double elbowOffset = -.0; // adjusted abs should be 0.84 in stow
 
     public static final int frameCounterThreshold = 5;
-    public static final double trajectoryMaxAcceleration = 0;
-    public static final double trajectoryMaxVelocity = 0;
+    public static final double trajectoryMaxAcceleration = 2500;
+    public static final double trajectoryMaxVelocity = 1300;
 
     public static final int intakeState = 0;
     public static final int stowState = 1;
