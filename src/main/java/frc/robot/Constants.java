@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.I2C;
  */
 
 public final class Constants {
+  public static boolean safeMode = false;
 
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
@@ -62,8 +63,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final double kMaxSpeed = 5.0; // meters per second 
-    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second  // TODO MENTOR: is this a good turn speed?
+    public static final double kMaxSpeed = safeMode ? 5.0 * 0.25 : 5.0; // meters per second 
+    public static final double kMaxAngularSpeed = safeMode ? Math.PI * 0.25 : Math.PI; // 1/2 rotation per second  // TODO MENTOR: is this a good turn speed?
     public static final double kSlowSpeed = 2.0;
     public static final double kSlowAngularspeed = Math.PI / 2; // 1/4 rotation per second  // TODO MENTOR: is this a good turn speed?
 
@@ -122,8 +123,8 @@ public final class Constants {
     public static final double shoulderMaxAllowableError = 200;
     public static final double shoulderIZone = 500;
     public static final double shoulderGearRatio = 345; // just a guess // it is 575 according to builders, 383 working
-    public static final int shoulderAcceleration = 25000;//20000 works
-    public static final int shoulderMaxVelocity = 13000;
+    public static final int shoulderAcceleration = safeMode ? 25000 / 4 : 25000;//20000 works
+    public static final int shoulderMaxVelocity = safeMode ? 13000 / 4 : 13000;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.454;
     public static final int shoulderEncoderID = 22;
@@ -135,8 +136,8 @@ public final class Constants {
     public static final double elbowkD = 0;
     public static final double elbowIZone = 500;
     public static final double elbowGearRatio = 231.81;
-    public static final int elbowAcceleration = 30000;
-    public static final int elbowMaxVelocity = 19000;
+    public static final int elbowAcceleration = safeMode ? 30000 / 4 : 30000;
+    public static final int elbowMaxVelocity = safeMode ? 19000 / 4 : 19000;
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.840;
     public static final int elbowEncoderID = 21;
@@ -152,6 +153,9 @@ public final class Constants {
     public static final int midState = 3;
     public static final int highState = 4;
     public static final int scoreState = 5;
+
+    public static final int lowestState = safeMode ? stowState : stowState;
+    public static final int highestState = safeMode ? lowState : scoreState;
 
     public static final double errorThreshold = 1000.0;
     public static final boolean useAbsoluteEncoders = true;

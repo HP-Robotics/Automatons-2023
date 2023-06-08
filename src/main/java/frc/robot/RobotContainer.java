@@ -162,6 +162,9 @@ public class RobotContainer {
 
     SequentialCommandGroup ret = new SequentialCommandGroup();
 
+    if (Constants.safeMode) {
+      return ret;
+    }
     ret.addCommands(
         new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState),
         new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState),
@@ -251,7 +254,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    if (SubsystemConstants.useDrive) {
+    if (SubsystemConstants.useDrive && !Constants.safeMode) {
       new JoystickButton(m_joystick, 2).onTrue(new InstantCommand(m_robotDrive::forceRobotRelative, m_robotDrive));
       new JoystickButton(m_joystick, 2).onFalse(new InstantCommand(m_robotDrive::forceFieldRelative, m_robotDrive));
       new JoystickButton(m_joystick, 8).onTrue(new InstantCommand(m_robotDrive::resetYaw, m_robotDrive)); // No go north for now
@@ -290,15 +293,16 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useArm) {
-      new Trigger(() -> m_robotArm.m_manualArm).whileTrue(
-          new RunCommand(() -> {
-            m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 500);
-            m_robotArm.moveElbow(MathUtil.applyDeadband(m_opJoystick.getRawAxis(5), 0.1) * 500);
-          }, m_robotArm));
+      if (!Constants.safeMode) {
+        new Trigger(() -> m_robotArm.m_manualArm).whileTrue(
+            new RunCommand(() -> {
+              m_robotArm.moveShoulder(MathUtil.applyDeadband(m_opJoystick.getRawAxis(1), 0.1) * 500);
+              m_robotArm.moveElbow(MathUtil.applyDeadband(m_opJoystick.getRawAxis(5), 0.1) * 500);
+            }, m_robotArm));
 
-      new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(m_robotArm::enableManual));
-      new JoystickButton(m_opJoystick, 8).onTrue(new InstantCommand(m_robotArm::disableManual));
-
+        new JoystickButton(m_opJoystick, 7).onTrue(new InstantCommand(m_robotArm::enableManual));
+        new JoystickButton(m_opJoystick, 8).onTrue(new InstantCommand(m_robotArm::disableManual));
+      }
       //new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
       new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
       new JoystickButton(m_opJoystick, 2).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.midState));
@@ -328,7 +332,8 @@ public class RobotContainer {
                     new ChompCloseCommand(m_pneumatics)),
                 new ChompToggleCommand(m_pneumatics),
                 () -> {
-                  return m_robotArm.getCurrentState() >= ArmConstants.lowState && m_pneumatics.m_chompClosed;
+                  return m_robotArm.getCurrentState() >= ArmConstants.lowState && m_pneumatics.m_chompClosed
+                      && !Constants.safeMode;
                 }));
       }
     }
@@ -358,7 +363,7 @@ public class RobotContainer {
       new JoystickButton(m_joystick, 3).whileTrue(new IntakeYuck(m_intake)); //Placeholder Button number, ask drivers where they want this
     } //TODO: read the todo for the line above me
 
-    if (SubsystemConstants.useDrive && SubsystemConstants.useVision) {
+    if (SubsystemConstants.useDrive && SubsystemConstants.useVision && !Constants.safeMode) {
       // new JoystickButton(m_joystick, 8).whileTrue(new SequentialCommandGroup(
       //     new MoveWithVisionCommand(m_robotDrive, m_visionSubsystem, "left"),
       //     new RunCommand(

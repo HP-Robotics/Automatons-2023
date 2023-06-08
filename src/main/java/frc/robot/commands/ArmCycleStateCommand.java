@@ -27,7 +27,7 @@ public class ArmCycleStateCommand extends CommandBase {
       m_subsystem.setFalconEncoders();
     }
     int newState = m_subsystem.getCurrentState() + m_direction;
-    if (newState < ArmConstants.stowState || newState > ArmConstants.scoreState) {
+    if (newState < ArmConstants.lowestState || newState > ArmConstants.highestState) {
       return;
     } else {
       m_subsystem.setTargetState(newState);
