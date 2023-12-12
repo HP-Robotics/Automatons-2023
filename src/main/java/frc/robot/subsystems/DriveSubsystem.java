@@ -51,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
   public int m_gamePieceSightCounter = 0;
 
   public DriveSubsystem() {
-    m_pGyro.setYaw(0);
+    m_pGyro.setYaw(180);
     var pigeonYaw = new Rotation2d(Math.toRadians(m_pGyro.getYaw()));
     m_odometry = new SwerveDriveOdometry(
         DriveConstants.kDriveKinematics,
