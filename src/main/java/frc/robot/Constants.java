@@ -53,7 +53,7 @@ public final class Constants {
 
   public static class SubsystemConstants {
     public static final boolean useDrive = true; // drive disabled, reenable later
-    public static final boolean useArm = true;
+    public static final boolean useArm = false;
     public static final boolean usePneumatics = true;
     public static final boolean useTurnTables = true;
     public static final boolean useIntake = true;
@@ -109,7 +109,7 @@ public final class Constants {
 
   public static class RobotConstants { // For robot values that remain the same, such as max speed
     public static final double swerveOffsetFL = 0.617738640443466;
-    public static final double swerveOffsetFR = 0.59958238998956;
+    public static final double swerveOffsetFR = 0.497; //0.59958238998956;
     public static final double swerveOffsetBL = 0.890661022266526;
     public static final double swerveOffsetBR = 0.125644328141108; // Fill in later
 
@@ -123,12 +123,12 @@ public final class Constants {
     public static final double shoulderMaxAllowableError = 200;
     public static final double shoulderIZone = 500;
     public static final double shoulderGearRatio = 345; // just a guess // it is 575 according to builders, 383 working
-    public static final int shoulderAcceleration = safeMode ? 25000 / 4 : 25000;//20000 works
-    public static final int shoulderMaxVelocity = safeMode ? 13000 / 4 : 13000;
+    public static final int shoulderAcceleration = safeMode ? 25000 / 4 : 25000 * 3 / 4;//20000 works
+    public static final int shoulderMaxVelocity = safeMode ? 13000 / 4 : 13000 * 3 / 4;
     public static final int shoulderSCurve = 0;
     public static final double shoulderStarting = 0.454;
     public static final int shoulderEncoderID = 22;
-    public static final double shoulderOffset = -.5; // adjusted abs should be 0.472 in stow
+    public static final double shoulderOffset = -.5 + 0.33; // adjusted abs should be 0.472 in stow
 
     public static final int elbowID = 19;
     public static final double elbowkP = .07; //.05
@@ -136,8 +136,8 @@ public final class Constants {
     public static final double elbowkD = 0;
     public static final double elbowIZone = 500;
     public static final double elbowGearRatio = 231.81;
-    public static final int elbowAcceleration = safeMode ? 30000 / 4 : 30000;
-    public static final int elbowMaxVelocity = safeMode ? 19000 / 4 : 19000;
+    public static final int elbowAcceleration = safeMode ? 30000 / 4 : 30000 * 3 / 4;
+    public static final int elbowMaxVelocity = safeMode ? 19000 / 4 : 19000 * 3 / 4;
     public static final int elbowSCurve = 0;
     public static final double elbowStarting = 0.840;
     public static final int elbowEncoderID = 21;
@@ -163,11 +163,11 @@ public final class Constants {
     public static final double shoulderScore = 59949; //old val: 53143
     public static final double elbowScore = 181793;
 
-    public static final double shoulderHigh = 82370;
-    public static final double elbowHigh = 221031;
+    public static final double shoulderHigh = 60370;
+    public static final double elbowHigh = 211031;
 
-    public static final double shoulderMid = 2880;
-    public static final double elbowMid = 124330;
+    public static final double shoulderMid = -10000;
+    public static final double elbowMid = 135000;
 
     public static final double shoulderLow = -31320; //old val: -26100
     public static final double elbowLow = 80000;
@@ -175,7 +175,7 @@ public final class Constants {
     public static final double shoulderStow = 0;
     public static final double elbowStow = 0;
 
-    public static final double shoulderIntake = -79000; //old val: -69061
+    public static final double shoulderIntake = -85000; //old val: -69061
     public static final double elbowIntake = -2500;
 
     public static double[] shoulderPositions = { shoulderIntake, shoulderStow, shoulderLow, shoulderMid,
