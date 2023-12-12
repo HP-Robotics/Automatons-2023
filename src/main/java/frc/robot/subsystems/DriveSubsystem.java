@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -150,6 +151,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Rotation2d getPoseRot() {
     return m_odometry.getPoseMeters().getRotation();
+  }
+
+  public double turnDirection(Rotation2d target, Rotation2d current) {
+    double turn = MathUtil.inputModulus(target.minus(current).getRadians(), -Math.PI, Math.PI);
+    return turn;
   }
 
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
