@@ -71,7 +71,7 @@ public class MoveSetDistanceCommand extends CommandBase {
   public void initialize() {
     try {
       // System.out.println("Success");
-      m_wayPoints = new ArrayList();
+      m_wayPoints = new ArrayList<PathPoint>();
       TrajectoryConfig config = new TrajectoryConfig(m_Velocity, m_Acceleration)
           // Add kinematics to ensure max speed is actually obeyed
           .setKinematics(DriveConstants.kDriveKinematics);
