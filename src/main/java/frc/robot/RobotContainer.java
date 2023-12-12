@@ -345,7 +345,8 @@ public class RobotContainer {
         new JoystickButton(m_opJoystick, 8).onTrue(new InstantCommand(m_robotArm::disableManual));
       }
       //new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState));
-      new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
+      //new JoystickButton(m_opJoystick, 4).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.highState));
+
       new JoystickButton(m_opJoystick, 2).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.midState));
       new JoystickButton(m_opJoystick, 1).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.lowState));
       new JoystickButton(m_opJoystick, 3).onTrue(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState));
@@ -366,9 +367,9 @@ public class RobotContainer {
                 new ArmChangeStateCommand(m_robotArm, ArmConstants.intakeState),
                 new ChompCloseCommand(m_pneumatics)));
 
-        new JoystickButton(m_opJoystick, 5).onTrue(
+        new JoystickButton(m_opJoystick, 5).onTrue(//Chomp toggle
             new ConditionalCommand(
-                new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics),
+                new SequentialCommandGroup(new ChompOpenCommand(m_pneumatics), //Auto reset if far out
                     new ProxyCommand(new ArmChangeStateCommand(m_robotArm, ArmConstants.stowState)),
                     new ChompCloseCommand(m_pneumatics)),
                 new ChompToggleCommand(m_pneumatics),
@@ -396,7 +397,7 @@ public class RobotContainer {
     }
 
     if (SubsystemConstants.useIntake && SubsystemConstants.useTurnTables && SubsystemConstants.usePneumatics) {
-      new JoystickButton(m_joystick, 4).whileTrue(new IntakeOnlyCommand(m_intake));
+      //new JoystickButton(m_joystick, 4).whileTrue(new IntakeOnlyCommand(m_intake)); Spin fast commented out right before mini mini
       new JoystickButton(m_joystick, 1).whileTrue(new IntakeCommand(m_intake))
           .onTrue(new MagicTurntable(m_turntables));
       //new InstantCommand(() -> m_turntables.spinClockwise(), m_turntables)); // TODO MENTOR: we need a lot of new logic
