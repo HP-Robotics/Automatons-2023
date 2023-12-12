@@ -278,7 +278,7 @@ public class ArmSubsystem extends SubsystemBase {
     if (m_currentState == m_pastState && m_isChanging) {
       return;
     }
-    if (m_currentState > ArmConstants.lowestState) {
+    if (m_currentState != ArmConstants.intakeState) {
       if ((m_currentState - m_pastState) > 0 && m_pastState >= 0) {
         m_currentState = m_pastState;
       } else if (m_targetState <= ArmConstants.lowState && m_pastState == ArmConstants.highState) {
