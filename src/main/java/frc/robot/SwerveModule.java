@@ -102,14 +102,39 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
+    Rotation2d currentAngle = new Rotation2d(
+        ticksToRadians(applyOffset(m_turningMotor.getSelectedSensorPosition())) % (Math.PI * 2));
+    //  System.out.println("delta: " + (desiredState.angle.minus(currentAngle).getDegrees()));
+    if (Math.abs(desiredState.angle.minus(currentAngle).getDegrees()) > 90.0) {
+      //System.out.println("optimize triggered");
+      //System.out.println("desired: " + (desiredState.angle.getDegrees()) + "   current: " + currentAngle.getDegrees());
+    }
+    if (Math.abs(desiredState.angle.minus(currentAngle).getDegrees()) > 270) {
+      System.out.println("angle:" + currentAngle + " " + desiredState);
+      if (Math.abs(desiredState.angle.getDegrees()) > Math.abs(currentAngle.getDegrees())) {
+        desiredState = new SwerveModuleState(
+            desiredState.speedMetersPerSecond,
+            desiredState.angle.minus(Rotation2d.fromDegrees(360)));
+        System.out.println("change desired state");
+      } else {
+        currentAngle = currentAngle.minus(Rotation2d.fromDegrees(360));
+        System.out.println("change current angle");
+      }
+      currentAngle.minus(Rotation2d.fromDegrees(360));
+      //System.out.println(desiredState.angle.minus(currentAngle).getDegrees());//Curently does not work
+    }
+
+    Rotation2d angle_offset = new Rotation2d(
+        ((int) (ticksToRadians(applyOffset(m_turningMotor.getSelectedSensorPosition())) / (Math.PI * 2))) * Math.PI
+            * 2);
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-        new Rotation2d(ticksToRadians(applyOffset(m_turningMotor.getSelectedSensorPosition()))));
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState, currentAngle.plus(angle_offset));
     SmartDashboard.putNumber(m_name + "turningAngle", state.angle.getDegrees());
     SmartDashboard.putNumber(m_name + "turningOffset", m_turningOffset);
+    SmartDashboard.putNumber(m_name + "Absolute Encoder", m_absEncoder.get());
     m_turningMotor.set(ControlMode.Position,
         radiansToTicks(state.angle.getRadians()) + m_turningOffset);
-
+    //Have the right angle, but must make it so that when sending input is in the right zone. (8000 rotations + our amount)
     m_driveMotor.set(ControlMode.Velocity, metersToTicks(state.speedMetersPerSecond) / 10); // the 10 is real, it turns ticks per second into ticks per 100ms
 
   }
