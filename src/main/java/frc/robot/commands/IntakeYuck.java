@@ -26,7 +26,7 @@ public class IntakeYuck extends CommandBase {
   @Override
   public void execute() {
     m_subsystem.outake();
-    m_subsystem.intakeOut();
+    //m_subsystem.intakeOut();
   }
 
   // Called once the command ends or is interrupted.
