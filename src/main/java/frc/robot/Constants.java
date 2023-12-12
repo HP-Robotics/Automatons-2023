@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.I2C;
  */
 
 public final class Constants {
-  public static boolean safeMode = false;
+  public static boolean safeMode = true;
 
   public static class VisionConstants {
     public static String kcameraName = "Arducam_Global_Shutter";
@@ -63,8 +63,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final double kMaxSpeed = safeMode ? 5.0 * 0.25 : 5.0; // meters per second 
-    public static final double kMaxAngularSpeed = safeMode ? Math.PI * 0.25 : Math.PI; // 1/2 rotation per second  // TODO MENTOR: is this a good turn speed?
+    public static final double kMaxSpeed = safeMode ? 5.0 * 0.5 : 5.0; // meters per second 
+    public static final double kMaxAngularSpeed = safeMode ? Math.PI * 0.5 : Math.PI * 1; // 1/2 rotation per second  // TODO MENTOR: is this a good turn speed?
     public static final double kSlowSpeed = 2.0;
     public static final double kSlowAngularspeed = Math.PI / 2; // 1/4 rotation per second  // TODO MENTOR: is this a good turn speed?
 
